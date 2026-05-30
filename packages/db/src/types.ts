@@ -1,64 +1,66 @@
+import type { Generated } from "kysely";
+
 export interface TenantsTable {
-  id: string;
+  id: Generated<string>;
   name: string;
   slug: string;
   plan: string;
   status: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface UsersTable {
-  id: string;
+  id: Generated<string>;
   email: string;
   password_hash: string;
   first_name: string | null;
   last_name: string | null;
   status: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface MembershipsTable {
-  id: string;
+  id: Generated<string>;
   tenant_id: string;
   user_id: string;
   role: string;
-  created_at: Date;
+  created_at: Generated<Date>;
 }
 
 export interface SessionsTable {
-  id: string;
+  id: Generated<string>;
   user_id: string;
   session_token_hash: string;
   ip_address: string | null;
   user_agent: string | null;
-  created_at: Date;
+  created_at: Generated<Date>;
   expires_at: Date;
   last_activity_at: Date | null;
   revoked_at: Date | null;
 }
 
 export interface EmailVerificationTokensTable {
-  id: string;
+  id: Generated<string>;
   user_id: string;
   token_hash: string;
   expires_at: Date;
-  created_at: Date;
+  created_at: Generated<Date>;
   used_at: Date | null;
 }
 
 export interface PasswordResetTokensTable {
-  id: string;
+  id: Generated<string>;
   user_id: string;
   token_hash: string;
   expires_at: Date;
-  created_at: Date;
+  created_at: Generated<Date>;
   used_at: Date | null;
 }
 
 export interface AuditLogsTable {
-  id: string;
+  id: Generated<string>;
   tenant_id: string | null;
   user_id: string | null;
   action: string;
@@ -67,30 +69,30 @@ export interface AuditLogsTable {
   ip_address: string | null;
   user_agent: string | null;
   metadata: Record<string, unknown>;
-  created_at: Date;
+  created_at: Generated<Date>;
 }
 
 export interface SubscriptionsTable {
-  id: string;
+  id: Generated<string>;
   tenant_id: string;
   plan: string;
   status: string;
   renewal_date: Date | null;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface FeatureFlagsTable {
-  id: string;
+  id: Generated<string>;
   tenant_id: string;
   feature_name: string;
   enabled: boolean;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface TenantBrandingTable {
-  id: string;
+  id: Generated<string>;
   tenant_id: string;
   company_name: string | null;
   logo_url: string | null;
@@ -102,8 +104,8 @@ export interface TenantBrandingTable {
   agent_name: string | null;
   support_exe_name: string | null;
   custom_domain: string | null;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface Database {
