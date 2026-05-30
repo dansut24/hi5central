@@ -6,21 +6,29 @@ const {
 } = Astro.props;
 
 const classes = {
-  primary: "rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700",
-  secondary: "rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50",
-  dark: "rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800",
-  danger: "rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-red-200 hover:bg-red-700"
+  primary: "rounded-xl px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5",
+  secondary: "rounded-xl border px-4 py-2 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5",
+  dark: "rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5",
+  danger: "rounded-xl px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
+};
+
+const styles = {
+  primary: "background: var(--hi5-primary); box-shadow: 0 12px 24px color-mix(in srgb, var(--hi5-primary) 28%, transparent);",
+  secondary: "background: var(--hi5-card); border-color: var(--hi5-border); color: var(--hi5-fg);",
+  dark: "background: var(--hi5-navy);",
+  danger: "background: var(--hi5-danger);"
 };
 
 const className = classes[variant] ?? classes.primary;
+const style = styles[variant] ?? styles.primary;
 ---
 
 {href ? (
-  <a href={href} class={className}>
+  <a href={href} class={className} style={style}>
     <slot />
   </a>
 ) : (
-  <button type={type} class={className}>
+  <button type={type} class={className} style={style}>
     <slot />
   </button>
 )}
