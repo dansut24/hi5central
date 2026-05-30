@@ -1,0 +1,21 @@
+---
+const { title = "Dashboard" } = Astro.props;
+---
+
+<header class="sticky top-0 z-20 border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur-xl lg:hidden">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-600 text-sm font-bold text-white shadow-lg shadow-indigo-200">
+        H5
+      </div>
+      <div>
+        <p class="text-xs font-semibold text-indigo-600">Hi5Central</p>
+        <h1 class="text-lg font-bold tracking-tight text-slate-950">{title}</h1>
+      </div>
+    </div>
+
+    <button class="rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-200">
+      Session
+    </button>
+  </div>
+</header>
