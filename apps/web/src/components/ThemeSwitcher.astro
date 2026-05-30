@@ -1,0 +1,72 @@
+<div
+  class="inline-flex rounded-xl border p-1"
+  style="background: var(--hi5-card); border-color: var(--hi5-border);"
+>
+  <button
+    type="button"
+    data-theme-choice="auto"
+    class="theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"
+  >
+    Auto
+  </button>
+
+  <button
+    type="button"
+    data-theme-choice="light"
+    class="theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"
+  >
+    Light
+  </button>
+
+  <button
+    type="button"
+    data-theme-choice="dark"
+    class="theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"
+  >
+    Dark
+  </button>
+</div>
+
+<script is:inline>
+  const storageKey = "hi5central-theme";
+
+  function applyTheme(choice) {
+    const root = document.documentElement;
+
+    if (choice === "auto") {
+      root.removeAttribute("data-theme");
+    } else {
+      root.setAttribute("data-theme", choice);
+    }
+
+    document.querySelectorAll(".theme-choice").forEach((button) => {
+      const isActive = button.dataset.themeChoice === choice;
+
+      button.style.background = isActive
+        ? "var(--hi5-primary)"
+        : "transparent";
+
+      button.style.color = isActive
+        ? "#ffffff"
+        : "var(--hi5-muted)";
+    });
+  }
+
+  const savedTheme = localStorage.getItem(storageKey) || "auto";
+  applyTheme(savedTheme);
+
+  document.querySelectorAll(".theme-choice").forEach((button) => {
+    button.addEventListener("click", () => {
+      const choice = button.dataset.themeChoice || "auto";
+      localStorage.setItem(storageKey, choice);
+      applyTheme(choice);
+    });
+  });
+
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => {
+      const choice = localStorage.getItem(storageKey) || "auto";
+      applyTheme(choice);
+    });
+</script>
