@@ -1,5 +1,6 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import DeviceDetailsClient from "../../components/devices/DeviceDetailsClient.jsx";
 
 export function getStaticPaths() {
   const devices = [
@@ -123,6 +124,8 @@ const { device } = Astro.props;
         </div>
       </div>
     </section>
+
+    <DeviceDetailsClient client:load deviceId={device.id} />
 
     <section class="rounded-3xl border p-6" style="background: var(--hi5-card); border-color: var(--hi5-border);">
       <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Actions</h2>
