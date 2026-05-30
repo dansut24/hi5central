@@ -8,6 +8,7 @@ import { devicesRouter } from "./routes/devices";
 import { dashboardRoutes } from "./routes/dashboard";
 import { agentRoutes } from "./routes/agent";
 import { heartbeatRoutes } from "./routes/heartbeat";
+import { inventoryRoutes } from "./routes/inventory";
 
 const app = new Hono();
 
@@ -29,6 +30,7 @@ app.route("/devices", devicesRouter);
 app.route("/dashboard", dashboardRoutes);
 app.route("/agent", agentRoutes);
 app.route("/agent/heartbeat", heartbeatRoutes);
+app.route("/agent/inventory", inventoryRoutes);
 
 app.get("/ready", async (c) => {
   try {
