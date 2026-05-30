@@ -1,0 +1,44 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+---
+
+<DashboardLayout title="Dashboard">
+  <div class="space-y-6">
+    <h1
+      class="text-3xl font-black"
+      style="color: var(--hi5-fg);"
+    >
+      Welcome to Hi5Central
+    </h1>
+
+    <p
+      class="text-base"
+      style="color: var(--hi5-muted);"
+    >
+      Your authenticated dashboard foundation is now ready.
+    </p>
+
+    <div class="grid gap-4 md:grid-cols-3">
+      <div
+        class="rounded-2xl border p-6"
+        style="background: var(--hi5-card); border-color: var(--hi5-border);"
+      >
+        Devices
+      </div>
+
+      <div
+        class="rounded-2xl border p-6"
+        style="background: var(--hi5-card); border-color: var(--hi5-border);"
+      >
+        Remote Access
+      </div>
+
+      <div
+        class="rounded-2xl border p-6"
+        style="background: var(--hi5-card); border-color: var(--hi5-border);"
+      >
+        Patching
+      </div>
+    </div>
+  </div>
+</DashboardLayout>
