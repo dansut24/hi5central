@@ -2,6 +2,9 @@
 const { class: className = "" } = Astro.props;
 ---
 
-<section class={`rounded-2xl border border-slate-200 bg-white/85 shadow-sm backdrop-blur-xl ${className}`}>
+<section
+  class={`rounded-3xl border p-0 shadow-[var(--hi5-shadow-soft)] backdrop-blur-xl ${className}`}
+  style="background: var(--hi5-card); border-color: var(--hi5-border);"
+>
   <slot />
 </section>
