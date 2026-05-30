@@ -3,6 +3,7 @@ import DashboardLayout from "../../layouts/DashboardLayout.astro";
 
 const devices = [
   {
+    id: "demo-device",
     name: "CEO-LAPTOP",
     hostname: "CEO-LAPTOP",
     os: "Windows 11 Pro 24H2",
@@ -11,6 +12,7 @@ const devices = [
     lastSeen: "Just now"
   },
   {
+    id: "helpdesk-01",
     name: "HELPDESK-01",
     hostname: "HELPDESK-01",
     os: "Windows 11 Pro 24H2",
@@ -19,6 +21,7 @@ const devices = [
     lastSeen: "Just now"
   },
   {
+    id: "dc-01",
     name: "DC-01",
     hostname: "DC-01",
     os: "Windows Server 2025",
@@ -27,6 +30,7 @@ const devices = [
     lastSeen: "Just now"
   },
   {
+    id: "file-01",
     name: "FILE-01",
     hostname: "FILE-01",
     os: "Windows Server 2022",
@@ -35,6 +39,7 @@ const devices = [
     lastSeen: "Just now"
   },
   {
+    id: "macbook-pro",
     name: "MACBOOK-PRO",
     hostname: "MACBOOK-PRO",
     os: "macOS Sonoma 14",
@@ -43,6 +48,7 @@ const devices = [
     lastSeen: "1 day ago"
   },
   {
+    id: "ubuntu-dev",
     name: "UBUNTU-DEV",
     hostname: "UBUNTU-DEV",
     os: "Ubuntu 24.04",
@@ -127,9 +133,14 @@ function statusStyle(status: string) {
               style="border-color: var(--hi5-border);"
             >
               <td class="px-5 py-4">
-                <p class="font-bold" style="color: var(--hi5-fg);">
+                <a
+                  href={`/devices/${device.id}`}
+                  class="font-bold hover:underline"
+                  style="color: var(--hi5-fg);"
+                >
                   {device.name}
-                </p>
+                </a>
+
                 <p class="text-xs" style="color: var(--hi5-muted);">
                   {device.hostname}
                 </p>
@@ -169,9 +180,13 @@ function statusStyle(status: string) {
         >
           <div class="flex items-start justify-between gap-4">
             <div>
-              <h2 class="font-black" style="color: var(--hi5-fg);">
+              <a
+                href={`/devices/${device.id}`}
+                class="font-black hover:underline"
+                style="color: var(--hi5-fg);"
+              >
                 {device.name}
-              </h2>
+              </a>
 
               <p class="text-sm" style="color: var(--hi5-muted);">
                 {device.os}
