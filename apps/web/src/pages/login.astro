@@ -2,8 +2,18 @@
 import "../styles/global.css";
 import ThemeSwitcher from "../components/ThemeSwitcher.astro";
 import LoginForm from "../components/LoginForm.astro";
----
+import { getCurrentUser } from "../lib/currentUser";
 
+const redirectIfAuthenticated = false;
+
+if (redirectIfAuthenticated) {
+  const currentUser = await getCurrentUser();
+
+  if (currentUser) {
+    return Astro.redirect("/dashboard");
+  }
+}
+---
 <html lang="en">
   <head>
     <meta charset="utf-8" />
