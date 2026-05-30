@@ -1,17 +1,87 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
 
-const device = {
-  id: "demo-device",
-  name: "CEO-LAPTOP",
-  hostname: "CEO-LAPTOP",
-  operatingSystem: "Windows 11 Pro 24H2",
-  status: "online",
-  agentVersion: "1.0.0",
-  lastSeen: "Just now",
-  publicIp: "203.0.113.10",
-  localIp: "192.168.1.10"
-};
+const devices = [
+  {
+    id: "demo-device",
+    name: "CEO-LAPTOP",
+    hostname: "CEO-LAPTOP",
+    operatingSystem: "Windows 11 Pro 24H2",
+    status: "online",
+    agentVersion: "1.0.0",
+    lastSeen: "Just now",
+    publicIp: "203.0.113.10",
+    localIp: "192.168.1.10"
+  },
+  {
+    id: "helpdesk-01",
+    name: "HELPDESK-01",
+    hostname: "HELPDESK-01",
+    operatingSystem: "Windows 11 Pro 24H2",
+    status: "online",
+    agentVersion: "1.0.0",
+    lastSeen: "Just now",
+    publicIp: "203.0.113.11",
+    localIp: "192.168.1.11"
+  },
+  {
+    id: "dc-01",
+    name: "DC-01",
+    hostname: "DC-01",
+    operatingSystem: "Windows Server 2025",
+    status: "online",
+    agentVersion: "1.0.0",
+    lastSeen: "Just now",
+    publicIp: "203.0.113.20",
+    localIp: "10.0.0.10"
+  },
+  {
+    id: "file-01",
+    name: "FILE-01",
+    hostname: "FILE-01",
+    operatingSystem: "Windows Server 2022",
+    status: "warning",
+    agentVersion: "1.0.0",
+    lastSeen: "Just now",
+    publicIp: "203.0.113.21",
+    localIp: "10.0.0.11"
+  },
+  {
+    id: "macbook-pro",
+    name: "MACBOOK-PRO",
+    hostname: "MACBOOK-PRO",
+    operatingSystem: "macOS Sonoma 14",
+    status: "offline",
+    agentVersion: "1.0.0",
+    lastSeen: "1 day ago",
+    publicIp: "203.0.113.30",
+    localIp: "192.168.1.30"
+  },
+  {
+    id: "ubuntu-dev",
+    name: "UBUNTU-DEV",
+    hostname: "UBUNTU-DEV",
+    operatingSystem: "Ubuntu 24.04",
+    status: "online",
+    agentVersion: "1.0.0",
+    lastSeen: "Just now",
+    publicIp: "203.0.113.40",
+    localIp: "192.168.1.40"
+  }
+];
+
+export function getStaticPaths() {
+  return devices.map((device) => ({
+    params: {
+      id: device.id
+    },
+    props: {
+      device
+    }
+  }));
+}
+
+const { device } = Astro.props;
 ---
 
 <DashboardLayout title={device.name}>
@@ -39,15 +109,13 @@ const device = {
       </p>
     </section>
 
-    <section
-      class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
-    >
+    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <div
         class="rounded-2xl border p-5"
         style="background: var(--hi5-card); border-color: var(--hi5-border);"
       >
         <p style="color: var(--hi5-muted);">Hostname</p>
-        <p class="font-bold">{device.hostname}</p>
+        <p class="font-bold" style="color: var(--hi5-fg);">{device.hostname}</p>
       </div>
 
       <div
@@ -55,7 +123,7 @@ const device = {
         style="background: var(--hi5-card); border-color: var(--hi5-border);"
       >
         <p style="color: var(--hi5-muted);">Status</p>
-        <p class="font-bold">{device.status}</p>
+        <p class="font-bold capitalize" style="color: var(--hi5-fg);">{device.status}</p>
       </div>
 
       <div
@@ -63,7 +131,7 @@ const device = {
         style="background: var(--hi5-card); border-color: var(--hi5-border);"
       >
         <p style="color: var(--hi5-muted);">Agent Version</p>
-        <p class="font-bold">{device.agentVersion}</p>
+        <p class="font-bold" style="color: var(--hi5-fg);">{device.agentVersion}</p>
       </div>
 
       <div
@@ -71,7 +139,7 @@ const device = {
         style="background: var(--hi5-card); border-color: var(--hi5-border);"
       >
         <p style="color: var(--hi5-muted);">Last Seen</p>
-        <p class="font-bold">{device.lastSeen}</p>
+        <p class="font-bold" style="color: var(--hi5-fg);">{device.lastSeen}</p>
       </div>
     </section>
 
@@ -79,17 +147,17 @@ const device = {
       class="rounded-3xl border p-6"
       style="background: var(--hi5-card); border-color: var(--hi5-border);"
     >
-      <h2 class="text-xl font-black">Network</h2>
+      <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Network</h2>
 
       <div class="mt-4 grid gap-4 md:grid-cols-2">
         <div>
           <p style="color: var(--hi5-muted);">Public IP</p>
-          <p class="font-bold">{device.publicIp}</p>
+          <p class="font-bold" style="color: var(--hi5-fg);">{device.publicIp}</p>
         </div>
 
         <div>
           <p style="color: var(--hi5-muted);">Local IP</p>
-          <p class="font-bold">{device.localIp}</p>
+          <p class="font-bold" style="color: var(--hi5-fg);">{device.localIp}</p>
         </div>
       </div>
     </section>
@@ -98,15 +166,15 @@ const device = {
       class="rounded-3xl border p-6"
       style="background: var(--hi5-card); border-color: var(--hi5-border);"
     >
-      <h2 class="text-xl font-black">Actions</h2>
+      <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Actions</h2>
 
       <div class="mt-4 flex flex-wrap gap-3">
-        <button class="rounded-2xl px-4 py-3 border">Remote Control</button>
-        <button class="rounded-2xl px-4 py-3 border">Terminal</button>
-        <button class="rounded-2xl px-4 py-3 border">File Manager</button>
-        <button class="rounded-2xl px-4 py-3 border">PowerShell</button>
-        <button class="rounded-2xl px-4 py-3 border">Restart</button>
-        <button class="rounded-2xl px-4 py-3 border">Shutdown</button>
+        <button class="rounded-2xl border px-4 py-3">Remote Control</button>
+        <button class="rounded-2xl border px-4 py-3">Terminal</button>
+        <button class="rounded-2xl border px-4 py-3">File Manager</button>
+        <button class="rounded-2xl border px-4 py-3">PowerShell</button>
+        <button class="rounded-2xl border px-4 py-3">Restart</button>
+        <button class="rounded-2xl border px-4 py-3">Shutdown</button>
       </div>
     </section>
   </div>
