@@ -1,11 +1,11 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { cors } from "hono/cors";
 
 import { db } from "./lib/db";
 import { healthRoutes } from "./routes/health";
 import { authRoutes } from "./routes/auth";
 import { devicesRouter } from "./routes/devices";
+import { dashboardRoutes } from "./routes/dashboard";
 
 const app = new Hono();
 
@@ -24,6 +24,7 @@ app.use("*", async (c, next) => {
 app.route("/", healthRoutes);
 app.route("/auth", authRoutes);
 app.route("/devices", devicesRouter);
+app.route("/dashboard", dashboardRoutes);
 
 app.get("/ready", async (c) => {
   try {
