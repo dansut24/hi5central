@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "dotenv -e ../../.env -- tsx watch src/index.ts",
     "build": "tsc --noEmit"
   },
   "dependencies": {
@@ -13,6 +13,7 @@
     "hono": "^4.8.0"
   },
   "devDependencies": {
+    "dotenv-cli": "^7.4.4",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }
