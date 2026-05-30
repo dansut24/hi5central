@@ -1,0 +1,112 @@
+---
+const currentUser = {
+  name: "Hi5Central Admin",
+  email: "admin@hi5central.local",
+  tenant: "Hi5Central Demo"
+};
+
+const initials = currentUser.name
+  .split(" ")
+  .map((part) => part[0])
+  .join("")
+  .substring(0, 2)
+  .toUpperCase();
+---
+
+<details class="relative">
+  <summary
+    class="flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-2 list-none"
+    style="
+      background: var(--hi5-card);
+      border-color: var(--hi5-border);
+    "
+  >
+    <div
+      class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-black text-white"
+      style="background: var(--hi5-primary);"
+    >
+      {initials}
+    </div>
+
+    <div class="hidden md:block">
+      <p
+        class="text-sm font-semibold"
+        style="color: var(--hi5-fg);"
+      >
+        {currentUser.name}
+      </p>
+
+      <p
+        class="text-xs"
+        style="color: var(--hi5-muted);"
+      >
+        {currentUser.tenant}
+      </p>
+    </div>
+  </summary>
+
+  <div
+    class="absolute right-0 z-50 mt-2 w-72 rounded-2xl border p-3 shadow-xl"
+    style="
+      background: var(--hi5-card);
+      border-color: var(--hi5-border);
+    "
+  >
+    <div
+      class="border-b pb-3"
+      style="border-color: var(--hi5-border);"
+    >
+      <p
+        class="font-semibold"
+        style="color: var(--hi5-fg);"
+      >
+        {currentUser.name}
+      </p>
+
+      <p
+        class="text-sm"
+        style="color: var(--hi5-muted);"
+      >
+        {currentUser.email}
+      </p>
+
+      <p
+        class="mt-1 text-xs"
+        style="color: var(--hi5-muted);"
+      >
+        {currentUser.tenant}
+      </p>
+    </div>
+
+    <nav class="mt-3 flex flex-col gap-1">
+      <a
+        href="#"
+        class="rounded-xl px-3 py-2 transition hover:bg-black/5"
+      >
+        Profile
+      </a>
+
+      <a
+        href="#"
+        class="rounded-xl px-3 py-2 transition hover:bg-black/5"
+      >
+        My Account
+      </a>
+
+      <a
+        href="#"
+        class="rounded-xl px-3 py-2 transition hover:bg-black/5"
+      >
+        Theme
+      </a>
+
+      <button
+        type="button"
+        class="rounded-xl px-3 py-2 text-left transition hover:bg-red-50"
+        style="color: #dc2626;"
+      >
+        Logout
+      </button>
+    </nav>
+  </div>
+</details>
