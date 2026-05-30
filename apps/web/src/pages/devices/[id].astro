@@ -1,0 +1,113 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+
+const device = {
+  id: "demo-device",
+  name: "CEO-LAPTOP",
+  hostname: "CEO-LAPTOP",
+  operatingSystem: "Windows 11 Pro 24H2",
+  status: "online",
+  agentVersion: "1.0.0",
+  lastSeen: "Just now",
+  publicIp: "203.0.113.10",
+  localIp: "192.168.1.10"
+};
+---
+
+<DashboardLayout title={device.name}>
+  <div class="space-y-6">
+    <section
+      class="rounded-3xl border p-6"
+      style="background: var(--hi5-card); border-color: var(--hi5-border);"
+    >
+      <p class="text-sm font-bold" style="color: var(--hi5-primary);">
+        Device Details
+      </p>
+
+      <h1
+        class="mt-2 text-3xl font-black"
+        style="color: var(--hi5-fg);"
+      >
+        {device.name}
+      </h1>
+
+      <p
+        class="mt-2"
+        style="color: var(--hi5-muted);"
+      >
+        {device.operatingSystem}
+      </p>
+    </section>
+
+    <section
+      class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+    >
+      <div
+        class="rounded-2xl border p-5"
+        style="background: var(--hi5-card); border-color: var(--hi5-border);"
+      >
+        <p style="color: var(--hi5-muted);">Hostname</p>
+        <p class="font-bold">{device.hostname}</p>
+      </div>
+
+      <div
+        class="rounded-2xl border p-5"
+        style="background: var(--hi5-card); border-color: var(--hi5-border);"
+      >
+        <p style="color: var(--hi5-muted);">Status</p>
+        <p class="font-bold">{device.status}</p>
+      </div>
+
+      <div
+        class="rounded-2xl border p-5"
+        style="background: var(--hi5-card); border-color: var(--hi5-border);"
+      >
+        <p style="color: var(--hi5-muted);">Agent Version</p>
+        <p class="font-bold">{device.agentVersion}</p>
+      </div>
+
+      <div
+        class="rounded-2xl border p-5"
+        style="background: var(--hi5-card); border-color: var(--hi5-border);"
+      >
+        <p style="color: var(--hi5-muted);">Last Seen</p>
+        <p class="font-bold">{device.lastSeen}</p>
+      </div>
+    </section>
+
+    <section
+      class="rounded-3xl border p-6"
+      style="background: var(--hi5-card); border-color: var(--hi5-border);"
+    >
+      <h2 class="text-xl font-black">Network</h2>
+
+      <div class="mt-4 grid gap-4 md:grid-cols-2">
+        <div>
+          <p style="color: var(--hi5-muted);">Public IP</p>
+          <p class="font-bold">{device.publicIp}</p>
+        </div>
+
+        <div>
+          <p style="color: var(--hi5-muted);">Local IP</p>
+          <p class="font-bold">{device.localIp}</p>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="rounded-3xl border p-6"
+      style="background: var(--hi5-card); border-color: var(--hi5-border);"
+    >
+      <h2 class="text-xl font-black">Actions</h2>
+
+      <div class="mt-4 flex flex-wrap gap-3">
+        <button class="rounded-2xl px-4 py-3 border">Remote Control</button>
+        <button class="rounded-2xl px-4 py-3 border">Terminal</button>
+        <button class="rounded-2xl px-4 py-3 border">File Manager</button>
+        <button class="rounded-2xl px-4 py-3 border">PowerShell</button>
+        <button class="rounded-2xl px-4 py-3 border">Restart</button>
+        <button class="rounded-2xl px-4 py-3 border">Shutdown</button>
+      </div>
+    </section>
+  </div>
+</DashboardLayout>
