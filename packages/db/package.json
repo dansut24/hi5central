@@ -1,0 +1,22 @@
+{
+  "name": "@hi5central/db",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "migrate:create": "node-pg-migrate create",
+    "migrate": "node-pg-migrate up",
+    "migrate:down": "node-pg-migrate down"
+  },
+  "dependencies": {
+    "kysely": "^0.27.5",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.10",
+    "node-pg-migrate": "^7.9.0",
+    "typescript": "^5.8.3"
+  }
+}
