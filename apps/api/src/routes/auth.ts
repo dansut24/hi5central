@@ -5,8 +5,9 @@ import { db } from "../lib/db";
 import { setSessionCookie } from "../lib/cookies";
 import { createSession } from "../lib/sessions";
 import { writeAuditLog } from "../lib/audit";
+import { requireAuth, type AuthContext } from "../middleware/session";
 
-export const authRoutes = new Hono();
+export const authRoutes = new Hono<AuthContext>();
 
 authRoutes.post("/login", async (c) => {
   const body = await c.req.json().catch(() => null);
@@ -62,5 +63,15 @@ authRoutes.post("/login", async (c) => {
 
   return c.json({
     success: true
+  });
+});
+
+authRoutes.get("/me", requireAuth, (c) => {
+  return c.json({
+    success: true,
+    user: c.get("user"),
+    memberships: c.get("memberships"),
+    tenantIds: c.get("tenantIds"),
+    roles: c.get("roles")
   });
 });
