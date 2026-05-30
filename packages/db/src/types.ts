@@ -17,6 +17,7 @@ export interface UsersTable {
   first_name: string | null;
   last_name: string | null;
   status: string;
+  platform_role: string | null;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
