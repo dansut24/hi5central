@@ -1,0 +1,106 @@
+<form id="login-form" class="mt-8 space-y-5">
+  <div>
+    <label class="block text-sm font-bold" style="color: var(--hi5-fg);" for="email">
+      Email address
+    </label>
+
+    <input
+      id="email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+      placeholder="admin@company.com"
+      class="mt-2 w-full rounded-2xl border px-4 py-3 text-sm outline-none transition focus:ring-4"
+      style="background: var(--hi5-card-soft); border-color: var(--hi5-border); color: var(--hi5-fg); --tw-ring-color: color-mix(in srgb, var(--hi5-primary) 22%, transparent);"
+    />
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between gap-3">
+      <label class="block text-sm font-bold" style="color: var(--hi5-fg);" for="password">
+        Password
+      </label>
+
+      <a class="text-sm font-bold" style="color: var(--hi5-primary);" href="#">
+        Forgot password?
+      </a>
+    </div>
+
+    <input
+      id="password"
+      name="password"
+      type="password"
+      autocomplete="current-password"
+      required
+      placeholder="••••••••••••"
+      class="mt-2 w-full rounded-2xl border px-4 py-3 text-sm outline-none transition focus:ring-4"
+      style="background: var(--hi5-card-soft); border-color: var(--hi5-border); color: var(--hi5-fg); --tw-ring-color: color-mix(in srgb, var(--hi5-primary) 22%, transparent);"
+    />
+  </div>
+
+  <p id="login-error" class="hidden rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-sm font-bold text-red-500">
+    Login failed. Please check your email and password.
+  </p>
+
+  <button
+    id="login-submit"
+    type="submit"
+    class="w-full rounded-2xl px-4 py-3 text-sm font-black text-white shadow-lg transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+    style="background: var(--hi5-primary); box-shadow: 0 12px 24px color-mix(in srgb, var(--hi5-primary) 28%, transparent);"
+  >
+    Sign in
+  </button>
+</form>
+
+<script>
+  const form = document.getElementById("login-form");
+  const errorBox = document.getElementById("login-error");
+  const submitButton = document.getElementById("login-submit");
+
+  const apiBaseUrl =
+    import.meta.env.PUBLIC_API_BASE_URL ?? "http://localhost:3001";
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    errorBox?.classList.add("hidden");
+
+    if (submitButton instanceof HTMLButtonElement) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Signing in...";
+    }
+
+    const formData = new FormData(form as HTMLFormElement);
+
+    const email = String(formData.get("email") ?? "");
+    const password = String(formData.get("password") ?? "");
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      window.location.href = "/dashboard";
+    } catch {
+      errorBox?.classList.remove("hidden");
+    } finally {
+      if (submitButton instanceof HTMLButtonElement) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Sign in";
+      }
+    }
+  });
+</script>
