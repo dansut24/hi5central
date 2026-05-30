@@ -1,6 +1,7 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
 import { requireCurrentUser } from "../../lib/routeGuards";
+import StatCard from "../../components/dashboard/StatCard.astro";
 
 const enforceAuth = false;
 
@@ -41,34 +42,46 @@ const currentUserPreview = {
         class="mt-2 text-base"
         style="color: var(--hi5-muted);"
       >
-        Signed in as {currentUserPreview.email} · {currentUserPreview.tenant} · {currentUserPreview.role}
+        Signed in as {currentUserPreview.email}
       </p>
     </section>
 
-    <div class="grid gap-4 md:grid-cols-3">
-      <div
-        class="rounded-2xl border p-6"
-        style="background: var(--hi5-card); border-color: var(--hi5-border);"
-      >
-        <p class="text-sm font-bold" style="color: var(--hi5-muted);">Devices</p>
-        <p class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
-      </div>
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <StatCard
+        title="Devices"
+        value="0"
+        description="Managed devices"
+      />
 
-      <div
-        class="rounded-2xl border p-6"
-        style="background: var(--hi5-card); border-color: var(--hi5-border);"
-      >
-        <p class="text-sm font-bold" style="color: var(--hi5-muted);">Remote Sessions</p>
-        <p class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
-      </div>
+      <StatCard
+        title="Online Devices"
+        value="0"
+        description="Currently connected"
+      />
 
-      <div
-        class="rounded-2xl border p-6"
-        style="background: var(--hi5-card); border-color: var(--hi5-border);"
-      >
-        <p class="text-sm font-bold" style="color: var(--hi5-muted);">Patch Exposure</p>
-        <p class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
-      </div>
+      <StatCard
+        title="Remote Sessions"
+        value="0"
+        description="Active sessions"
+      />
+
+      <StatCard
+        title="Patch Compliance"
+        value="100%"
+        description="Placeholder value"
+      />
+
+      <StatCard
+        title="Protected Devices"
+        value="0"
+        description="Backup enabled"
+      />
+
+      <StatCard
+        title="Open Alerts"
+        value="0"
+        description="Monitoring alerts"
+      />
     </div>
   </div>
 </DashboardLayout>
