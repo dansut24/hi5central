@@ -1,0 +1,75 @@
+<div
+  id="mobile-drawer-overlay"
+  class="fixed inset-0 z-40 hidden bg-slate-950/40 backdrop-blur-sm lg:hidden"
+></div>
+
+<aside
+  id="mobile-drawer"
+  class="fixed left-0 top-0 z-50 h-full w-80 max-w-[85vw] -translate-x-full border-r border-slate-200 bg-white p-5 shadow-2xl transition-transform duration-200 lg:hidden"
+>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-600 text-sm font-bold text-white">
+        H5
+      </div>
+      <div>
+        <p class="font-bold text-slate-950">Hi5Central</p>
+        <p class="text-xs text-slate-500">Control Platform</p>
+      </div>
+    </div>
+
+    <button
+      id="mobile-drawer-close"
+      class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700"
+      type="button"
+      aria-label="Close navigation menu"
+    >
+      Close
+    </button>
+  </div>
+
+  <nav class="mt-8 space-y-1">
+    <a class="block rounded-xl bg-slate-950 px-3 py-3 text-sm font-semibold text-white" href="/">Dashboard</a>
+    <a class="block rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Devices</a>
+    <a class="block rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Remote Access</a>
+    <a class="block rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Patching</a>
+    <a class="block rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Backup</a>
+    <a class="block rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Policies</a>
+    <a class="block rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Reports</a>
+    <a class="block rounded-xl px-3 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Settings</a>
+  </nav>
+
+  <div class="absolute bottom-5 left-5 right-5 rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+    <p class="text-sm font-semibold text-indigo-950">Secure tenant mode</p>
+    <p class="mt-1 text-xs leading-5 text-indigo-700">Every technician action will be audited.</p>
+  </div>
+</aside>
+
+<script>
+  const menuButton = document.getElementById("mobile-menu-button");
+  const drawer = document.getElementById("mobile-drawer");
+  const overlay = document.getElementById("mobile-drawer-overlay");
+  const closeButton = document.getElementById("mobile-drawer-close");
+
+  function openDrawer() {
+    drawer?.classList.remove("-translate-x-full");
+    overlay?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeDrawer() {
+    drawer?.classList.add("-translate-x-full");
+    overlay?.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  menuButton?.addEventListener("click", openDrawer);
+  closeButton?.addEventListener("click", closeDrawer);
+  overlay?.addEventListener("click", closeDrawer);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeDrawer();
+    }
+  });
+</script>
