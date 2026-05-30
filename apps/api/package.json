@@ -7,9 +7,10 @@
     "build": "tsc --noEmit"
   },
   "dependencies": {
-    "hono": "^4.8.0",
+    "@hi5central/auth": "workspace:*",
+    "@hi5central/db": "workspace:*",
     "@hono/node-server": "^1.14.0",
-    "@hi5central/db": "workspace:*"
+    "hono": "^4.8.0"
   },
   "devDependencies": {
     "tsx": "^4.20.3",
