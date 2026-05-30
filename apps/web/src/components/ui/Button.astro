@@ -1,0 +1,26 @@
+---
+const {
+  href,
+  variant = "primary",
+  type = "button"
+} = Astro.props;
+
+const classes = {
+  primary: "rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700",
+  secondary: "rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50",
+  dark: "rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800",
+  danger: "rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-red-200 hover:bg-red-700"
+};
+
+const className = classes[variant] ?? classes.primary;
+---
+
+{href ? (
+  <a href={href} class={className}>
+    <slot />
+  </a>
+) : (
+  <button type={type} class={className}>
+    <slot />
+  </button>
+)}
