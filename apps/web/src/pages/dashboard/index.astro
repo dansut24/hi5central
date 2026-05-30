@@ -1,5 +1,16 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import { requireCurrentUser } from "../../lib/routeGuards";
+
+const authPreviewEnabled = false;
+
+if (authPreviewEnabled) {
+  const guard = await requireCurrentUser();
+
+  if (!guard.authenticated) {
+    return Astro.redirect(guard.redirectTo);
+  }
+}
 
 const currentUserPreview = {
   name: "Hi5Central Admin",
