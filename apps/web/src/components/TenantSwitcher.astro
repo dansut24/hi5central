@@ -1,0 +1,76 @@
+---
+const tenants = [
+  {
+    id: "demo",
+    name: "Hi5Central Demo",
+    role: "owner"
+  },
+  {
+    id: "acme",
+    name: "Acme Manufacturing",
+    role: "admin"
+  }
+];
+
+const currentTenant = tenants[0];
+---
+
+<details class="relative">
+  <summary
+    class="flex cursor-pointer items-center justify-between rounded-2xl border p-3 list-none"
+    style="
+      background: var(--hi5-card);
+      border-color: var(--hi5-border);
+    "
+  >
+    <div>
+      <p
+        class="text-xs font-semibold uppercase tracking-wide"
+        style="color: var(--hi5-muted);"
+      >
+        Tenant
+      </p>
+
+      <p
+        class="font-semibold"
+        style="color: var(--hi5-fg);"
+      >
+        {currentTenant.name}
+      </p>
+
+      <p
+        class="text-xs"
+        style="color: var(--hi5-muted);"
+      >
+        {currentTenant.role}
+      </p>
+    </div>
+
+    <span style="color: var(--hi5-muted);">⌄</span>
+  </summary>
+
+  <div
+    class="absolute left-0 right-0 z-50 mt-2 rounded-2xl border p-2 shadow-xl"
+    style="
+      background: var(--hi5-card);
+      border-color: var(--hi5-border);
+    "
+  >
+    {
+      tenants.map((tenant) => (
+        <button
+          type="button"
+          class="flex w-full flex-col rounded-xl px-3 py-2 text-left transition hover:bg-black/5"
+        >
+          <span class="font-semibold">{tenant.name}</span>
+          <span
+            class="text-xs"
+            style="color: var(--hi5-muted);"
+          >
+            {tenant.role}
+          </span>
+        </button>
+      ))
+    }
+  </div>
+</details>
