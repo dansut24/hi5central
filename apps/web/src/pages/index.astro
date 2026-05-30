@@ -75,31 +75,40 @@ const devices = [
     <MobileDrawer />
 
     <div class="min-h-screen">
-      <aside class="fixed left-0 top-0 hidden h-full w-72 border-r border-slate-200 bg-white/80 p-6 backdrop-blur-xl lg:block">
+      <aside
+        class="fixed left-0 top-0 hidden h-full w-72 border-r p-6 backdrop-blur-xl lg:block"
+        style="background: var(--hi5-sidebar); border-color: var(--hi5-sidebar-border);"
+      >
         <div class="flex items-center gap-3">
-          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-lg font-bold text-white shadow-lg shadow-indigo-200">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-2xl text-lg font-black text-white shadow-lg"
+            style="background: linear-gradient(135deg, var(--hi5-primary), #7c3aed);"
+          >
             H5
           </div>
           <div>
-            <h1 class="text-lg font-bold tracking-tight text-slate-950">Hi5Central</h1>
-            <p class="text-xs text-slate-500">Control Platform</p>
+            <h1 class="text-lg font-black tracking-tight" style="color: var(--hi5-fg);">Hi5Central</h1>
+            <p class="text-xs" style="color: var(--hi5-muted);">Control Platform</p>
           </div>
         </div>
 
         <nav class="mt-8 space-y-1">
-          <a class="block rounded-xl bg-slate-950 px-3 py-2.5 text-sm font-semibold text-white" href="/">Dashboard</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Devices</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Remote Access</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Patching</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Backup</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Policies</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Reports</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100" href="#">Settings</a>
+          <a class="block rounded-xl px-3 py-2.5 text-sm font-bold text-white shadow-sm" style="background: var(--hi5-navy);" href="/">Dashboard</a>
+          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Devices</a>
+          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Remote Access</a>
+          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Patching</a>
+          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Backup</a>
+          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Policies</a>
+          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Reports</a>
+          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Settings</a>
         </nav>
 
-        <div class="absolute bottom-6 left-6 right-6 rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
-          <p class="text-sm font-semibold text-indigo-950">Secure tenant mode</p>
-          <p class="mt-1 text-xs leading-5 text-indigo-700">Every technician action will be audited.</p>
+        <div
+          class="absolute bottom-6 left-6 right-6 rounded-3xl border p-4 shadow-[var(--hi5-shadow-soft)]"
+          style="background: var(--hi5-primary-soft); border-color: color-mix(in srgb, var(--hi5-primary) 18%, transparent);"
+        >
+          <p class="text-sm font-bold" style="color: var(--hi5-fg);">Secure tenant mode</p>
+          <p class="mt-1 text-xs leading-5" style="color: var(--hi5-muted);">Every technician action will be audited.</p>
         </div>
       </aside>
 
@@ -133,7 +142,10 @@ const devices = [
 
               <div class="hidden overflow-x-auto md:block">
                 <table class="w-full text-left text-sm">
-                  <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <thead
+                    class="text-xs uppercase tracking-wide"
+                    style="background: var(--hi5-card-soft); color: var(--hi5-muted);"
+                  >
                     <tr>
                       <th class="px-5 py-3">Device</th>
                       <th class="px-5 py-3">Status</th>
@@ -141,12 +153,12 @@ const devices = [
                       <th class="px-5 py-3">Patches</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-slate-100">
+                  <tbody>
                     {devices.map((device) => (
-                      <tr class="hover:bg-slate-50">
+                      <tr class="border-t" style="border-color: var(--hi5-border);">
                         <td class="px-5 py-4">
-                          <div class="font-semibold text-slate-950">{device.name}</div>
-                          <div class="text-xs text-slate-500">{device.user} · {device.os}</div>
+                          <div class="font-bold" style="color: var(--hi5-fg);">{device.name}</div>
+                          <div class="text-xs" style="color: var(--hi5-muted);">{device.user} · {device.os}</div>
                         </td>
                         <td class="px-5 py-4">
                           {device.status === "Online" ? (
@@ -155,8 +167,8 @@ const devices = [
                             <Badge>Offline</Badge>
                           )}
                         </td>
-                        <td class="px-5 py-4 text-slate-700">{device.health}</td>
-                        <td class="px-5 py-4 text-slate-700">{device.patches}</td>
+                        <td class="px-5 py-4" style="color: var(--hi5-muted);">{device.health}</td>
+                        <td class="px-5 py-4" style="color: var(--hi5-muted);">{device.patches}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -165,9 +177,12 @@ const devices = [
             </Card>
 
             <aside class="space-y-6">
-              <section class="rounded-2xl border border-slate-900 bg-slate-950 p-5 text-white shadow-sm">
+              <section
+                class="rounded-3xl border p-5 text-white shadow-[var(--hi5-shadow)]"
+                style="background: linear-gradient(135deg, var(--hi5-navy), var(--hi5-navy-soft)); border-color: rgba(255,255,255,0.08);"
+              >
                 <div class="flex items-center justify-between">
-                  <h3 class="text-lg font-bold">Remote Access</h3>
+                  <h3 class="text-lg font-black">Remote Access</h3>
                   <Badge variant="dark">Ready</Badge>
                 </div>
 
@@ -182,15 +197,18 @@ const devices = [
               </section>
 
               <Card class="p-5">
-                <h3 class="text-lg font-bold text-slate-950">Backup Status</h3>
-                <p class="mt-2 text-sm text-slate-500">
+                <h3 class="text-lg font-black" style="color: var(--hi5-fg);">Backup Status</h3>
+                <p class="mt-2 text-sm leading-6" style="color: var(--hi5-muted);">
                   Managed customers will use Hi5Central-managed encrypted object storage.
                 </p>
 
-                <div class="mt-4 rounded-xl bg-slate-50 p-4">
-                  <p class="text-sm font-semibold text-slate-950">Protected Devices</p>
-                  <p class="mt-1 text-2xl font-bold text-slate-950">0</p>
-                  <p class="mt-1 text-xs text-slate-500">Backup engine will be added later.</p>
+                <div
+                  class="mt-4 rounded-2xl border p-4"
+                  style="background: var(--hi5-card-soft); border-color: var(--hi5-border);"
+                >
+                  <p class="text-sm font-bold" style="color: var(--hi5-fg);">Protected Devices</p>
+                  <p class="mt-1 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
+                  <p class="mt-1 text-xs" style="color: var(--hi5-muted);">Backup engine will be added later.</p>
                 </div>
               </Card>
             </aside>
