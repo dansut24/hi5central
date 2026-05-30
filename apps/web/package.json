@@ -1,20 +1,15 @@
 {
-  "name": "@hi5central/web",
+  "name": "hi5central",
   "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "astro dev --host 0.0.0.0 --port 4321",
-    "build": "astro build",
-    "preview": "astro preview --host 0.0.0.0 --port 4321"
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": "22.x"
   },
-  "dependencies": {
-    "@astrojs/react": "^4.0.0",
-    "@tailwindcss/vite": "^4.0.0",
-    "astro": "^6.0.0",
-    "lucide-react": "^0.475.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwindcss": "^4.0.0"
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "db:generate": "pnpm --filter @hi5central/db db:generate",
+    "db:migrate": "pnpm --filter @hi5central/db db:migrate"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
