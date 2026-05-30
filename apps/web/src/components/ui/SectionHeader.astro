@@ -1,0 +1,13 @@
+---
+const {
+  title,
+  description
+} = Astro.props;
+---
+
+<div class="border-b border-slate-200 p-5">
+  <h3 class="text-lg font-bold text-slate-950">{title}</h3>
+  {description && (
+    <p class="mt-1 text-sm text-slate-500">{description}</p>
+  )}
+</div>
