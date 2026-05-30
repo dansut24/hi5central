@@ -1,43 +1,62 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
+
+const currentUserPreview = {
+  name: "Hi5Central Admin",
+  email: "admin@hi5central.local",
+  tenant: "Hi5Central Demo",
+  role: "owner"
+};
 ---
 
 <DashboardLayout title="Dashboard">
   <div class="space-y-6">
-    <h1
-      class="text-3xl font-black"
-      style="color: var(--hi5-fg);"
+    <section
+      class="rounded-3xl border p-6"
+      style="background: var(--hi5-card); border-color: var(--hi5-border);"
     >
-      Welcome to Hi5Central
-    </h1>
+      <p class="text-sm font-bold" style="color: var(--hi5-primary);">
+        Authenticated Dashboard
+      </p>
 
-    <p
-      class="text-base"
-      style="color: var(--hi5-muted);"
-    >
-      Your authenticated dashboard foundation is now ready.
-    </p>
+      <h1
+        class="mt-2 text-3xl font-black"
+        style="color: var(--hi5-fg);"
+      >
+        Welcome back, {currentUserPreview.name}
+      </h1>
+
+      <p
+        class="mt-2 text-base"
+        style="color: var(--hi5-muted);"
+      >
+        Signed in as {currentUserPreview.email} · {currentUserPreview.tenant} · {currentUserPreview.role}
+      </p>
+    </section>
 
     <div class="grid gap-4 md:grid-cols-3">
       <div
         class="rounded-2xl border p-6"
         style="background: var(--hi5-card); border-color: var(--hi5-border);"
       >
-        Devices
+        <p class="text-sm font-bold" style="color: var(--hi5-muted);">Devices</p>
+        <p class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
       </div>
 
       <div
         class="rounded-2xl border p-6"
         style="background: var(--hi5-card); border-color: var(--hi5-border);"
       >
-        Remote Access
+        <p class="text-sm font-bold" style="color: var(--hi5-muted);">Remote Sessions</p>
+        <p class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
       </div>
 
       <div
         class="rounded-2xl border p-6"
         style="background: var(--hi5-card); border-color: var(--hi5-border);"
       >
-        Patching
+        <p class="text-sm font-bold" style="color: var(--hi5-muted);">Patch Exposure</p>
+        <p class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
       </div>
     </div>
   </div>
