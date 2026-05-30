@@ -1,8 +1,9 @@
 import { Hono } from "hono";
-import { verifyPassword } from "@hi5central/auth";
+import { getCookie } from "hono/cookie";
+import { hashToken, verifyPassword } from "@hi5central/auth";
 
 import { db } from "../lib/db";
-import { setSessionCookie } from "../lib/cookies";
+import { clearSessionCookie, SESSION_COOKIE, setSessionCookie } from "../lib/cookies";
 import { createSession } from "../lib/sessions";
 import { writeAuditLog } from "../lib/audit";
 import { requireAuth, type AuthContext } from "../middleware/session";
@@ -57,6 +58,37 @@ authRoutes.post("/login", async (c) => {
   await writeAuditLog({
     userId: user.id,
     action: "auth.login_success",
+    ipAddress,
+    userAgent
+  });
+
+  return c.json({
+    success: true
+  });
+});
+
+authRoutes.post("/logout", requireAuth, async (c) => {
+  const token = getCookie(c, SESSION_COOKIE);
+  const user = c.get("user");
+
+  const ipAddress = c.req.header("x-forwarded-for") ?? null;
+  const userAgent = c.req.header("user-agent") ?? null;
+
+  if (token) {
+    await db
+      .updateTable("sessions")
+      .set({
+        revoked_at: new Date()
+      })
+      .where("session_token_hash", "=", hashToken(token))
+      .execute();
+  }
+
+  clearSessionCookie(c);
+
+  await writeAuditLog({
+    userId: user.id,
+    action: "auth.logout",
     ipAddress,
     userAgent
   });
