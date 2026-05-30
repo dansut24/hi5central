@@ -109,6 +109,32 @@ export interface TenantBrandingTable {
   updated_at: Generated<Date>;
 }
 
+export interface DeviceGroupsTable {
+  id: Generated<string>;
+  tenant_id: string;
+  name: string;
+  description: string | null;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
+export interface DevicesTable {
+  id: Generated<string>;
+  tenant_id: string;
+  device_group_id: string | null;
+  device_name: string;
+  hostname: string;
+  operating_system: string;
+  os_version: string | null;
+  agent_version: string | null;
+  status: string;
+  last_seen_at: Date | null;
+  public_ip: string | null;
+  local_ip: string | null;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
 export interface Database {
   tenants: TenantsTable;
   users: UsersTable;
@@ -120,4 +146,6 @@ export interface Database {
   subscriptions: SubscriptionsTable;
   feature_flags: FeatureFlagsTable;
   tenant_branding: TenantBrandingTable;
+  device_groups: DeviceGroupsTable;
+  devices: DevicesTable;
 }
