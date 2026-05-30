@@ -1,12 +1,14 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 
-import { healthRoutes } from "./routes/health";
 import { db } from "./lib/db";
+import { healthRoutes } from "./routes/health";
+import { authRoutes } from "./routes/auth";
 
 const app = new Hono();
 
 app.route("/", healthRoutes);
+app.route("/auth", authRoutes);
 
 app.get("/ready", async (c) => {
   try {
@@ -38,4 +40,4 @@ serve({
   port
 });
 
-console.log(`Hi5Central API listening on ${port}`);
+console.log(`Hi5Central API listening on port ${port}`);
