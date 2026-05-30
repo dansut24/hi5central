@@ -1,0 +1,19 @@
+---
+import MobileHeader from "./MobileHeader.astro";
+import MobileDrawer from "./MobileDrawer.astro";
+import DesktopSidebar from "./DesktopSidebar.astro";
+
+const {
+  title = "Dashboard"
+} = Astro.props;
+---
+
+<MobileHeader title={title} />
+<MobileDrawer />
+<DesktopSidebar />
+
+<div class="min-h-screen">
+  <main class="lg:pl-72">
+    <slot />
+  </main>
+</div>
