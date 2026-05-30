@@ -11,6 +11,7 @@ export type AuthUser = {
   firstName: string | null;
   lastName: string | null;
   status: string;
+  platformRole: string | null;
 };
 
 export type AuthMembership = {
@@ -119,7 +120,8 @@ export const requireAuth = createMiddleware<AuthContext>(async (c, next) => {
     email: user.email,
     firstName: user.first_name,
     lastName: user.last_name,
-    status: user.status
+    status: user.status,
+    platformRole: user.platform_role
   });
 
   c.set(
