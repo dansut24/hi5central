@@ -1,270 +1,324 @@
-PASS-0006 Mobile Responsive Dashboard
+# PASS-0006 Mobile Responsive Dashboard and Navigation Drawer
 
-Overview
+## Overview
 
 This pass improves the Hi5Central dashboard experience on mobile and tablet devices while preserving the existing desktop layout.
 
-The goal is to ensure the platform feels like a modern mobile application on smaller devices while maintaining the professional desktop experience already established.
+The original mobile concept used a bottom navigation bar. This was rejected because Hi5Central will have too many modules for a simple bottom navigation pattern.
 
-⸻
+The revised approach uses a mobile slide-out navigation drawer.
 
-Objective
+---
+
+# Objective
 
 Improve the dashboard experience on:
 
+```txt
 Mobile
 Tablet
 Desktop
+```
 
-⸻
+---
 
-Mobile Layout
+# Navigation Decision
 
-Mobile Header
+## Rejected Approach
+
+```txt
+Bottom navigation bar
+```
+
+Reason:
+
+```txt
+Too limited for Hi5Central modules
+Does not scale well
+Only supports a few navigation items
+Would hide important platform areas
+```
+
+---
+
+## Accepted Approach
+
+```txt
+Mobile slide-out navigation drawer
+```
+
+Reason:
+
+```txt
+Supports full navigation
+Scales as modules are added
+Feels familiar on mobile
+Keeps desktop sidebar unchanged
+```
+
+---
+
+# Mobile Layout
+
+## Mobile Header
 
 Created:
 
+```txt
 apps/web/src/components/MobileHeader.astro
+```
 
 Responsibilities:
 
+```txt
 Show Hi5Central logo
 Show page title
-Show quick action button
-Remain visible on mobile devices
-Hide on desktop devices
+Show menu button
+Only visible on mobile
+```
 
-Purpose:
+---
 
-Provide app-like navigation
-Improve screen space usage
-Allow quick access to session actions
-
-⸻
-
-Mobile Navigation
+## Mobile Drawer
 
 Created:
 
-apps/web/src/components/MobileNav.astro
+```txt
+apps/web/src/components/MobileDrawer.astro
+```
 
 Responsibilities:
 
-Bottom navigation bar
-Quick access to primary modules
-Mobile-only display
+```txt
+Slide out from the left
+Show full navigation menu
+Show secure tenant mode card
+Close when overlay is tapped
+Close when close button is tapped
+Close when Escape key is pressed
+Only visible on mobile
+```
 
-Navigation Items:
+Navigation items:
 
-Home
+```txt
+Dashboard
 Devices
-Remote
+Remote Access
 Patching
-More
+Backup
+Policies
+Reports
+Settings
+```
 
-Purpose:
+---
 
-Improve usability on phones
-Reduce navigation clicks
-Provide app-style experience
-
-⸻
-
-Device Cards
+## Device Cards
 
 Created:
 
+```txt
 apps/web/src/components/DeviceCards.astro
+```
 
 Responsibilities:
 
-Replace desktop table on mobile
-Display device status
-Display health state
-Display patch count
-Display user information
+```txt
+Replace table on mobile
+Show device status
+Show health
+Show patch count
+Show user and operating system
+```
 
-Purpose:
+---
 
-Avoid horizontal scrolling
-Improve readability
-Increase touch usability
+# Responsive Rules
 
-⸻
+## Desktop
 
-Responsive Rules
-
-Desktop
-
-Layout remains unchanged:
-
+```txt
 Fixed sidebar
 Desktop header
-Full device table
-Two-column dashboard layout
-Sidebar navigation
+Full table
+Two-column dashboard
+```
 
-Purpose:
+---
 
-Preserve existing professional layout
-Maximise information density
+## Tablet
 
-⸻
-
-Tablet
-
-Layout behaviour:
-
+```txt
 Responsive spacing
-Stacked content where required
-Improved readability
-Reduced clutter
+Stacked cards where required
+Readable table layout
+```
 
-Purpose:
+---
 
-Provide a comfortable experience on medium-sized screens
+## Mobile
 
-⸻
-
-Mobile
-
-Layout behaviour:
-
+```txt
 No fixed sidebar
 Top mobile header
-Bottom navigation
+Slide-out navigation drawer
 Stacked metric cards
-Device cards instead of tables
-Large touch targets
+Device cards instead of table
+Large tap targets
+```
 
-Purpose:
+---
 
-Provide an application-style experience
-Improve navigation
-Reduce scrolling complexity
-
-⸻
-
-Implemented Files
+# Implemented Files
 
 Created:
 
+```txt
 apps/web/src/components/MobileHeader.astro
-apps/web/src/components/MobileNav.astro
+apps/web/src/components/MobileDrawer.astro
 apps/web/src/components/DeviceCards.astro
+```
+
+Removed from active use:
+
+```txt
+apps/web/src/components/MobileNav.astro
+```
 
 Updated:
 
+```txt
 apps/web/src/pages/index.astro
+```
 
-⸻
+---
 
-Dashboard Behaviour
+# Dashboard Behaviour
 
-Mobile
+## Mobile
 
 Uses:
 
+```txt
 MobileHeader
-MobileNav
+MobileDrawer
 DeviceCards
+```
 
-Displays:
+Does not use:
 
-Metrics
-Device cards
-Remote access panel
-Backup panel
-
-⸻
-
-Tablet
-
-Uses:
-
-Responsive metric cards
-Responsive spacing
-Desktop table where appropriate
-
-⸻
-
-Desktop
-
-Uses:
-
+```txt
 Desktop sidebar
 Desktop header
 Device table
-Two-column dashboard
+Bottom navigation
+```
 
-⸻
+---
 
-Design Principles
+## Tablet
+
+Uses:
+
+```txt
+Responsive metric cards
+Improved spacing
+Desktop-style device table from medium screen upward
+```
+
+---
+
+## Desktop
+
+Uses:
+
+```txt
+Fixed sidebar
+Desktop header
+Device table
+Two-column dashboard layout
+```
+
+---
+
+# Drawer Behaviour
+
+The drawer supports:
+
+```txt
+Open from menu button
+Close from close button
+Close from overlay click
+Close from Escape key
+Body scroll lock while open
+```
+
+---
+
+# Design Principles
 
 The following principles were applied:
 
+```txt
 Mobile-first usability
-Large touch targets
+Large tap targets
 Readable typography
 Consistent spacing
 Responsive layout
+Navigation scalability
 Modern SaaS styling
+```
 
-Visual Style:
+Visual style:
 
+```txt
 Rounded corners
 Soft shadows
 White translucent cards
 Slate colour palette
 Indigo accent colour
+```
 
-⸻
+---
 
-Success Criteria
+# Success Criteria
 
-Achieved:
+```txt
+Desktop layout remains unchanged
+Mobile layout is usable
+Device table is not cramped on mobile
+Mobile drawer provides full navigation
+Bottom navigation is no longer used
+Vercel build succeeds
+```
 
-Desktop layout preserved
-Mobile layout improved
-Device table removed from mobile view
-Device cards implemented
-Mobile navigation added
-Mobile header added
-Responsive spacing improved
+---
 
-⸻
+# Current Status
 
-Deliverables
-
-Completed:
-
-MobileHeader component
-MobileNav component
-DeviceCards component
-Responsive dashboard layout
-Mobile-friendly device views
-
-⸻
-
-Current Status
-
+```txt
 Desktop dashboard operational
 Mobile dashboard operational
+Mobile slide-out drawer implemented
+Mobile device cards implemented
 Responsive behaviour implemented
-Vercel deployment compatible
-Ready for component refactoring pass
+Ready for design system pass
+```
 
-⸻
+---
 
-Future Work
+# Future Work
 
-Slide-out navigation drawer
-Dark mode
-Global search
-Notifications
-Live API integration
-Authentication
-Tenant-aware routing
-Remote access launcher
-PWA support
-Offline support
+```txt
+Improve drawer animation
+Add icons to drawer navigation
+Add active route detection
+Add tenant switcher
+Add notifications
+Add global search
+Add dark mode
+Add live API integration
+Add authentication
+Add PWA support
+```
