@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import MobileHeader from "../components/MobileHeader.astro";
-import MobileNav from "../components/MobileNav.astro";
+import MobileDrawer from "../components/MobileDrawer.astro";
 import DeviceCards from "../components/DeviceCards.astro";
 
 const metrics = [
@@ -64,8 +64,9 @@ const devices = [
 
   <body>
     <MobileHeader title="Dashboard" />
+    <MobileDrawer />
 
-    <div class="min-h-screen pb-20 lg:pb-0">
+    <div class="min-h-screen">
       <aside class="fixed left-0 top-0 hidden h-full w-72 border-r border-slate-200 bg-white/80 p-6 backdrop-blur-xl lg:block">
         <div class="flex items-center gap-3">
           <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-lg font-bold text-white shadow-lg shadow-indigo-200">
@@ -202,7 +203,5 @@ const devices = [
         </section>
       </main>
     </div>
-
-    <MobileNav />
   </body>
 </html>
