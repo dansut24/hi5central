@@ -1,11 +1,15 @@
+---
+const { compact = false } = Astro.props;
+---
+
 <div
-  class="inline-flex rounded-xl border p-1"
+  class={compact ? "grid grid-cols-3 gap-1 rounded-2xl border p-1" : "inline-flex rounded-xl border p-1"}
   style="background: var(--hi5-card); border-color: var(--hi5-border);"
 >
   <button
     type="button"
     data-theme-choice="auto"
-    class="theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"
+    class={compact ? "theme-choice rounded-xl px-2 py-2 text-xs font-bold transition" : "theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"}
   >
     Auto
   </button>
@@ -13,7 +17,7 @@
   <button
     type="button"
     data-theme-choice="light"
-    class="theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"
+    class={compact ? "theme-choice rounded-xl px-2 py-2 text-xs font-bold transition" : "theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"}
   >
     Light
   </button>
@@ -21,7 +25,7 @@
   <button
     type="button"
     data-theme-choice="dark"
-    class="theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"
+    class={compact ? "theme-choice rounded-xl px-2 py-2 text-xs font-bold transition" : "theme-choice rounded-lg px-3 py-1.5 text-xs font-bold transition"}
   >
     Dark
   </button>
