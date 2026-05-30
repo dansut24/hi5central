@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const API_BASE_URL =
-  import.meta.env.PUBLIC_API_BASE_URL ?? "http://localhost:3001";
+  "https://shiny-space-giggle-r46gpwvqgqj9hgv6-3001.app.github.dev";
 
 function statusStyle(status) {
   if (status === "online") {
@@ -50,13 +50,14 @@ export default function DeviceInventoryClient() {
         const response = await fetch(`${API_BASE_URL}/devices`);
 
         if (!response.ok) {
-          throw new Error("Failed to load devices");
+          throw new Error(`Failed to load devices. Status: ${response.status}`);
         }
 
         const data = await response.json();
         setDevices((data.devices ?? []).map(formatDevice));
-      } catch {
-        setError("Could not load devices from the API.");
+      } catch (error) {
+        console.error("Device API load failed:", error);
+        setError(`Could not load devices from the API: ${String(error)}`);
       } finally {
         setLoading(false);
       }
