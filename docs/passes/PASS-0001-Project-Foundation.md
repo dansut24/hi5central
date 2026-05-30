@@ -14,7 +14,7 @@ Frontend
 
 Astro 6
 React 19
-Tailwind CSS
+Tailwind CSS 4
 
 ⸻
 
@@ -29,7 +29,8 @@ TypeScript
 Database
 
 PostgreSQL 17
-Drizzle ORM
+Kysely
+node-pg-migrate
 
 ⸻
 
@@ -46,10 +47,29 @@ Go
 
 ⸻
 
+Viewer
+
+Electron
+
+⸻
+
 Remote Access
 
 WebRTC
 Coturn
+
+⸻
+
+Storage
+
+S3 Compatible Object Storage
+
+Used for:
+
+Backups
+Session Recordings
+Exports
+File Storage
 
 ⸻
 
@@ -84,6 +104,9 @@ Storage
 Backups
 Monitoring
 Updates
+Database
+Redis
+Object Storage
 
 ⸻
 
@@ -98,6 +121,18 @@ Storage
 Backups
 DNS
 TLS
+PostgreSQL
+Redis
+Object Storage
+
+Delivered as:
+
+Docker Images
+Docker Compose
+Licence Key
+Documentation
+
+No source code is provided.
 
 ⸻
 
@@ -109,6 +144,20 @@ Audit Logging
 Feature Flags
 Tenant Isolation
 AES-256-GCM Encryption
+No Plaintext Secrets
+Principle of Least Privilege
+
+⸻
+
+White Labelling
+
+Future support includes:
+
+Portal Branding
+Viewer Branding
+Agent Branding
+Custom Domains
+Email Branding
 
 ⸻
 
@@ -130,3 +179,6 @@ Database Design
 Dashboard Shell
 Authentication
 Multi-Tenancy
+Database Package Foundation
+Kysely Integration
+Electron Viewer Foundation
