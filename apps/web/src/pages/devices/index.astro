@@ -1,6 +1,7 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
-import DeviceInventoryClient from "../../components/devices/DeviceInventoryClient.jsx";
+
+const apiBaseUrl = "https://shiny-space-giggle-r46gpwvqgqj9hgv6-3001.app.github.dev";
 ---
 
 <DashboardLayout title="Devices">
@@ -15,17 +16,11 @@ import DeviceInventoryClient from "../../components/devices/DeviceInventoryClien
             Device Inventory
           </p>
 
-          <h1
-            class="mt-2 text-3xl font-black"
-            style="color: var(--hi5-fg);"
-          >
+          <h1 class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">
             Managed Devices
           </h1>
 
-          <p
-            class="mt-2 text-base"
-            style="color: var(--hi5-muted);"
-          >
+          <p class="mt-2 text-base" style="color: var(--hi5-muted);">
             View enrolled devices, status, agent version, and last check-in.
           </p>
         </div>
@@ -40,6 +35,187 @@ import DeviceInventoryClient from "../../components/devices/DeviceInventoryClien
       </div>
     </section>
 
-    <DeviceInventoryClient client:load />
+    <section
+      class="hidden overflow-hidden rounded-3xl border md:block"
+      style="background: var(--hi5-card); border-color: var(--hi5-border);"
+    >
+      <table class="w-full text-left text-sm">
+        <thead
+          class="border-b"
+          style="background: var(--hi5-card-soft); border-color: var(--hi5-border); color: var(--hi5-muted);"
+        >
+          <tr>
+            <th class="px-5 py-4">Device</th>
+            <th class="px-5 py-4">Operating System</th>
+            <th class="px-5 py-4">Status</th>
+            <th class="px-5 py-4">Agent</th>
+            <th class="px-5 py-4">Last Seen</th>
+          </tr>
+        </thead>
+
+        <tbody id="devices-table-body">
+          <tr>
+            <td colspan="5" class="px-5 py-6" style="color: var(--hi5-muted);">
+              Loading devices...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="devices-mobile-list" class="space-y-3 md:hidden">
+      <article
+        class="rounded-3xl border p-5"
+        style="background: var(--hi5-card); border-color: var(--hi5-border); color: var(--hi5-muted);"
+      >
+        Loading devices...
+      </article>
+    </section>
   </div>
+
+  <script define:vars={{ apiBaseUrl }}>
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatDevice(device) {
+      return {
+        id: device.id,
+        name: device.device_name,
+        hostname: device.hostname,
+        os: `${device.operating_system}${device.os_version ? ` ${device.os_version}` : ""}`,
+        status: device.status,
+        agent: device.agent_version ?? "Unknown",
+        lastSeen: device.last_seen_at ? "Recently" : "Never"
+      };
+    }
+
+    function statusStyle(status) {
+      if (status === "online") {
+        return "background: color-mix(in srgb, var(--hi5-success) 12%, transparent); color: var(--hi5-success); border-color: color-mix(in srgb, var(--hi5-success) 25%, transparent);";
+      }
+
+      if (status === "warning") {
+        return "background: color-mix(in srgb, var(--hi5-warning) 12%, transparent); color: var(--hi5-warning); border-color: color-mix(in srgb, var(--hi5-warning) 25%, transparent);";
+      }
+
+      return "background: var(--hi5-card-soft); color: var(--hi5-muted); border-color: var(--hi5-border);";
+    }
+
+    async function loadDevices() {
+      const tableBody = document.getElementById("devices-table-body");
+      const mobileList = document.getElementById("devices-mobile-list");
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/devices`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to load devices. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const devices = (data.devices ?? []).map(formatDevice);
+
+        tableBody.innerHTML = devices
+          .map((device) => {
+            const style = statusStyle(device.status);
+
+            return `
+              <tr class="border-b last:border-b-0" style="border-color: var(--hi5-border);">
+                <td class="px-5 py-4">
+                  <a href="/devices/${escapeHtml(device.id)}" class="font-bold hover:underline" style="color: var(--hi5-fg);">
+                    ${escapeHtml(device.name)}
+                  </a>
+                  <p class="text-xs" style="color: var(--hi5-muted);">
+                    ${escapeHtml(device.hostname)}
+                  </p>
+                </td>
+                <td class="px-5 py-4" style="color: var(--hi5-muted);">
+                  ${escapeHtml(device.os)}
+                </td>
+                <td class="px-5 py-4">
+                  <span class="rounded-full border px-3 py-1 text-xs font-bold capitalize" style="${style}">
+                    ${escapeHtml(device.status)}
+                  </span>
+                </td>
+                <td class="px-5 py-4" style="color: var(--hi5-muted);">
+                  ${escapeHtml(device.agent)}
+                </td>
+                <td class="px-5 py-4" style="color: var(--hi5-muted);">
+                  ${escapeHtml(device.lastSeen)}
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        mobileList.innerHTML = devices
+          .map((device) => {
+            const style = statusStyle(device.status);
+
+            return `
+              <article class="rounded-3xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <a href="/devices/${escapeHtml(device.id)}" class="font-black hover:underline" style="color: var(--hi5-fg);">
+                      ${escapeHtml(device.name)}
+                    </a>
+                    <p class="text-sm" style="color: var(--hi5-muted);">
+                      ${escapeHtml(device.os)}
+                    </p>
+                  </div>
+
+                  <span class="rounded-full border px-3 py-1 text-xs font-bold capitalize" style="${style}">
+                    ${escapeHtml(device.status)}
+                  </span>
+                </div>
+
+                <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <p style="color: var(--hi5-muted);">Hostname</p>
+                    <p class="font-bold" style="color: var(--hi5-fg);">${escapeHtml(device.hostname)}</p>
+                  </div>
+
+                  <div>
+                    <p style="color: var(--hi5-muted);">Agent</p>
+                    <p class="font-bold" style="color: var(--hi5-fg);">${escapeHtml(device.agent)}</p>
+                  </div>
+
+                  <div>
+                    <p style="color: var(--hi5-muted);">Last Seen</p>
+                    <p class="font-bold" style="color: var(--hi5-fg);">${escapeHtml(device.lastSeen)}</p>
+                  </div>
+                </div>
+              </article>
+            `;
+          })
+          .join("");
+      } catch (error) {
+        console.error("Device API load failed:", error);
+
+        const message = `Could not load devices from the API: ${String(error)}`;
+
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-5 py-6" style="color: var(--hi5-muted);">
+              ${escapeHtml(message)}
+            </td>
+          </tr>
+        `;
+
+        mobileList.innerHTML = `
+          <article class="rounded-3xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border); color: var(--hi5-muted);">
+            ${escapeHtml(message)}
+          </article>
+        `;
+      }
+    }
+
+    loadDevices();
+  </script>
 </DashboardLayout>
