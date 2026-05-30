@@ -6,15 +6,16 @@
   "types": "./src/index.ts",
   "scripts": {
     "build": "tsc --noEmit",
-    "migrate:create": "node-pg-migrate create",
-    "migrate": "node-pg-migrate up",
-    "migrate:down": "node-pg-migrate down"
+    "migrate:create": "node-pg-migrate create --migrations-dir migrations",
+    "migrate": "node-pg-migrate up --migrations-dir migrations",
+    "migrate:down": "node-pg-migrate down --migrations-dir migrations"
   },
   "dependencies": {
     "kysely": "^0.27.5",
     "pg": "^8.13.1"
   },
   "devDependencies": {
+    "@types/node": "^22.10.2",
     "@types/pg": "^8.11.10",
     "node-pg-migrate": "^7.9.0",
     "typescript": "^5.8.3"
