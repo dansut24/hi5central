@@ -4,11 +4,13 @@ import { Hono } from "hono";
 import { db } from "./lib/db";
 import { healthRoutes } from "./routes/health";
 import { authRoutes } from "./routes/auth";
+import { devicesRouter } from "./routes/devices";
 
 const app = new Hono();
 
 app.route("/", healthRoutes);
 app.route("/auth", authRoutes);
+app.route("/devices", devicesRouter);
 
 app.get("/ready", async (c) => {
   try {
