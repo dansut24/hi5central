@@ -1,134 +1,110 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
-import DeviceDetailsClient from "../../components/devices/DeviceDetailsClient.jsx";
 
-export function getStaticPaths() {
-  const devices = [
-    {
-      id: "demo-device",
-      name: "CEO-LAPTOP",
-      hostname: "CEO-LAPTOP",
-      operatingSystem: "Windows 11 Pro 24H2",
-      status: "online",
-      agentVersion: "1.0.0",
-      lastSeen: "Just now",
-      publicIp: "203.0.113.10",
-      localIp: "192.168.1.10"
-    },
-    {
-      id: "helpdesk-01",
-      name: "HELPDESK-01",
-      hostname: "HELPDESK-01",
-      operatingSystem: "Windows 11 Pro 24H2",
-      status: "online",
-      agentVersion: "1.0.0",
-      lastSeen: "Just now",
-      publicIp: "203.0.113.11",
-      localIp: "192.168.1.11"
-    },
-    {
-      id: "dc-01",
-      name: "DC-01",
-      hostname: "DC-01",
-      operatingSystem: "Windows Server 2025",
-      status: "online",
-      agentVersion: "1.0.0",
-      lastSeen: "Just now",
-      publicIp: "203.0.113.20",
-      localIp: "10.0.0.10"
-    },
-    {
-      id: "file-01",
-      name: "FILE-01",
-      hostname: "FILE-01",
-      operatingSystem: "Windows Server 2022",
-      status: "warning",
-      agentVersion: "1.0.0",
-      lastSeen: "Just now",
-      publicIp: "203.0.113.21",
-      localIp: "10.0.0.11"
-    },
-    {
-      id: "macbook-pro",
-      name: "MACBOOK-PRO",
-      hostname: "MACBOOK-PRO",
-      operatingSystem: "macOS Sonoma 14",
-      status: "offline",
-      agentVersion: "1.0.0",
-      lastSeen: "1 day ago",
-      publicIp: "203.0.113.30",
-      localIp: "192.168.1.30"
-    },
-    {
-      id: "ubuntu-dev",
-      name: "UBUNTU-DEV",
-      hostname: "UBUNTU-DEV",
-      operatingSystem: "Ubuntu 24.04",
-      status: "online",
-      agentVersion: "1.0.0",
-      lastSeen: "Just now",
-      publicIp: "203.0.113.40",
-      localIp: "192.168.1.40"
-    }
-  ];
-
-  return devices.map((device) => ({
-    params: { id: device.id },
-    props: { device }
-  }));
-}
-
-const { device } = Astro.props;
+const deviceId = Astro.params.id;
 ---
 
-<DashboardLayout title={device.name}>
+<DashboardLayout title="Device Details">
   <div class="space-y-6">
-    <section class="rounded-3xl border p-6" style="background: var(--hi5-card); border-color: var(--hi5-border);">
-      <p class="text-sm font-bold" style="color: var(--hi5-primary);">Device Details</p>
-      <h1 class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">{device.name}</h1>
-      <p class="mt-2" style="color: var(--hi5-muted);">{device.operatingSystem}</p>
+    <section
+      class="rounded-3xl border p-6"
+      style="background: var(--hi5-card); border-color: var(--hi5-border);"
+    >
+      <p class="text-sm font-bold" style="color: var(--hi5-primary);">
+        Device Details
+      </p>
+
+      <h1 id="device-title" class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">
+        Loading device...
+      </h1>
+
+      <p id="device-os" class="mt-2" style="color: var(--hi5-muted);">
+        Please wait while the device loads.
+      </p>
     </section>
 
     <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <div class="rounded-2xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
         <p style="color: var(--hi5-muted);">Hostname</p>
-        <p class="font-bold" style="color: var(--hi5-fg);">{device.hostname}</p>
+        <p id="device-hostname" class="font-bold" style="color: var(--hi5-fg);">—</p>
       </div>
 
       <div class="rounded-2xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
         <p style="color: var(--hi5-muted);">Status</p>
-        <p class="font-bold capitalize" style="color: var(--hi5-fg);">{device.status}</p>
+        <p id="device-status" class="font-bold capitalize" style="color: var(--hi5-fg);">—</p>
       </div>
 
       <div class="rounded-2xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
         <p style="color: var(--hi5-muted);">Agent Version</p>
-        <p class="font-bold" style="color: var(--hi5-fg);">{device.agentVersion}</p>
+        <p id="device-agent" class="font-bold" style="color: var(--hi5-fg);">—</p>
       </div>
 
       <div class="rounded-2xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
         <p style="color: var(--hi5-muted);">Last Seen</p>
-        <p class="font-bold" style="color: var(--hi5-fg);">{device.lastSeen}</p>
+        <p id="device-last-seen" class="font-bold" style="color: var(--hi5-fg);">—</p>
       </div>
     </section>
 
     <section class="rounded-3xl border p-6" style="background: var(--hi5-card); border-color: var(--hi5-border);">
       <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Network</h2>
+
       <div class="mt-4 grid gap-4 md:grid-cols-2">
         <div>
           <p style="color: var(--hi5-muted);">Public IP</p>
-          <p class="font-bold" style="color: var(--hi5-fg);">{device.publicIp}</p>
+          <p id="device-public-ip" class="font-bold" style="color: var(--hi5-fg);">—</p>
         </div>
+
         <div>
           <p style="color: var(--hi5-muted);">Local IP</p>
-          <p class="font-bold" style="color: var(--hi5-fg);">{device.localIp}</p>
+          <p id="device-local-ip" class="font-bold" style="color: var(--hi5-fg);">—</p>
         </div>
       </div>
     </section>
 
-    <DeviceDetailsClient client:load deviceId={device.id} />
+    <section class="rounded-3xl border p-6" style="background: var(--hi5-card); border-color: var(--hi5-border);">
+      <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Inventory</h2>
+
+      <div class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
+          <p style="color: var(--hi5-muted);">CPU</p>
+          <p id="device-cpu" class="font-bold" style="color: var(--hi5-fg);">—</p>
+        </div>
+
+        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
+          <p style="color: var(--hi5-muted);">RAM</p>
+          <p id="device-ram" class="font-bold" style="color: var(--hi5-fg);">—</p>
+        </div>
+
+        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
+          <p style="color: var(--hi5-muted);">Disk</p>
+          <p id="device-disk" class="font-bold" style="color: var(--hi5-fg);">—</p>
+        </div>
+
+        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
+          <p style="color: var(--hi5-muted);">GPU</p>
+          <p id="device-gpu" class="font-bold" style="color: var(--hi5-fg);">—</p>
+        </div>
+
+        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
+          <p style="color: var(--hi5-muted);">Logged In User</p>
+          <p id="device-user" class="font-bold" style="color: var(--hi5-fg);">—</p>
+        </div>
+
+        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
+          <p style="color: var(--hi5-muted);">BitLocker</p>
+          <p id="device-bitlocker" class="font-bold" style="color: var(--hi5-fg);">—</p>
+        </div>
+
+        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
+          <p style="color: var(--hi5-muted);">TPM</p>
+          <p id="device-tpm" class="font-bold" style="color: var(--hi5-fg);">—</p>
+        </div>
+      </div>
+    </section>
 
     <section class="rounded-3xl border p-6" style="background: var(--hi5-card); border-color: var(--hi5-border);">
       <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Actions</h2>
+
       <div class="mt-4 flex flex-wrap gap-3">
         <button class="rounded-2xl border px-4 py-3">Remote Control</button>
         <button class="rounded-2xl border px-4 py-3">Terminal</button>
@@ -139,4 +115,46 @@ const { device } = Astro.props;
       </div>
     </section>
   </div>
+
+  <script define:vars={{ deviceId }}>
+    const value = (v) => v ?? "—";
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    async function loadDevice() {
+      const response = await fetch(`/api/devices/${deviceId}`);
+      const data = await response.json();
+
+      if (!data.success || !data.device) {
+        setText("device-title", "Device not found");
+        return;
+      }
+
+      const d = data.device;
+
+      setText("device-title", value(d.device_name));
+      setText("device-os", `${value(d.operating_system)} ${d.os_version ?? ""}`);
+      setText("device-hostname", value(d.hostname));
+      setText("device-status", value(d.status));
+      setText("device-agent", value(d.agent_version));
+      setText("device-last-seen", d.last_seen_at ? "Recently" : "Never");
+      setText("device-public-ip", value(d.public_ip));
+      setText("device-local-ip", value(d.local_ip));
+
+      setText("device-cpu", value(d.cpu));
+      setText("device-ram", d.ram_gb ? `${d.ram_gb} GB` : "—");
+      setText("device-disk", d.disk_gb ? `${d.disk_gb} GB` : "—");
+      setText("device-gpu", value(d.gpu));
+      setText("device-user", value(d.logged_in_user));
+      setText("device-bitlocker", d.bitlocker_enabled === true ? "Enabled" : d.bitlocker_enabled === false ? "Disabled" : "—");
+      setText("device-tpm", value(d.tpm_version));
+    }
+
+    loadDevice().catch(() => {
+      setText("device-title", "Could not load device");
+    });
+  </script>
 </DashboardLayout>
