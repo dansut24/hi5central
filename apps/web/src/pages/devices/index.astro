@@ -1,7 +1,5 @@
 ---
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
-
-const apiBaseUrl = "https://shiny-space-giggle-r46gpwvqgqj9hgv6-3001.app.github.dev";
 ---
 
 <DashboardLayout title="Devices">
@@ -73,7 +71,7 @@ const apiBaseUrl = "https://shiny-space-giggle-r46gpwvqgqj9hgv6-3001.app.github.
     </section>
   </div>
 
-  <script define:vars={{ apiBaseUrl }}>
+  <script>
     function escapeHtml(value) {
       return String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -112,7 +110,7 @@ const apiBaseUrl = "https://shiny-space-giggle-r46gpwvqgqj9hgv6-3001.app.github.
       const mobileList = document.getElementById("devices-mobile-list");
 
       try {
-        const response = await fetch(`${apiBaseUrl}/devices`);
+        const response = await fetch("/api/devices");
 
         if (!response.ok) {
           throw new Error(`Failed to load devices. Status: ${response.status}`);
