@@ -9,20 +9,12 @@ import { devicesRouter } from "./routes/devices";
 
 const app = new Hono();
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
 app.use(
   "*",
   cors({
-    origin: (origin) => {
-      if (!origin) return origin;
-      if (allowedOrigins.includes(origin)) return origin;
-      return allowedOrigins[0] ?? origin;
-    },
-    credentials: true
+    origin: "*",
+    allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"]
   })
 );
 
@@ -32,7 +24,11 @@ app.route("/devices", devicesRouter);
 
 app.get("/ready", async (c) => {
   try {
-    await db.selectFrom("tenants").select("id").limit(1).execute();
+    await db
+      .selectFrom("tenants")
+      .select("id")
+      .limit(1)
+      .execute();
 
     return c.json({
       status: "ready",
