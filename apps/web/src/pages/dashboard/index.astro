@@ -4,20 +4,13 @@ import "../../styles/global.css";
 import AppShell from "../../components/AppShell.astro";
 import DeviceCards from "../../components/DeviceCards.astro";
 import ThemeSwitcher from "../../components/ThemeSwitcher.astro";
+import DashboardMetricsClient from "../../components/dashboard/DashboardMetricsClient.jsx";
 
 import Button from "../../components/ui/Button.astro";
 import Card from "../../components/ui/Card.astro";
 import Badge from "../../components/ui/Badge.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
-import StatCard from "../../components/ui/StatCard.astro";
-
-const metrics = [
-  { label: "Total Devices", value: "128", detail: "Across 4 customer sites" },
-  { label: "Online Devices", value: "114", detail: "89% currently reachable" },
-  { label: "Patch Exposure", value: "23", detail: "7 high-priority updates" },
-  { label: "Active Sessions", value: "4", detail: "2 remote, 2 background" }
-];
 
 const devices = [
   {
@@ -65,15 +58,7 @@ const devices = [
       </PageHeader>
 
       <section class="p-4 md:p-6 lg:p-8">
-        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {metrics.map((metric) => (
-            <StatCard
-              label={metric.label}
-              value={metric.value}
-              detail={metric.detail}
-            />
-          ))}
-        </div>
+        <DashboardMetricsClient client:load />
 
         <div class="mt-6 grid gap-6 xl:grid-cols-[1.6fr_0.9fr]">
           <Card>
