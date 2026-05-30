@@ -14,8 +14,13 @@ const { title = "Dashboard" } = Astro.props;
       </div>
     </div>
 
-    <button class="rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-200">
-      Session
+    <button
+      id="mobile-menu-button"
+      class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm"
+      type="button"
+      aria-label="Open navigation menu"
+    >
+      Menu
     </button>
   </div>
 </header>
