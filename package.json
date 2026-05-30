@@ -1,0 +1,14 @@
+{
+  "name": "hi5central",
+  "private": true,
+  "packageManager": "pnpm@10.28.2",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "db:generate": "pnpm --filter @hi5central/db db:generate",
+    "db:migrate": "pnpm --filter @hi5central/db db:migrate"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
