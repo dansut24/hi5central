@@ -2,9 +2,9 @@
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
 import { requireCurrentUser } from "../../lib/routeGuards";
 
-const authPreviewEnabled = false;
+const enforceAuth = false;
 
-if (authPreviewEnabled) {
+if (enforceAuth) {
   const guard = await requireCurrentUser();
 
   if (!guard.authenticated) {
