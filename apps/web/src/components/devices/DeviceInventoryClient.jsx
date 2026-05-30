@@ -47,9 +47,7 @@ export default function DeviceInventoryClient() {
   useEffect(() => {
     async function loadDevices() {
       try {
-        const response = await fetch(`${API_BASE_URL}/devices`, {
-          credentials: "include"
-        });
+        const response = await fetch(`${API_BASE_URL}/devices`);
 
         if (!response.ok) {
           throw new Error("Failed to load devices");
