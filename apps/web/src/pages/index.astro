@@ -1,8 +1,7 @@
 ---
 import "../styles/global.css";
 
-import MobileHeader from "../components/MobileHeader.astro";
-import MobileDrawer from "../components/MobileDrawer.astro";
+import AppShell from "../components/AppShell.astro";
 import DeviceCards from "../components/DeviceCards.astro";
 import ThemeSwitcher from "../components/ThemeSwitcher.astro";
 
@@ -72,153 +71,111 @@ const devices = [
   </head>
 
   <body>
-    <MobileHeader title="Dashboard" />
-    <MobileDrawer />
+    <AppShell title="Dashboard">
+      <PageHeader eyebrow="Acme Support · Production" title="Dashboard">
+        <div slot="actions" class="flex items-center gap-3">
+          <ThemeSwitcher />
+          <Button variant="secondary">View Docs</Button>
+          <Button variant="primary">New Session</Button>
+        </div>
+      </PageHeader>
 
-    <div class="min-h-screen">
-      <aside
-        class="fixed left-0 top-0 hidden h-full w-72 border-r p-6 backdrop-blur-xl lg:block"
-        style="background: var(--hi5-sidebar); border-color: var(--hi5-sidebar-border);"
-      >
-        <div class="flex items-center gap-3">
-          <div
-            class="flex h-11 w-11 items-center justify-center rounded-2xl text-lg font-black text-white shadow-lg"
-            style="background: linear-gradient(135deg, var(--hi5-primary), #7c3aed);"
-          >
-            H5
-          </div>
-          <div>
-            <h1 class="text-lg font-black tracking-tight" style="color: var(--hi5-fg);">Hi5Central</h1>
-            <p class="text-xs" style="color: var(--hi5-muted);">Control Platform</p>
-          </div>
+      <section class="p-4 md:p-6 lg:p-8">
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {metrics.map((metric) => (
+            <StatCard
+              label={metric.label}
+              value={metric.value}
+              detail={metric.detail}
+            />
+          ))}
         </div>
 
-        <nav class="mt-8 space-y-1">
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-bold text-white shadow-sm" style="background: var(--hi5-navy);" href="/">Dashboard</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Devices</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Remote Access</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Patching</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Backup</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Policies</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Reports</a>
-          <a class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-black/5" style="color: var(--hi5-muted);" href="#">Settings</a>
-        </nav>
+        <div class="mt-6 grid gap-6 xl:grid-cols-[1.6fr_0.9fr]">
+          <Card>
+            <SectionHeader
+              title="Devices"
+              description="Initial dashboard preview. Live data will come from the Hono API later."
+            />
 
-        <div
-          class="absolute bottom-6 left-6 right-6 rounded-3xl border p-4 shadow-[var(--hi5-shadow-soft)]"
-          style="background: var(--hi5-primary-soft); border-color: color-mix(in srgb, var(--hi5-primary) 18%, transparent);"
-        >
-          <p class="text-sm font-bold" style="color: var(--hi5-fg);">Secure tenant mode</p>
-          <p class="mt-1 text-xs leading-5" style="color: var(--hi5-muted);">Every technician action will be audited.</p>
-        </div>
-      </aside>
+            <div class="p-4 md:hidden">
+              <DeviceCards devices={devices} />
+            </div>
 
-      <main class="lg:pl-72">
-        <PageHeader eyebrow="Acme Support · Production" title="Dashboard">
-          <div slot="actions" class="flex items-center gap-3">
-            <ThemeSwitcher />
-            <Button variant="secondary">View Docs</Button>
-            <Button variant="primary">New Session</Button>
-          </div>
-        </PageHeader>
+            <div class="hidden overflow-x-auto md:block">
+              <table class="w-full text-left text-sm">
+                <thead
+                  class="text-xs uppercase tracking-wide"
+                  style="background: var(--hi5-card-soft); color: var(--hi5-muted);"
+                >
+                  <tr>
+                    <th class="px-5 py-3">Device</th>
+                    <th class="px-5 py-3">Status</th>
+                    <th class="px-5 py-3">Health</th>
+                    <th class="px-5 py-3">Patches</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {devices.map((device) => (
+                    <tr class="border-t" style="border-color: var(--hi5-border);">
+                      <td class="px-5 py-4">
+                        <div class="font-bold" style="color: var(--hi5-fg);">{device.name}</div>
+                        <div class="text-xs" style="color: var(--hi5-muted);">{device.user} · {device.os}</div>
+                      </td>
+                      <td class="px-5 py-4">
+                        {device.status === "Online" ? (
+                          <Badge variant="success">Online</Badge>
+                        ) : (
+                          <Badge>Offline</Badge>
+                        )}
+                      </td>
+                      <td class="px-5 py-4" style="color: var(--hi5-muted);">{device.health}</td>
+                      <td class="px-5 py-4" style="color: var(--hi5-muted);">{device.patches}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
 
-        <section class="p-4 md:p-6 lg:p-8">
-          <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {metrics.map((metric) => (
-              <StatCard
-                label={metric.label}
-                value={metric.value}
-                detail={metric.detail}
-              />
-            ))}
-          </div>
-
-          <div class="mt-6 grid gap-6 xl:grid-cols-[1.6fr_0.9fr]">
-            <Card>
-              <SectionHeader
-                title="Devices"
-                description="Initial dashboard preview. Live data will come from the Hono API later."
-              />
-
-              <div class="p-4 md:hidden">
-                <DeviceCards devices={devices} />
+          <aside class="space-y-6">
+            <section
+              class="rounded-3xl border p-5 text-white shadow-[var(--hi5-shadow)]"
+              style="background: linear-gradient(135deg, var(--hi5-navy), var(--hi5-navy-soft)); border-color: rgba(255,255,255,0.08);"
+            >
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-black">Remote Access</h3>
+                <Badge variant="dark">Ready</Badge>
               </div>
 
-              <div class="hidden overflow-x-auto md:block">
-                <table class="w-full text-left text-sm">
-                  <thead
-                    class="text-xs uppercase tracking-wide"
-                    style="background: var(--hi5-card-soft); color: var(--hi5-muted);"
-                  >
-                    <tr>
-                      <th class="px-5 py-3">Device</th>
-                      <th class="px-5 py-3">Status</th>
-                      <th class="px-5 py-3">Health</th>
-                      <th class="px-5 py-3">Patches</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {devices.map((device) => (
-                      <tr class="border-t" style="border-color: var(--hi5-border);">
-                        <td class="px-5 py-4">
-                          <div class="font-bold" style="color: var(--hi5-fg);">{device.name}</div>
-                          <div class="text-xs" style="color: var(--hi5-muted);">{device.user} · {device.os}</div>
-                        </td>
-                        <td class="px-5 py-4">
-                          {device.status === "Online" ? (
-                            <Badge variant="success">Online</Badge>
-                          ) : (
-                            <Badge>Offline</Badge>
-                          )}
-                        </td>
-                        <td class="px-5 py-4" style="color: var(--hi5-muted);">{device.health}</td>
-                        <td class="px-5 py-4" style="color: var(--hi5-muted);">{device.patches}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <p class="mt-3 text-sm leading-6 text-slate-300">
+                Sessions will use separate stream and input paths to avoid laggy mouse movement.
+              </p>
+
+              <div class="mt-5 grid grid-cols-2 gap-3">
+                <Button variant="secondary">Connect</Button>
+                <Button variant="dark">Background</Button>
+              </div>
+            </section>
+
+            <Card class="p-5">
+              <h3 class="text-lg font-black" style="color: var(--hi5-fg);">Backup Status</h3>
+              <p class="mt-2 text-sm leading-6" style="color: var(--hi5-muted);">
+                Managed customers will use Hi5Central-managed encrypted object storage.
+              </p>
+
+              <div
+                class="mt-4 rounded-2xl border p-4"
+                style="background: var(--hi5-card-soft); border-color: var(--hi5-border);"
+              >
+                <p class="text-sm font-bold" style="color: var(--hi5-fg);">Protected Devices</p>
+                <p class="mt-1 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
+                <p class="mt-1 text-xs" style="color: var(--hi5-muted);">Backup engine will be added later.</p>
               </div>
             </Card>
-
-            <aside class="space-y-6">
-              <section
-                class="rounded-3xl border p-5 text-white shadow-[var(--hi5-shadow)]"
-                style="background: linear-gradient(135deg, var(--hi5-navy), var(--hi5-navy-soft)); border-color: rgba(255,255,255,0.08);"
-              >
-                <div class="flex items-center justify-between">
-                  <h3 class="text-lg font-black">Remote Access</h3>
-                  <Badge variant="dark">Ready</Badge>
-                </div>
-
-                <p class="mt-3 text-sm leading-6 text-slate-300">
-                  Sessions will use separate stream and input paths to avoid laggy mouse movement.
-                </p>
-
-                <div class="mt-5 grid grid-cols-2 gap-3">
-                  <Button variant="secondary">Connect</Button>
-                  <Button variant="dark">Background</Button>
-                </div>
-              </section>
-
-              <Card class="p-5">
-                <h3 class="text-lg font-black" style="color: var(--hi5-fg);">Backup Status</h3>
-                <p class="mt-2 text-sm leading-6" style="color: var(--hi5-muted);">
-                  Managed customers will use Hi5Central-managed encrypted object storage.
-                </p>
-
-                <div
-                  class="mt-4 rounded-2xl border p-4"
-                  style="background: var(--hi5-card-soft); border-color: var(--hi5-border);"
-                >
-                  <p class="text-sm font-bold" style="color: var(--hi5-fg);">Protected Devices</p>
-                  <p class="mt-1 text-3xl font-black" style="color: var(--hi5-fg);">0</p>
-                  <p class="mt-1 text-xs" style="color: var(--hi5-muted);">Backup engine will be added later.</p>
-                </div>
-              </Card>
-            </aside>
-          </div>
-        </section>
-      </main>
-    </div>
+          </aside>
+        </div>
+      </section>
+    </AppShell>
   </body>
 </html>
