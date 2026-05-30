@@ -98,6 +98,35 @@ authRoutes.post("/logout", requireAuth, async (c) => {
   });
 });
 
+authRoutes.post("/logout-everywhere", requireAuth, async (c) => {
+  const user = c.get("user");
+
+  const ipAddress = c.req.header("x-forwarded-for") ?? null;
+  const userAgent = c.req.header("user-agent") ?? null;
+
+  await db
+    .updateTable("sessions")
+    .set({
+      revoked_at: new Date()
+    })
+    .where("user_id", "=", user.id)
+    .where("revoked_at", "is", null)
+    .execute();
+
+  clearSessionCookie(c);
+
+  await writeAuditLog({
+    userId: user.id,
+    action: "auth.logout_everywhere",
+    ipAddress,
+    userAgent
+  });
+
+  return c.json({
+    success: true
+  });
+});
+
 authRoutes.get("/me", requireAuth, (c) => {
   return c.json({
     success: true,
