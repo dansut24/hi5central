@@ -131,6 +131,13 @@ export interface DevicesTable {
   last_seen_at: Date | null;
   public_ip: string | null;
   local_ip: string | null;
+  cpu: string | null;
+  ram_gb: number | null;
+  disk_gb: number | null;
+  gpu: string | null;
+  logged_in_user: string | null;
+  bitlocker_enabled: boolean | null;
+  tpm_version: string | null;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
