@@ -1,146 +1,270 @@
-# PASS-0006 Mobile Responsive Dashboard
+PASS-0006 Mobile Responsive Dashboard
 
-## Overview
+Overview
 
-This pass improves the Hi5Central dashboard for mobile and tablet devices.
+This pass improves the Hi5Central dashboard experience on mobile and tablet devices while preserving the existing desktop layout.
 
-The desktop layout will remain unchanged.
+The goal is to ensure the platform feels like a modern mobile application on smaller devices while maintaining the professional desktop experience already established.
 
----
+⸻
 
-# Objective
+Objective
 
 Improve the dashboard experience on:
 
-```txt
 Mobile
 Tablet
 Desktop
-```
 
----
+⸻
 
-# Mobile Layout
+Mobile Layout
 
-## Mobile Header
+Mobile Header
 
-Create:
+Created:
 
-```txt
 apps/web/src/components/MobileHeader.astro
-```
 
 Responsibilities:
 
-```txt
 Show Hi5Central logo
 Show page title
-Show action button
-Only visible on mobile
-```
+Show quick action button
+Remain visible on mobile devices
+Hide on desktop devices
 
----
+Purpose:
 
-## Mobile Navigation
+Provide app-like navigation
+Improve screen space usage
+Allow quick access to session actions
 
-Create:
+⸻
 
-```txt
+Mobile Navigation
+
+Created:
+
 apps/web/src/components/MobileNav.astro
-```
 
 Responsibilities:
 
-```txt
-Bottom navigation
-Quick access to core areas
+Bottom navigation bar
+Quick access to primary modules
 Mobile-only display
-```
 
-Navigation items:
+Navigation Items:
 
-```txt
 Home
 Devices
 Remote
 Patching
 More
-```
 
----
+Purpose:
 
-## Device Cards
+Improve usability on phones
+Reduce navigation clicks
+Provide app-style experience
 
-Create:
+⸻
 
-```txt
+Device Cards
+
+Created:
+
 apps/web/src/components/DeviceCards.astro
-```
 
 Responsibilities:
 
-```txt
-Replace table on mobile
-Show device status
-Show health
-Show patch count
-```
+Replace desktop table on mobile
+Display device status
+Display health state
+Display patch count
+Display user information
 
----
+Purpose:
 
-# Responsive Rules
+Avoid horizontal scrolling
+Improve readability
+Increase touch usability
 
-## Desktop
+⸻
 
-```txt
+Responsive Rules
+
+Desktop
+
+Layout remains unchanged:
+
 Fixed sidebar
-Full table
-Two-column dashboard
-```
+Desktop header
+Full device table
+Two-column dashboard layout
+Sidebar navigation
 
----
+Purpose:
 
-## Tablet
+Preserve existing professional layout
+Maximise information density
 
-```txt
-Stacked cards
-Readable spacing
-Sidebar hidden if needed
-```
+⸻
 
----
+Tablet
 
-## Mobile
+Layout behaviour:
 
-```txt
+Responsive spacing
+Stacked content where required
+Improved readability
+Reduced clutter
+
+Purpose:
+
+Provide a comfortable experience on medium-sized screens
+
+⸻
+
+Mobile
+
+Layout behaviour:
+
 No fixed sidebar
 Top mobile header
 Bottom navigation
 Stacked metric cards
-Device cards instead of table
-Large tap targets
-```
+Device cards instead of tables
+Large touch targets
 
----
+Purpose:
 
-# Success Criteria
+Provide an application-style experience
+Improve navigation
+Reduce scrolling complexity
 
-```txt
-Desktop still looks the same
-Mobile layout is usable
-Device table is not cramped
-Navigation works on small screens
-Vercel build succeeds
-```
+⸻
 
----
+Implemented Files
 
-# Future Work
+Created:
 
-```txt
-Slide-out menu
+apps/web/src/components/MobileHeader.astro
+apps/web/src/components/MobileNav.astro
+apps/web/src/components/DeviceCards.astro
+
+Updated:
+
+apps/web/src/pages/index.astro
+
+⸻
+
+Dashboard Behaviour
+
+Mobile
+
+Uses:
+
+MobileHeader
+MobileNav
+DeviceCards
+
+Displays:
+
+Metrics
+Device cards
+Remote access panel
+Backup panel
+
+⸻
+
+Tablet
+
+Uses:
+
+Responsive metric cards
+Responsive spacing
+Desktop table where appropriate
+
+⸻
+
+Desktop
+
+Uses:
+
+Desktop sidebar
+Desktop header
+Device table
+Two-column dashboard
+
+⸻
+
+Design Principles
+
+The following principles were applied:
+
+Mobile-first usability
+Large touch targets
+Readable typography
+Consistent spacing
+Responsive layout
+Modern SaaS styling
+
+Visual Style:
+
+Rounded corners
+Soft shadows
+White translucent cards
+Slate colour palette
+Indigo accent colour
+
+⸻
+
+Success Criteria
+
+Achieved:
+
+Desktop layout preserved
+Mobile layout improved
+Device table removed from mobile view
+Device cards implemented
+Mobile navigation added
+Mobile header added
+Responsive spacing improved
+
+⸻
+
+Deliverables
+
+Completed:
+
+MobileHeader component
+MobileNav component
+DeviceCards component
+Responsive dashboard layout
+Mobile-friendly device views
+
+⸻
+
+Current Status
+
+Desktop dashboard operational
+Mobile dashboard operational
+Responsive behaviour implemented
+Vercel deployment compatible
+Ready for component refactoring pass
+
+⸻
+
+Future Work
+
+Slide-out navigation drawer
 Dark mode
-Search
-Live data
-Mobile remote access launcher
-```
+Global search
+Notifications
+Live API integration
+Authentication
+Tenant-aware routing
+Remote access launcher
+PWA support
+Offline support
