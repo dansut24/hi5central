@@ -1,5 +1,8 @@
 ---
 import "../styles/global.css";
+import MobileHeader from "../components/MobileHeader.astro";
+import MobileNav from "../components/MobileNav.astro";
+import DeviceCards from "../components/DeviceCards.astro";
 
 const metrics = [
   {
@@ -55,12 +58,14 @@ const devices = [
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Hi5Central Dashboard</title>
   </head>
 
   <body>
-    <div class="min-h-screen">
+    <MobileHeader title="Dashboard" />
+
+    <div class="min-h-screen pb-20 lg:pb-0">
       <aside class="fixed left-0 top-0 hidden h-full w-72 border-r border-slate-200 bg-white/80 p-6 backdrop-blur-xl lg:block">
         <div class="flex items-center gap-3">
           <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-lg font-bold text-white shadow-lg shadow-indigo-200">
@@ -90,7 +95,7 @@ const devices = [
       </aside>
 
       <main class="lg:pl-72">
-        <header class="sticky top-0 z-10 border-b border-slate-200 bg-white/70 px-5 py-4 backdrop-blur-xl lg:px-8">
+        <header class="sticky top-0 z-10 hidden border-b border-slate-200 bg-white/70 px-5 py-4 backdrop-blur-xl lg:block lg:px-8">
           <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p class="text-sm font-semibold text-indigo-600">Acme Support · Production</p>
@@ -108,8 +113,8 @@ const devices = [
           </div>
         </header>
 
-        <section class="p-5 lg:p-8">
-          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <section class="p-4 md:p-6 lg:p-8">
+          <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {metrics.map((metric) => (
               <article class="rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur-xl">
                 <p class="text-sm font-medium text-slate-500">{metric.label}</p>
@@ -126,7 +131,11 @@ const devices = [
                 <p class="mt-1 text-sm text-slate-500">Initial dashboard preview. Live data will come from the Hono API later.</p>
               </div>
 
-              <div class="overflow-x-auto">
+              <div class="p-4 md:hidden">
+                <DeviceCards devices={devices} />
+              </div>
+
+              <div class="hidden overflow-x-auto md:block">
                 <table class="w-full text-left text-sm">
                   <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
@@ -193,5 +202,7 @@ const devices = [
         </section>
       </main>
     </div>
+
+    <MobileNav />
   </body>
 </html>
