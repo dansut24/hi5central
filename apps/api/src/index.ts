@@ -6,6 +6,7 @@ import { healthRoutes } from "./routes/health";
 import { authRoutes } from "./routes/auth";
 import { devicesRouter } from "./routes/devices";
 import { dashboardRoutes } from "./routes/dashboard";
+import { agentRoutes } from "./routes/agent";
 
 const app = new Hono();
 
@@ -25,6 +26,7 @@ app.route("/", healthRoutes);
 app.route("/auth", authRoutes);
 app.route("/devices", devicesRouter);
 app.route("/dashboard", dashboardRoutes);
+app.route("/agent", agentRoutes);
 
 app.get("/ready", async (c) => {
   try {
