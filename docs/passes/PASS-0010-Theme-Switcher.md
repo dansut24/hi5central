@@ -12,6 +12,9 @@ Light
 Dark
 ```
 
+Theme switcher added to desktop header and mobile drawer.
+Mobile drawer is now theme-aware.
+
 ---
 
 # Objective
