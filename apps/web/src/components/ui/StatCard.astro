@@ -6,8 +6,11 @@ const {
 } = Astro.props;
 ---
 
-<article class="rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-sm backdrop-blur-xl">
-  <p class="text-sm font-medium text-slate-500">{label}</p>
-  <p class="mt-2 text-3xl font-bold tracking-tight text-slate-950">{value}</p>
-  <p class="mt-4 text-sm text-slate-500">{detail}</p>
+<article
+  class="rounded-3xl border p-5 shadow-[var(--hi5-shadow-soft)]"
+  style="background: var(--hi5-card); border-color: var(--hi5-border);"
+>
+  <p class="text-sm font-semibold" style="color: var(--hi5-muted);">{label}</p>
+  <p class="mt-2 text-3xl font-black tracking-tight" style="color: var(--hi5-fg);">{value}</p>
+  <p class="mt-4 text-sm" style="color: var(--hi5-muted);">{detail}</p>
 </article>
