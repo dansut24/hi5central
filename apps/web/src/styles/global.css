@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --hi5-bg: #f8fafc;
+  --hi5-fg: #0f172a;
+  --hi5-muted: #64748b;
+  --hi5-card: #ffffff;
+  --hi5-border: #e2e8f0;
+  --hi5-primary: #4f46e5;
+  --hi5-primary-dark: #3730a3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  background: var(--hi5-bg);
+  color: var(--hi5-fg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 32rem),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+}
