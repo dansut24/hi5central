@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: hi5central-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hi5central
+      POSTGRES_PASSWORD: hi5central_dev_password
+      POSTGRES_DB: hi5central
+    ports:
+      - "5432:5432"
+    volumes:
+      - hi5central_postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:8
+    container_name: hi5central-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - hi5central_redis:/data
+
+volumes:
+  hi5central_postgres:
+  hi5central_redis:
