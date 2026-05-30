@@ -9,14 +9,17 @@ import { devicesRouter } from "./routes/devices";
 
 const app = new Hono();
 
-app.use(
-  "*",
-  cors({
-    origin: "*",
-    allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization"]
-  })
-);
+app.use("*", async (c, next) => {
+  c.header("Access-Control-Allow-Origin", "https://hi5central.vercel.app");
+  c.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  c.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+
+  if (c.req.method === "OPTIONS") {
+    return c.body(null, 204);
+  }
+
+  await next();
+});
 
 app.route("/", healthRoutes);
 app.route("/auth", authRoutes);
