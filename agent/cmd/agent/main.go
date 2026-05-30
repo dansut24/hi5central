@@ -4,9 +4,9 @@ import (
 	"log"
 	"time"
 
-	"hi5central-agent/internal/api"
 	"hi5central-agent/internal/config"
 	"hi5central-agent/internal/enrollment"
+	"hi5central-agent/internal/heartbeat"
 )
 
 func main() {
@@ -16,16 +16,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	client := api.New(cfg.APIURL)
-
-	if err := enrollment.Run(client, cfg); err != nil {
+	deviceID, err := enrollment.Run(cfg)
+	if err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println("Enrollment successful")
+	log.Println("Device ID:", deviceID)
 
 	for {
-		log.Println("Heartbeat tick")
+
+		if err := heartbeat.Send(cfg, deviceID); err != nil {
+			log.Println("Heartbeat failed:", err)
+		} else {
+			log.Println("Heartbeat successful")
+		}
 
 		time.Sleep(30 * time.Second)
 	}
