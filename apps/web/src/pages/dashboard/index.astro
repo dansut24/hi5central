@@ -6,173 +6,153 @@ import AppShell from "../../components/AppShell.astro";
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Hi5Central Dashboard</title>
+    <title>Dashboard | Hi5Central</title>
   </head>
+
   <body>
-    <AppShell title="Control">
-  <div class="mx-auto w-full max-w-[520px] space-y-4 lg:max-w-none">
-    <section class="flex items-start justify-between gap-3">
-      <div class="min-w-0">
-        <h1 class="text-xl font-semibold text-white">Control</h1>
-        <p class="mt-1 max-w-full break-words text-sm leading-6 text-slate-400">
-          Live device inventory + jobs + audit trail - RMM workflow ready.
-        </p>
-        <p id="dashboard-error" class="mt-2 hidden text-sm text-red-300"></p>
-      </div>
-
-      <div class="flex shrink-0 gap-2">
-        <button class="hi5-card px-3 py-2 text-xs font-bold text-slate-200">24H</button>
-        <button class="hi5-card px-3 py-2 text-xs font-bold text-slate-200">7D</button>
-        <button class="hi5-card px-3 py-2 text-xs font-bold text-slate-200">30D</button>
-      </div>
-    </section>
-
-    <section class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-      <article class="hi5-panel p-4">
-        <p class="text-xs text-slate-400">Total devices</p>
-        <p id="metric-total" class="mt-2 text-2xl font-extrabold text-white">—</p>
-        <p class="mt-1 text-xs text-slate-500">Registered</p>
-      </article>
-
-      <article class="hi5-panel p-4">
-        <p class="text-xs text-slate-400">Online</p>
-        <p id="metric-online" class="mt-2 text-2xl font-extrabold text-white">—</p>
-        <p class="mt-1 text-xs text-slate-500">Reachable</p>
-      </article>
-
-      <article class="hi5-panel p-4">
-        <p class="text-xs text-slate-400">Offline</p>
-        <p id="metric-offline" class="mt-2 text-2xl font-extrabold text-white">—</p>
-        <p class="mt-1 text-xs text-slate-500">Not connected</p>
-      </article>
-
-      <article class="hi5-panel p-4">
-        <p class="text-xs text-slate-400">Warnings</p>
-        <p id="metric-warning" class="mt-2 text-2xl font-extrabold text-white">—</p>
-        <p class="mt-1 text-xs text-slate-500">Attention</p>
-      </article>
-    </section>
-
-    <section class="grid gap-4 lg:grid-cols-[1.5fr_0.9fr]">
-      <article class="hi5-panel p-4">
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <h2 class="text-sm font-semibold text-white">Device activity</h2>
-            <p class="mt-1 text-xs text-slate-400">Newest check-ins first.</p>
-          </div>
-
-          <a href="/devices" class="hi5-card shrink-0 px-3 py-2 text-xs font-bold text-blue-200">
-            View
-          </a>
-        </div>
-
-        <div id="recent-devices" class="mt-3 space-y-2">
-          <div class="hi5-soft-card p-3 text-sm text-slate-400">Loading devices...</div>
-        </div>
-      </article>
-
-      <div class="space-y-4">
-        <article class="hi5-panel p-4">
-          <div class="flex items-center justify-between gap-3">
-            <h2 class="text-sm font-semibold text-white">Remote Access</h2>
-            <span class="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-xs font-bold text-emerald-300">
-              Ready
-            </span>
-          </div>
-
-          <p class="mt-2 text-xs leading-5 text-slate-400">
-            Agent connectivity is live. Remote modules will be layered onto this foundation.
+    <AppShell title="Dashboard">
+      <div class="mx-auto w-full max-w-[920px] space-y-4 lg:max-w-none">
+        <section class="hi5-panel p-5">
+          <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Tenant dashboard</p>
+          <h1 class="mt-2 text-2xl font-black text-white">
+            Welcome to <span id="tenant-name">Hi5Central</span>
+          </h1>
+          <p class="mt-2 text-sm leading-6 text-slate-400">
+            Monitor devices, actions, onboarding progress, and platform health from one place.
           </p>
+        </section>
 
-          <div class="mt-3 grid grid-cols-2 gap-2">
-            <button class="rounded-2xl bg-white px-3 py-2 text-xs font-bold text-slate-950">
-              Connect
-            </button>
-            <button class="hi5-card px-3 py-2 text-xs font-bold text-white">
-              Background
-            </button>
-          </div>
-        </article>
+        <section class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <article class="hi5-panel p-4">
+            <p class="text-xs text-slate-400">Devices</p>
+            <p id="total-devices" class="mt-2 text-2xl font-black text-white">—</p>
+          </article>
 
-        <article class="hi5-panel p-4">
-          <h2 class="text-sm font-semibold text-white">Platform Health</h2>
-          <p class="mt-2 text-xs leading-5 text-slate-400">
-            Monitored by Uptime Kuma.
-          </p>
+          <article class="hi5-panel p-4">
+            <p class="text-xs text-slate-400">Online</p>
+            <p id="online-devices" class="mt-2 text-2xl font-black text-emerald-300">—</p>
+          </article>
 
-          <div class="mt-3 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-3">
-            <p class="text-xs font-bold text-emerald-300">Operational</p>
-            <p class="mt-1 text-xs text-slate-400">API, Web, PostgreSQL and HTTPS online.</p>
-          </div>
-        </article>
-      </div>
-    </section>
-  </div>
+          <article class="hi5-panel p-4">
+            <p class="text-xs text-slate-400">Warning</p>
+            <p id="warning-devices" class="mt-2 text-2xl font-black text-amber-300">—</p>
+          </article>
 
-  <script>
-    function text(id, value) {
-      const element = document.getElementById(id);
-      if (element) element.textContent = String(value);
-    }
+          <article class="hi5-panel p-4">
+            <p class="text-xs text-slate-400">Offline</p>
+            <p id="offline-devices" class="mt-2 text-2xl font-black text-red-300">—</p>
+          </article>
+        </section>
 
-    function safe(value) {
-      return String(value ?? "Unknown")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;");
-    }
-
-    async function loadDashboard() {
-      try {
-        const metricsResponse = await fetch("/api/dashboard/metrics");
-        if (!metricsResponse.ok) throw new Error("Metrics failed");
-
-        const metricsData = await metricsResponse.json();
-        const m = metricsData.metrics ?? {};
-
-        text("metric-total", m.totalDevices ?? 0);
-        text("metric-online", m.onlineDevices ?? 0);
-        text("metric-offline", m.offlineDevices ?? 0);
-        text("metric-warning", m.warningDevices ?? 0);
-
-        const devicesResponse = await fetch("/api/devices");
-        if (!devicesResponse.ok) throw new Error("Devices failed");
-
-        const devicesData = await devicesResponse.json();
-        const devices = devicesData.devices ?? [];
-        const container = document.getElementById("recent-devices");
-
-        if (!container) return;
-
-        if (!devices.length) {
-          container.innerHTML = `<div class="hi5-soft-card p-3 text-sm text-slate-400">No devices found.</div>`;
-          return;
-        }
-
-        container.innerHTML = devices.slice(0, 6).map((device) => `
-          <a href="/devices/${safe(device.id)}" class="hi5-soft-card block p-3">
+        <section class="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <section class="hi5-panel p-5">
             <div class="flex items-start justify-between gap-3">
-              <div class="min-w-0">
-                <p class="truncate text-sm font-semibold text-white">${safe(device.device_name)}</p>
-                <p class="mt-1 truncate text-xs text-slate-400">${safe(device.operating_system)} ${safe(device.os_version ?? "")}</p>
+              <div>
+                <h2 class="text-sm font-semibold text-white">Getting Started</h2>
+                <p class="mt-2 text-sm text-slate-400">Complete these steps to make this tenant production ready.</p>
               </div>
-              <span class="shrink-0 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[11px] font-bold text-emerald-300">
-                ${safe(device.status)}
-              </span>
             </div>
-          </a>
-        `).join("");
-      } catch (error) {
-        const el = document.getElementById("dashboard-error");
-        if (el) {
-          el.classList.remove("hidden");
-          el.textContent = "Dashboard API failed to load.";
-        }
-      }
-    }
 
-    loadDashboard();
-  </script>
-</AppShell>
+            <div class="mt-4 space-y-2">
+              <div class="hi5-soft-card flex items-center gap-3 p-3">
+                <span class="grid h-7 w-7 place-items-center rounded-full bg-emerald-400/10 text-xs font-black text-emerald-300">✓</span>
+                <div>
+                  <p class="text-sm font-bold text-white">Create tenant</p>
+                  <p class="text-xs text-slate-400">Tenant record created from signup.</p>
+                </div>
+              </div>
+
+              <div class="hi5-soft-card flex items-center gap-3 p-3">
+                <span class="grid h-7 w-7 place-items-center rounded-full bg-emerald-400/10 text-xs font-black text-emerald-300">✓</span>
+                <div>
+                  <p class="text-sm font-bold text-white">Verify email</p>
+                  <p class="text-xs text-slate-400">Confirmation email completed.</p>
+                </div>
+              </div>
+
+              <div class="hi5-soft-card flex items-center gap-3 p-3">
+                <span class="grid h-7 w-7 place-items-center rounded-full bg-emerald-400/10 text-xs font-black text-emerald-300">✓</span>
+                <div>
+                  <p class="text-sm font-bold text-white">Complete onboarding</p>
+                  <p class="text-xs text-slate-400">Initial setup has been started.</p>
+                </div>
+              </div>
+
+              <div class="hi5-soft-card flex items-center gap-3 p-3">
+                <span class="grid h-7 w-7 place-items-center rounded-full bg-slate-400/10 text-xs font-black text-slate-300">□</span>
+                <div>
+                  <p class="text-sm font-bold text-white">Download agent</p>
+                  <p class="text-xs text-slate-400">Create the first device enrolment package.</p>
+                </div>
+              </div>
+
+              <div class="hi5-soft-card flex items-center gap-3 p-3">
+                <span class="grid h-7 w-7 place-items-center rounded-full bg-slate-400/10 text-xs font-black text-slate-300">□</span>
+                <div>
+                  <p class="text-sm font-bold text-white">Enrol first device</p>
+                  <p class="text-xs text-slate-400">Connect a Windows, macOS, or Linux endpoint.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="space-y-4">
+            <section class="hi5-panel p-5">
+              <h2 class="text-sm font-semibold text-white">Quick Actions</h2>
+
+              <div class="mt-4 grid gap-2">
+                <a href="/devices" class="rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950">
+                  View devices
+                </a>
+
+                <a href="/onboarding" class="hi5-card px-4 py-3 text-sm font-black text-white">
+                  Continue onboarding
+                </a>
+
+                <button class="hi5-card px-4 py-3 text-left text-sm font-black text-white">
+                  Download agent package
+                </button>
+              </div>
+            </section>
+
+            <section class="hi5-panel p-5">
+              <h2 class="text-sm font-semibold text-white">Recent Activity</h2>
+              <div id="recent-activity" class="mt-4 space-y-2">
+                <div class="hi5-soft-card p-3 text-sm text-slate-400">
+                  No recent activity yet.
+                </div>
+              </div>
+            </section>
+          </section>
+        </section>
+      </div>
+
+      <script>
+        const tenantSlug = window.location.hostname.split(".")[0] || "app";
+        const tenantName = document.getElementById("tenant-name");
+        if (tenantName) tenantName.textContent = tenantSlug === "app" ? "Hi5Central" : tenantSlug;
+
+        async function loadMetrics() {
+          try {
+            const response = await fetch("/api/dashboard/metrics");
+            const data = await response.json();
+
+            if (!data.success) return;
+
+            document.getElementById("total-devices").textContent = data.metrics.totalDevices ?? 0;
+            document.getElementById("online-devices").textContent = data.metrics.onlineDevices ?? 0;
+            document.getElementById("warning-devices").textContent = data.metrics.warningDevices ?? 0;
+            document.getElementById("offline-devices").textContent = data.metrics.offlineDevices ?? 0;
+          } catch {
+            document.getElementById("total-devices").textContent = "0";
+            document.getElementById("online-devices").textContent = "0";
+            document.getElementById("warning-devices").textContent = "0";
+            document.getElementById("offline-devices").textContent = "0";
+          }
+        }
+
+        loadMetrics();
+      </script>
+    </AppShell>
   </body>
 </html>
