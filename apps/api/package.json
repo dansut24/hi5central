@@ -11,9 +11,11 @@
     "@hi5central/auth": "workspace:*",
     "@hi5central/db": "workspace:*",
     "@hono/node-server": "^1.14.0",
-    "hono": "^4.8.0"
+    "hono": "^4.8.0",
+    "nodemailer": "^8.0.10"
   },
   "devDependencies": {
+    "@types/nodemailer": "^8.0.0",
     "dotenv-cli": "^7.4.4",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"

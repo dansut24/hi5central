@@ -7,6 +7,7 @@ import { db } from "../lib/db";
 import { clearSessionCookie, SESSION_COOKIE, setSessionCookie } from "../lib/cookies";
 import { createSession } from "../lib/sessions";
 import { writeAuditLog } from "../lib/audit";
+import { sendTrialConfirmationEmail } from "../lib/mail";
 import { requireAuth, type AuthContext } from "../middleware/session";
 
 export const authRoutes = new Hono<AuthContext>();
@@ -159,7 +160,16 @@ authRoutes.post("/trial-signup", async (c) => {
     })
     .execute();
 
-  const confirmationUrl = `https://api.hi5central.com/auth/confirm-trial?token=${verificationToken}`;
+  const confirmationUrl = `https://${tenant.slug}.hi5central.com/api/auth/confirm-trial?token=${verificationToken}`;
+
+
+
+  await sendTrialConfirmationEmail({
+    to: user.email,
+    firstName: user.first_name || "",
+    companyName: tenant.name,
+    confirmationUrl
+  });
 
   await writeAuditLog({
     tenantId: tenant.id,
@@ -172,7 +182,8 @@ authRoutes.post("/trial-signup", async (c) => {
     metadata: {
       tenant_slug: tenant.slug,
       membership_id: membership.id,
-      default_device_group_id: deviceGroup.id
+      default_device_group_id: deviceGroup.id,
+      confirmation_email_sent: true
     }
   });
 
@@ -416,7 +427,7 @@ authRoutes.post("/login", async (c) => {
     })
     .execute();
 
-  const confirmationUrl = `https://api.hi5central.com/auth/confirm-trial?token=${verificationToken}`;
+
 
   await writeAuditLog({
     userId: user.id,
