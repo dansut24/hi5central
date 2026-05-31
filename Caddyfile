@@ -1,0 +1,15 @@
+api.hi5central.com {
+  reverse_proxy api:3001
+}
+
+app.hi5central.com {
+  handle_path /api/* {
+    reverse_proxy api:3001
+  }
+
+  reverse_proxy web:4321
+}
+
+status.hi5central.com {
+  reverse_proxy host.docker.internal:3002
+}

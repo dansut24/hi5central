@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hi5central
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: hi5central
+    volumes:
+      - hi5central_postgres:/var/lib/postgresql/data
+    networks:
+      - hi5central
+
+  redis:
+    image: redis:8
+    restart: unless-stopped
+    volumes:
+      - hi5central_redis:/data
+    networks:
+      - hi5central
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: 3001
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - hi5central
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    environment:
+      PUBLIC_API_BASE_URL: https://api.hi5central.com
+      HOST: 0.0.0.0
+      PORT: 4321
+    depends_on:
+      - api
+    networks:
+      - hi5central
+
+  caddy:
+    image: caddy:2
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - hi5central_caddy_data:/data
+      - hi5central_caddy_config:/config
+    depends_on:
+      - api
+      - web
+    networks:
+      - hi5central
+
+volumes:
+  hi5central_postgres:
+  hi5central_redis:
+  hi5central_caddy_data:
+  hi5central_caddy_config:
+
+networks:
+  hi5central:
