@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
-import { hashToken, verifyPassword } from "@hi5central/auth";
+import { hashPassword, hashToken, verifyPassword } from "@hi5central/auth";
 
 import { db } from "../lib/db";
 import { clearSessionCookie, SESSION_COOKIE, setSessionCookie } from "../lib/cookies";
@@ -9,6 +9,187 @@ import { writeAuditLog } from "../lib/audit";
 import { requireAuth, type AuthContext } from "../middleware/session";
 
 export const authRoutes = new Hono<AuthContext>();
+
+function normaliseSlug(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+}
+
+authRoutes.post("/trial-signup", async (c) => {
+  const body = await c.req.json().catch(() => null);
+
+  const companyName = String(body?.company_name ?? "").trim();
+  const requestedSlug = normaliseSlug(String(body?.tenant_slug ?? companyName));
+  const firstName = String(body?.first_name ?? "").trim();
+  const lastName = String(body?.last_name ?? "").trim();
+  const email = String(body?.email ?? "").toLowerCase().trim();
+  const password = String(body?.password ?? "");
+
+  const ipAddress = c.req.header("x-forwarded-for") ?? null;
+  const userAgent = c.req.header("user-agent") ?? null;
+
+  if (!companyName || !requestedSlug || !firstName || !email || password.length < 8) {
+    return c.json(
+      {
+        success: false,
+        error: "invalid_trial_signup_payload"
+      },
+      400
+    );
+  }
+
+  const existingTenant = await db
+    .selectFrom("tenants")
+    .select(["id"])
+    .where("slug", "=", requestedSlug)
+    .executeTakeFirst();
+
+  if (existingTenant) {
+    return c.json(
+      {
+        success: false,
+        error: "tenant_slug_taken"
+      },
+      409
+    );
+  }
+
+  const existingUser = await db
+    .selectFrom("users")
+    .select(["id"])
+    .where("email", "=", email)
+    .executeTakeFirst();
+
+  if (existingUser) {
+    return c.json(
+      {
+        success: false,
+        error: "email_already_registered"
+      },
+      409
+    );
+  }
+
+  const passwordHash = await hashPassword(password);
+
+  const tenant = await db
+    .insertInto("tenants")
+    .values({
+      name: companyName,
+      slug: requestedSlug,
+      plan: "trial",
+      status: "active"
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  const user = await db
+    .insertInto("users")
+    .values({
+      email,
+      password_hash: passwordHash,
+      first_name: firstName,
+      last_name: lastName || null,
+      status: "active",
+      platform_role: null
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  const membership = await db
+    .insertInto("memberships")
+    .values({
+      tenant_id: tenant.id,
+      user_id: user.id,
+      role: "owner"
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  const deviceGroup = await db
+    .insertInto("device_groups")
+    .values({
+      tenant_id: tenant.id,
+      name: "Default",
+      description: "Default device group"
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  await db
+    .insertInto("subscriptions")
+    .values({
+      tenant_id: tenant.id,
+      plan: "trial",
+      status: "trial",
+      renewal_date: null
+    })
+    .execute();
+
+  await db
+    .insertInto("tenant_branding")
+    .values({
+      tenant_id: tenant.id,
+      company_name: companyName,
+      logo_url: null,
+      favicon_url: null,
+      primary_colour: "#2563eb",
+      secondary_colour: "#7c3aed",
+      viewer_name: "Hi5Central Viewer",
+      viewer_icon_url: null,
+      agent_name: "Hi5Central Agent",
+      support_exe_name: "Hi5Central Support",
+      custom_domain: null
+    })
+    .execute();
+
+  const session = await createSession({
+    userId: user.id,
+    ipAddress,
+    userAgent
+  });
+
+  setSessionCookie(c, session.token);
+
+  await writeAuditLog({
+    tenantId: tenant.id,
+    userId: user.id,
+    action: "auth.trial_signup",
+    resourceType: "tenant",
+    resourceId: tenant.id,
+    ipAddress,
+    userAgent,
+    metadata: {
+      tenant_slug: tenant.slug,
+      membership_id: membership.id,
+      default_device_group_id: deviceGroup.id
+    }
+  });
+
+  return c.json({
+    success: true,
+    tenant: {
+      id: tenant.id,
+      name: tenant.name,
+      slug: tenant.slug
+    },
+    user: {
+      id: user.id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name
+    },
+    membership: {
+      id: membership.id,
+      role: membership.role
+    },
+    redirect_url: "https://app.hi5central.com/onboarding"
+  });
+});
 
 authRoutes.post("/login", async (c) => {
   const body = await c.req.json().catch(() => null);
