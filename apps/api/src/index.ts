@@ -5,6 +5,7 @@ import { db } from "./lib/db";
 import { healthRoutes } from "./routes/health";
 import { authRoutes } from "./routes/auth";
 import { devicesRouter } from "./routes/devices";
+import { actionsRoutes } from "./routes/actions";
 import { dashboardRoutes } from "./routes/dashboard";
 import { agentRoutes } from "./routes/agent";
 import { heartbeatRoutes } from "./routes/heartbeat";
@@ -27,6 +28,7 @@ app.use("*", async (c, next) => {
 app.route("/", healthRoutes);
 app.route("/auth", authRoutes);
 app.route("/devices", devicesRouter);
+app.route("/", actionsRoutes);
 app.route("/dashboard", dashboardRoutes);
 app.route("/agent", agentRoutes);
 app.route("/agent/heartbeat", heartbeatRoutes);

@@ -142,6 +142,21 @@ export interface DevicesTable {
   updated_at: Generated<Date>;
 }
 
+
+export interface DeviceActionsTable {
+  id: Generated<string>;
+  tenant_id: string;
+  device_id: string;
+  action_type: string;
+  payload: Record<string, unknown>;
+  status: string;
+  result: Record<string, unknown>;
+  error: string | null;
+  created_at: Generated<Date>;
+  started_at: Date | null;
+  completed_at: Date | null;
+}
+
 export interface Database {
   tenants: TenantsTable;
   users: UsersTable;
@@ -155,4 +170,5 @@ export interface Database {
   tenant_branding: TenantBrandingTable;
   device_groups: DeviceGroupsTable;
   devices: DevicesTable;
+  device_actions: DeviceActionsTable;
 }
