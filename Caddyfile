@@ -1,5 +1,5 @@
 hi5central.com {
-  redir https://app.hi5central.com{uri} 301
+  reverse_proxy marketing:3000
 }
 
 api.hi5central.com {
