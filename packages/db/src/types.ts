@@ -6,6 +6,8 @@ export interface TenantsTable {
   slug: string;
   plan: string;
   status: string;
+  selected_product: string | null;
+  onboarding_completed_at: Date | null;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }

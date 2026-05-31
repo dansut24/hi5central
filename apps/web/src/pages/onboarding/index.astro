@@ -1,0 +1,181 @@
+---
+import AppShell from "../../components/AppShell.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Onboarding | Hi5Central</title>
+  </head>
+
+  <body>
+    <AppShell title="Onboarding">
+      <div class="mx-auto w-full max-w-[800px] space-y-4">
+        <section class="hi5-panel p-5">
+          <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Tenant setup</p>
+          <h1 class="mt-2 text-2xl font-black text-white">Complete your Hi5Central setup</h1>
+          <p class="mt-2 text-sm leading-6 text-slate-400">
+            Configure your workspace, choose your product, and prepare your first device enrolment.
+          </p>
+
+          <div class="mt-4 rounded-2xl border border-blue-400/20 bg-blue-400/10 p-3">
+            <p class="text-xs font-bold text-blue-200">Tenant</p>
+            <p id="tenant-name" class="mt-1 text-sm font-semibold text-white">workspace</p>
+          </div>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <h2 class="text-sm font-semibold text-white">1. Company profile</h2>
+          <p class="mt-2 text-sm text-slate-400">Your company record has been created from signup.</p>
+
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <div class="hi5-soft-card p-3">
+              <p class="text-xs text-slate-400">Company</p>
+              <p id="company-name" class="mt-1 text-sm font-bold text-white">Loading...</p>
+            </div>
+
+            <div class="hi5-soft-card p-3">
+              <p class="text-xs text-slate-400">Plan</p>
+              <p id="tenant-plan" class="mt-1 text-sm font-bold text-white">Trial</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <h2 class="text-sm font-semibold text-white">2. Choose product</h2>
+          <p class="mt-2 text-sm text-slate-400">Select the starting product for this tenant.</p>
+
+          <div class="mt-4 grid gap-3 sm:grid-cols-3">
+            <button data-product="control" class="product-option rounded-2xl border border-blue-400/40 bg-blue-400/10 p-4 text-left">
+              <p class="text-sm font-black text-white">Control</p>
+              <p class="mt-2 text-xs leading-5 text-slate-400">RMM, devices, remote access and actions.</p>
+            </button>
+
+            <button data-product="itsm" class="product-option hi5-soft-card p-4 text-left">
+              <p class="text-sm font-black text-white">ITSM</p>
+              <p class="mt-2 text-xs leading-5 text-slate-400">Tickets, service desk and user support.</p>
+            </button>
+
+            <button data-product="platform" class="product-option hi5-soft-card p-4 text-left">
+              <p class="text-sm font-black text-white">Platform</p>
+              <p class="mt-2 text-xs leading-5 text-slate-400">Full suite with Control and ITSM.</p>
+            </button>
+          </div>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <h2 class="text-sm font-semibold text-white">3. Branding</h2>
+          <p class="mt-2 text-sm text-slate-400">Branding can be customised later from settings.</p>
+
+          <div class="mt-4 grid gap-3 sm:grid-cols-3">
+            <div class="hi5-soft-card p-3">
+              <p class="text-xs text-slate-400">Primary</p>
+              <p class="mt-1 text-sm font-bold text-white">Hi5Central Blue</p>
+            </div>
+
+            <div class="hi5-soft-card p-3">
+              <p class="text-xs text-slate-400">Agent</p>
+              <p class="mt-1 text-sm font-bold text-white">Hi5Central Agent</p>
+            </div>
+
+            <div class="hi5-soft-card p-3">
+              <p class="text-xs text-slate-400">Viewer</p>
+              <p class="mt-1 text-sm font-bold text-white">Hi5Central Viewer</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <h2 class="text-sm font-semibold text-white">4. First device enrolment</h2>
+          <p class="mt-2 text-sm text-slate-400">
+            Agent download and enrolment package generation will be wired into the next agent pass.
+          </p>
+
+          <div class="mt-4 rounded-2xl border border-amber-400/20 bg-amber-400/10 p-3 text-sm text-amber-200">
+            Device enrolment package builder pending.
+          </div>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <h2 class="text-sm font-semibold text-white">5. Complete setup</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-400">
+            Finish onboarding and continue to your tenant dashboard.
+          </p>
+
+          <button id="complete-onboarding" class="mt-4 w-full rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950 sm:w-auto">
+            Complete onboarding
+          </button>
+
+          <p id="onboarding-error" class="mt-3 hidden rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300"></p>
+        </section>
+      </div>
+
+      <script>
+        const tenantSlug = window.location.hostname.split(".")[0] || "workspace";
+        let selectedProduct = "control";
+
+        const tenantName = document.getElementById("tenant-name");
+        if (tenantName) tenantName.textContent = tenantSlug;
+
+        async function loadTenant() {
+          const response = await fetch(`/api/auth/tenant/${tenantSlug}`);
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) return;
+
+          const company = document.getElementById("company-name");
+          const plan = document.getElementById("tenant-plan");
+
+          if (company) company.textContent = data.tenant?.name || tenantSlug;
+          if (plan) plan.textContent = data.tenant?.plan || "trial";
+        }
+
+        function updateProductButtons() {
+          document.querySelectorAll(".product-option").forEach((button) => {
+            const isActive = button.dataset.product === selectedProduct;
+            button.className = isActive
+              ? "product-option rounded-2xl border border-blue-400/40 bg-blue-400/10 p-4 text-left"
+              : "product-option hi5-soft-card p-4 text-left";
+          });
+        }
+
+        document.querySelectorAll(".product-option").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedProduct = button.dataset.product || "control";
+            updateProductButtons();
+          });
+        });
+
+        document.getElementById("complete-onboarding")?.addEventListener("click", async () => {
+          const error = document.getElementById("onboarding-error");
+          error?.classList.add("hidden");
+
+          const response = await fetch("/api/auth/onboarding/complete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              tenant_slug: tenantSlug,
+              selected_product: selectedProduct
+            })
+          });
+
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            if (error) {
+              error.textContent = data?.error || "Could not complete onboarding.";
+              error.classList.remove("hidden");
+            }
+            return;
+          }
+
+          window.location.href = data.redirect_url || "/dashboard";
+        });
+
+        updateProductButtons();
+        loadTenant();
+      </script>
+    </AppShell>
+  </body>
+</html>

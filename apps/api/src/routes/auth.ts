@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { randomBytes } from "node:crypto";
 import { getCookie } from "hono/cookie";
 import { hashPassword, hashToken, verifyPassword } from "@hi5central/auth";
 
@@ -82,7 +83,7 @@ authRoutes.post("/trial-signup", async (c) => {
       name: companyName,
       slug: requestedSlug,
       plan: "trial",
-      status: "active"
+      status: "pending_verification"
     })
     .returningAll()
     .executeTakeFirstOrThrow();
@@ -94,7 +95,7 @@ authRoutes.post("/trial-signup", async (c) => {
       password_hash: passwordHash,
       first_name: firstName,
       last_name: lastName || null,
-      status: "active",
+      status: "pending_verification",
       platform_role: null
     })
     .returningAll()
@@ -147,13 +148,18 @@ authRoutes.post("/trial-signup", async (c) => {
     })
     .execute();
 
-  const session = await createSession({
-    userId: user.id,
-    ipAddress,
-    userAgent
-  });
+  const verificationToken = randomBytes(32).toString("base64url");
 
-  setSessionCookie(c, session.token);
+  await db
+    .insertInto("email_verification_tokens")
+    .values({
+      user_id: user.id,
+      token_hash: hashToken(verificationToken),
+      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    })
+    .execute();
+
+  const confirmationUrl = `https://api.hi5central.com/auth/confirm-trial?token=${verificationToken}`;
 
   await writeAuditLog({
     tenantId: tenant.id,
@@ -187,7 +193,178 @@ authRoutes.post("/trial-signup", async (c) => {
       id: membership.id,
       role: membership.role
     },
-    redirect_url: `https://app.hi5central.com/${tenant.slug}/onboarding`
+    confirmation_url: confirmationUrl,
+    message: "Check your email to confirm your tenant."
+  });
+});
+
+
+authRoutes.get("/confirm-trial", async (c) => {
+  const token = String(c.req.query("token") ?? "");
+
+  if (!token) {
+    return c.text("Missing confirmation token", 400);
+  }
+
+  const tokenHash = hashToken(token);
+
+  const verification = await db
+    .selectFrom("email_verification_tokens")
+    .innerJoin("users", "users.id", "email_verification_tokens.user_id")
+    .innerJoin("memberships", "memberships.user_id", "users.id")
+    .innerJoin("tenants", "tenants.id", "memberships.tenant_id")
+    .select([
+      "email_verification_tokens.id as token_id",
+      "email_verification_tokens.expires_at",
+      "email_verification_tokens.used_at",
+      "users.id as user_id",
+      "tenants.id as tenant_id",
+      "tenants.slug as tenant_slug"
+    ])
+    .where("email_verification_tokens.token_hash", "=", tokenHash)
+    .executeTakeFirst();
+
+  if (!verification) {
+    return c.text("Invalid confirmation token", 400);
+  }
+
+  if (verification.used_at) {
+    return c.redirect(`https://${verification.tenant_slug}.hi5central.com/login?verified=already`);
+  }
+
+  if (new Date(verification.expires_at).getTime() < Date.now()) {
+    return c.text("Confirmation token expired", 400);
+  }
+
+  await db
+    .updateTable("users")
+    .set({
+      status: "active",
+      updated_at: new Date()
+    })
+    .where("id", "=", verification.user_id)
+    .execute();
+
+  await db
+    .updateTable("tenants")
+    .set({
+      status: "active",
+      updated_at: new Date()
+    })
+    .where("id", "=", verification.tenant_id)
+    .execute();
+
+  await db
+    .updateTable("email_verification_tokens")
+    .set({
+      used_at: new Date()
+    })
+    .where("id", "=", verification.token_id)
+    .execute();
+
+  return c.redirect(`https://${verification.tenant_slug}.hi5central.com/login?verified=1`);
+});
+
+
+authRoutes.get("/tenant/:slug", async (c) => {
+  const slug = String(c.req.param("slug") ?? "").toLowerCase().trim();
+
+  const tenant = await db
+    .selectFrom("tenants")
+    .select([
+      "id",
+      "name",
+      "slug",
+      "plan",
+      "status",
+      "selected_product",
+      "onboarding_completed_at"
+    ])
+    .where("slug", "=", slug)
+    .executeTakeFirst();
+
+  if (!tenant) {
+    return c.json(
+      {
+        success: false,
+        error: "tenant_not_found"
+      },
+      404
+    );
+  }
+
+  const branding = await db
+    .selectFrom("tenant_branding")
+    .selectAll()
+    .where("tenant_id", "=", tenant.id)
+    .executeTakeFirst();
+
+  return c.json({
+    success: true,
+    tenant,
+    branding
+  });
+});
+
+authRoutes.post("/onboarding/complete", requireAuth, async (c) => {
+  const user = c.get("user");
+  const body = await c.req.json().catch(() => ({}));
+
+  const tenantSlug = String(body.tenant_slug ?? "").toLowerCase().trim();
+  const selectedProduct = String(body.selected_product ?? "control").toLowerCase().trim();
+
+  if (!tenantSlug || !["control", "itsm", "platform"].includes(selectedProduct)) {
+    return c.json(
+      {
+        success: false,
+        error: "invalid_onboarding_payload"
+      },
+      400
+    );
+  }
+
+  const tenant = await db
+    .selectFrom("tenants")
+    .innerJoin("memberships", "memberships.tenant_id", "tenants.id")
+    .select(["tenants.id", "tenants.slug"])
+    .where("tenants.slug", "=", tenantSlug)
+    .where("memberships.user_id", "=", user.id)
+    .executeTakeFirst();
+
+  if (!tenant) {
+    return c.json(
+      {
+        success: false,
+        error: "tenant_not_found_or_no_access"
+      },
+      404
+    );
+  }
+
+  await db
+    .updateTable("tenants")
+    .set({
+      selected_product: selectedProduct,
+      onboarding_completed_at: new Date(),
+      updated_at: new Date()
+    })
+    .where("id", "=", tenant.id)
+    .execute();
+
+  await writeAuditLog({
+    tenantId: tenant.id,
+    userId: user.id,
+    action: "tenant.onboarding_completed",
+    resourceType: "tenant",
+    resourceId: tenant.id,
+    metadata: {
+      selected_product: selectedProduct
+    }
+  });
+
+  return c.json({
+    success: true,
+    redirect_url: "/dashboard"
   });
 });
 
@@ -228,13 +405,18 @@ authRoutes.post("/login", async (c) => {
     return c.json({ success: false }, 401);
   }
 
-  const session = await createSession({
-    userId: user.id,
-    ipAddress,
-    userAgent
-  });
+  const verificationToken = randomBytes(32).toString("base64url");
 
-  setSessionCookie(c, session.token);
+  await db
+    .insertInto("email_verification_tokens")
+    .values({
+      user_id: user.id,
+      token_hash: hashToken(verificationToken),
+      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    })
+    .execute();
+
+  const confirmationUrl = `https://api.hi5central.com/auth/confirm-trial?token=${verificationToken}`;
 
   await writeAuditLog({
     userId: user.id,

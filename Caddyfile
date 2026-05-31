@@ -1,3 +1,7 @@
+{
+  email hello@hi5central.com
+}
+
 hi5central.com {
   reverse_proxy marketing:3000
 }
@@ -21,4 +25,19 @@ status.hi5central.com {
 
 status-admin.hi5central.com {
   reverse_proxy host.docker.internal:3002
+}
+
+*.hi5central.com {
+  tls {
+    dns ionos {env.IONOS_API_TOKEN}
+    resolvers 1.1.1.1 8.8.8.8
+    propagation_delay 180s
+    propagation_timeout 900s
+  }
+
+  handle_path /api/* {
+    reverse_proxy api:3001
+  }
+
+  reverse_proxy web:4321
 }
