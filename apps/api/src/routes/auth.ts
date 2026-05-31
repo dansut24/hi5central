@@ -187,7 +187,7 @@ authRoutes.post("/trial-signup", async (c) => {
       id: membership.id,
       role: membership.role
     },
-    redirect_url: "https://app.hi5central.com/onboarding"
+    redirect_url: `https://app.hi5central.com/${tenant.slug}/onboarding`
   });
 });
 
