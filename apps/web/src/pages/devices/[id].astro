@@ -1,160 +1,312 @@
 ---
-import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import AppShell from "../../components/AppShell.astro";
 
 const deviceId = Astro.params.id;
 ---
 
-<DashboardLayout title="Device Details">
-  <div class="space-y-6">
-    <section
-      class="rounded-3xl border p-6"
-      style="background: var(--hi5-card); border-color: var(--hi5-border);"
-    >
-      <p class="text-sm font-bold" style="color: var(--hi5-primary);">
-        Device Details
-      </p>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Device Details | Hi5Central</title>
+  </head>
 
-      <h1 id="device-title" class="mt-2 text-3xl font-black" style="color: var(--hi5-fg);">
-        Loading device...
-      </h1>
+  <body>
+    <AppShell title="Device Details">
+      <div class="mx-auto w-full max-w-[720px] space-y-4 lg:max-w-none">
+        <section class="hi5-panel p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Device Details</p>
+              <h1 id="device-title" class="mt-2 truncate text-2xl font-black text-white">Loading device...</h1>
+              <p id="device-os" class="mt-1 truncate text-sm text-slate-400">Please wait.</p>
+            </div>
 
-      <p id="device-os" class="mt-2" style="color: var(--hi5-muted);">
-        Please wait while the device loads.
-      </p>
-    </section>
+            <span id="device-status-pill" class="shrink-0 rounded-full border border-slate-400/20 bg-slate-400/10 px-3 py-1 text-xs font-bold text-slate-300">
+              —
+            </span>
+          </div>
+        </section>
 
-    <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <div class="rounded-2xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
-        <p style="color: var(--hi5-muted);">Hostname</p>
-        <p id="device-hostname" class="font-bold" style="color: var(--hi5-fg);">—</p>
+        <nav class="hi5-panel flex gap-2 overflow-x-auto p-2 no-scrollbar" aria-label="Device sections">
+          <button data-tab="overview" class="device-tab shrink-0 rounded-2xl px-4 py-2 text-sm font-bold">Overview</button>
+          <button data-tab="hardware" class="device-tab shrink-0 rounded-2xl px-4 py-2 text-sm font-bold">Hardware</button>
+          <button data-tab="software" class="device-tab shrink-0 rounded-2xl px-4 py-2 text-sm font-bold">Software</button>
+          <button data-tab="tools" class="device-tab shrink-0 rounded-2xl px-4 py-2 text-sm font-bold">Tools</button>
+          <button data-tab="settings" class="device-tab shrink-0 rounded-2xl px-4 py-2 text-sm font-bold">Settings</button>
+        </nav>
+
+        <section data-panel="overview" class="device-panel space-y-4">
+          <section class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <article class="hi5-panel p-4">
+              <p class="text-xs text-slate-400">Hostname</p>
+              <p id="device-hostname" class="mt-2 truncate text-sm font-semibold text-white">—</p>
+            </article>
+
+            <article class="hi5-panel p-4">
+              <p class="text-xs text-slate-400">Status</p>
+              <p id="device-status" class="mt-2 text-sm font-semibold capitalize text-white">—</p>
+            </article>
+
+            <article class="hi5-panel p-4">
+              <p class="text-xs text-slate-400">Agent</p>
+              <p id="device-agent" class="mt-2 text-sm font-semibold text-white">—</p>
+            </article>
+
+            <article class="hi5-panel p-4">
+              <p class="text-xs text-slate-400">Last Seen</p>
+              <p id="device-last-seen" class="mt-2 text-sm font-semibold text-white">—</p>
+            </article>
+          </section>
+
+          <section class="grid gap-4 lg:grid-cols-[1fr_1fr]">
+            <article class="hi5-panel p-4">
+              <h2 class="text-sm font-semibold text-white">Network</h2>
+
+              <div class="mt-3 grid grid-cols-2 gap-3">
+                <div class="hi5-soft-card p-3">
+                  <p class="text-xs text-slate-400">Public IP</p>
+                  <p id="device-public-ip" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+                </div>
+
+                <div class="hi5-soft-card p-3">
+                  <p class="text-xs text-slate-400">Local IP</p>
+                  <p id="device-local-ip" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="hi5-panel p-4">
+              <h2 class="text-sm font-semibold text-white">Agent Health</h2>
+
+              <div class="mt-3 space-y-2">
+                <div class="hi5-soft-card p-3">
+                  <div class="flex items-center justify-between gap-3">
+                    <p class="text-xs text-slate-400">Heartbeat</p>
+                    <p class="text-xs font-bold text-emerald-300">Active</p>
+                  </div>
+                </div>
+
+                <div class="hi5-soft-card p-3">
+                  <div class="flex items-center justify-between gap-3">
+                    <p class="text-xs text-slate-400">Inventory</p>
+                    <p class="text-xs font-bold text-blue-300">Reporting</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </section>
+        </section>
+
+        <section data-panel="hardware" class="device-panel hidden space-y-4">
+          <section class="hi5-panel p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <h2 class="text-sm font-semibold text-white">Hardware Inventory</h2>
+                <p class="mt-1 text-xs text-slate-400">Reported by the agent inventory endpoint.</p>
+              </div>
+            </div>
+
+            <div class="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">CPU</p>
+                <p id="device-cpu" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">RAM</p>
+                <p id="device-ram" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Disk</p>
+                <p id="device-disk" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">GPU</p>
+                <p id="device-gpu" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Logged In User</p>
+                <p id="device-user" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">BitLocker</p>
+                <p id="device-bitlocker" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">TPM</p>
+                <p id="device-tpm" class="mt-1 truncate text-sm font-semibold text-white">—</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Serial</p>
+                <p class="mt-1 truncate text-sm font-semibold text-white">Coming soon</p>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section data-panel="software" class="device-panel hidden space-y-4">
+          <section class="hi5-panel p-4">
+            <h2 class="text-sm font-semibold text-white">Software Inventory</h2>
+            <p class="mt-2 text-sm leading-6 text-slate-400">
+              Installed applications, versions, patch status, CVEs, and update actions will appear here.
+            </p>
+
+            <div class="mt-3 grid gap-3 sm:grid-cols-3">
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Installed Apps</p>
+                <p class="mt-1 text-sm font-semibold text-white">Coming soon</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Pending Updates</p>
+                <p class="mt-1 text-sm font-semibold text-white">Coming soon</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Critical CVEs</p>
+                <p class="mt-1 text-sm font-semibold text-white">Coming soon</p>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section data-panel="tools" class="device-panel hidden space-y-4">
+          <section class="hi5-panel p-4">
+            <h2 class="text-sm font-semibold text-white">Remote Tools</h2>
+            <p class="mt-2 text-sm leading-6 text-slate-400">
+              Tools will become active as agent modules are added.
+            </p>
+
+            <div class="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-3">
+              <button class="rounded-2xl bg-white px-3 py-3 text-xs font-bold text-slate-950">Remote Control</button>
+              <button class="hi5-card px-3 py-3 text-xs font-bold text-white">Terminal</button>
+              <button class="hi5-card px-3 py-3 text-xs font-bold text-white">File Browser</button>
+              <button class="hi5-card px-3 py-3 text-xs font-bold text-white">PowerShell</button>
+              <button class="hi5-card px-3 py-3 text-xs font-bold text-white">Services</button>
+              <button class="hi5-card px-3 py-3 text-xs font-bold text-white">Processes</button>
+            </div>
+          </section>
+        </section>
+
+        <section data-panel="settings" class="device-panel hidden space-y-4">
+          <section class="hi5-panel p-4">
+            <h2 class="text-sm font-semibold text-white">Device Settings</h2>
+            <p class="mt-2 text-sm leading-6 text-slate-400">
+              Device group, policies, maintenance mode, and agent configuration will appear here.
+            </p>
+
+            <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Device Group</p>
+                <p class="mt-1 text-sm font-semibold text-white">Default</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Policy</p>
+                <p class="mt-1 text-sm font-semibold text-white">Not assigned</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Maintenance Mode</p>
+                <p class="mt-1 text-sm font-semibold text-white">Disabled</p>
+              </div>
+
+              <div class="hi5-soft-card p-3">
+                <p class="text-xs text-slate-400">Agent Channel</p>
+                <p class="mt-1 text-sm font-semibold text-white">Stable</p>
+              </div>
+            </div>
+          </section>
+        </section>
       </div>
 
-      <div class="rounded-2xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
-        <p style="color: var(--hi5-muted);">Status</p>
-        <p id="device-status" class="font-bold capitalize" style="color: var(--hi5-fg);">—</p>
-      </div>
+      <script define:vars={{ deviceId }}>
+        const value = (v) => v ?? "—";
 
-      <div class="rounded-2xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
-        <p style="color: var(--hi5-muted);">Agent Version</p>
-        <p id="device-agent" class="font-bold" style="color: var(--hi5-fg);">—</p>
-      </div>
+        function setText(id, text) {
+          const el = document.getElementById(id);
+          if (el) el.textContent = text;
+        }
 
-      <div class="rounded-2xl border p-5" style="background: var(--hi5-card); border-color: var(--hi5-border);">
-        <p style="color: var(--hi5-muted);">Last Seen</p>
-        <p id="device-last-seen" class="font-bold" style="color: var(--hi5-fg);">—</p>
-      </div>
-    </section>
+        function setStatusPill(status) {
+          const el = document.getElementById("device-status-pill");
+          if (!el) return;
 
-    <section class="rounded-3xl border p-6" style="background: var(--hi5-card); border-color: var(--hi5-border);">
-      <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Network</h2>
+          const s = String(status ?? "unknown").toLowerCase();
+          el.textContent = s;
 
-      <div class="mt-4 grid gap-4 md:grid-cols-2">
-        <div>
-          <p style="color: var(--hi5-muted);">Public IP</p>
-          <p id="device-public-ip" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
+          el.className =
+            s === "online"
+              ? "shrink-0 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold capitalize text-emerald-300"
+              : s === "warning"
+                ? "shrink-0 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs font-bold capitalize text-amber-300"
+                : "shrink-0 rounded-full border border-slate-400/20 bg-slate-400/10 px-3 py-1 text-xs font-bold capitalize text-slate-300";
+        }
 
-        <div>
-          <p style="color: var(--hi5-muted);">Local IP</p>
-          <p id="device-local-ip" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
-      </div>
-    </section>
+        function setTab(activeTab) {
+          document.querySelectorAll(".device-tab").forEach((button) => {
+            const isActive = button.dataset.tab === activeTab;
+            button.style.background = isActive ? "rgb(37 99 235 / 0.22)" : "transparent";
+            button.style.color = isActive ? "rgb(191 219 254)" : "rgb(148 163 184)";
+            button.style.border = isActive ? "1px solid rgb(96 165 250 / 0.28)" : "1px solid transparent";
+          });
 
-    <section class="rounded-3xl border p-6" style="background: var(--hi5-card); border-color: var(--hi5-border);">
-      <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Inventory</h2>
+          document.querySelectorAll(".device-panel").forEach((panel) => {
+            panel.classList.toggle("hidden", panel.dataset.panel !== activeTab);
+          });
 
-      <div class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
-          <p style="color: var(--hi5-muted);">CPU</p>
-          <p id="device-cpu" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
+          const url = new URL(window.location.href);
+          url.searchParams.set("tab", activeTab);
+          window.history.replaceState({}, "", url);
+        }
 
-        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
-          <p style="color: var(--hi5-muted);">RAM</p>
-          <p id="device-ram" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
+        async function loadDevice() {
+          const response = await fetch(`/api/devices/${deviceId}`);
+          const data = await response.json();
 
-        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
-          <p style="color: var(--hi5-muted);">Disk</p>
-          <p id="device-disk" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
+          if (!data.success || !data.device) {
+            setText("device-title", "Device not found");
+            return;
+          }
 
-        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
-          <p style="color: var(--hi5-muted);">GPU</p>
-          <p id="device-gpu" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
+          const d = data.device;
 
-        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
-          <p style="color: var(--hi5-muted);">Logged In User</p>
-          <p id="device-user" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
+          setText("device-title", value(d.device_name));
+          setText("device-os", `${value(d.operating_system)} ${d.os_version ?? ""}`);
+          setText("device-hostname", value(d.hostname));
+          setText("device-status", value(d.status));
+          setStatusPill(d.status);
+          setText("device-agent", value(d.agent_version));
+          setText("device-last-seen", d.last_seen_at ? "Recently" : "Never");
+          setText("device-public-ip", value(d.public_ip));
+          setText("device-local-ip", value(d.local_ip));
 
-        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
-          <p style="color: var(--hi5-muted);">BitLocker</p>
-          <p id="device-bitlocker" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
+          setText("device-cpu", value(d.cpu));
+          setText("device-ram", d.ram_gb ? `${d.ram_gb} GB` : "—");
+          setText("device-disk", d.disk_gb ? `${d.disk_gb} GB` : "—");
+          setText("device-gpu", value(d.gpu));
+          setText("device-user", value(d.logged_in_user));
+          setText("device-bitlocker", d.bitlocker_enabled === true ? "Enabled" : d.bitlocker_enabled === false ? "Disabled" : "—");
+          setText("device-tpm", value(d.tpm_version));
+        }
 
-        <div class="rounded-2xl border p-4" style="background: var(--hi5-card-soft); border-color: var(--hi5-border);">
-          <p style="color: var(--hi5-muted);">TPM</p>
-          <p id="device-tpm" class="font-bold" style="color: var(--hi5-fg);">—</p>
-        </div>
-      </div>
-    </section>
+        document.querySelectorAll(".device-tab").forEach((button) => {
+          button.addEventListener("click", () => setTab(button.dataset.tab || "overview"));
+        });
 
-    <section class="rounded-3xl border p-6" style="background: var(--hi5-card); border-color: var(--hi5-border);">
-      <h2 class="text-xl font-black" style="color: var(--hi5-fg);">Actions</h2>
-
-      <div class="mt-4 flex flex-wrap gap-3">
-        <button class="rounded-2xl border px-4 py-3">Remote Control</button>
-        <button class="rounded-2xl border px-4 py-3">Terminal</button>
-        <button class="rounded-2xl border px-4 py-3">File Manager</button>
-        <button class="rounded-2xl border px-4 py-3">PowerShell</button>
-        <button class="rounded-2xl border px-4 py-3">Restart</button>
-        <button class="rounded-2xl border px-4 py-3">Shutdown</button>
-      </div>
-    </section>
-  </div>
-
-  <script define:vars={{ deviceId }}>
-    const value = (v) => v ?? "—";
-
-    function setText(id, text) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = text;
-    }
-
-    async function loadDevice() {
-      const response = await fetch(`/api/devices/${deviceId}`);
-      const data = await response.json();
-
-      if (!data.success || !data.device) {
-        setText("device-title", "Device not found");
-        return;
-      }
-
-      const d = data.device;
-
-      setText("device-title", value(d.device_name));
-      setText("device-os", `${value(d.operating_system)} ${d.os_version ?? ""}`);
-      setText("device-hostname", value(d.hostname));
-      setText("device-status", value(d.status));
-      setText("device-agent", value(d.agent_version));
-      setText("device-last-seen", d.last_seen_at ? "Recently" : "Never");
-      setText("device-public-ip", value(d.public_ip));
-      setText("device-local-ip", value(d.local_ip));
-
-      setText("device-cpu", value(d.cpu));
-      setText("device-ram", d.ram_gb ? `${d.ram_gb} GB` : "—");
-      setText("device-disk", d.disk_gb ? `${d.disk_gb} GB` : "—");
-      setText("device-gpu", value(d.gpu));
-      setText("device-user", value(d.logged_in_user));
-      setText("device-bitlocker", d.bitlocker_enabled === true ? "Enabled" : d.bitlocker_enabled === false ? "Disabled" : "—");
-      setText("device-tpm", value(d.tpm_version));
-    }
-
-    loadDevice().catch(() => {
-      setText("device-title", "Could not load device");
-    });
-  </script>
-</DashboardLayout>
+        const initialTab = new URL(window.location.href).searchParams.get("tab") || "overview";
+        setTab(initialTab);
+        loadDevice().catch(() => {
+          setText("device-title", "Could not load device");
+        });
+      </script>
+    </AppShell>
+  </body>
+</html>
