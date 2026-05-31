@@ -1,3 +1,7 @@
+hi5central.com {
+  redir https://app.hi5central.com{uri} 301
+}
+
 api.hi5central.com {
   reverse_proxy api:3001
 }
@@ -11,5 +15,10 @@ app.hi5central.com {
 }
 
 status.hi5central.com {
+  redir / /status/hi5central 302
+  reverse_proxy host.docker.internal:3002
+}
+
+status-admin.hi5central.com {
   reverse_proxy host.docker.internal:3002
 }
