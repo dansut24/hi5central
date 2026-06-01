@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 
 import { db } from "../lib/db";
+import { writeAuditLog } from "../lib/audit";
 import { requireAuth, type AuthContext } from "../middleware/session";
 import { requirePlatformAdmin } from "../middleware/platformAdmin";
 
@@ -83,6 +84,203 @@ platformAdminRoutes.get("/tenants", async (c) => {
   });
 });
 
+
+
+platformAdminRoutes.get("/tenants/:id", async (c) => {
+  const id = c.req.param("id");
+
+  const tenant = await db
+    .selectFrom("tenants")
+    .selectAll()
+    .where("id", "=", id)
+    .executeTakeFirst();
+
+  if (!tenant) {
+    return c.json({ success: false, error: "tenant_not_found" }, 404);
+  }
+
+  const [memberships, branding, subscription, devices, auditLogs] = await Promise.all([
+    db
+      .selectFrom("memberships")
+      .innerJoin("users", "users.id", "memberships.user_id")
+      .select([
+        "memberships.id",
+        "memberships.role",
+        "memberships.created_at",
+        "users.id as user_id",
+        "users.email",
+        "users.first_name",
+        "users.last_name",
+        "users.status"
+      ])
+      .where("memberships.tenant_id", "=", id)
+      .orderBy("memberships.created_at", "desc")
+      .execute(),
+
+    db
+      .selectFrom("tenant_branding")
+      .selectAll()
+      .where("tenant_id", "=", id)
+      .executeTakeFirst(),
+
+    db
+      .selectFrom("subscriptions")
+      .selectAll()
+      .where("tenant_id", "=", id)
+      .executeTakeFirst(),
+
+    db
+      .selectFrom("devices")
+      .select(({ fn }) => fn.count("id").as("count"))
+      .where("tenant_id", "=", id)
+      .executeTakeFirst(),
+
+    db
+      .selectFrom("audit_logs")
+      .selectAll()
+      .where("tenant_id", "=", id)
+      .orderBy("created_at", "desc")
+      .limit(20)
+      .execute()
+  ]);
+
+  return c.json({
+    success: true,
+    tenant,
+    memberships,
+    branding,
+    subscription,
+    metrics: {
+      devices: Number(devices?.count ?? 0)
+    },
+    audit_logs: auditLogs
+  });
+});
+
+platformAdminRoutes.patch("/tenants/:id", async (c) => {
+  const id = c.req.param("id");
+  const user = c.get("user");
+  const body = await c.req.json().catch(() => ({}));
+
+  const allowedStatus = ["active", "trial", "suspended", "cancelled", "deleted"];
+  const allowedPlans = ["trial", "starter", "pro", "enterprise"];
+
+  const update: Record<string, unknown> = {
+    updated_at: new Date()
+  };
+
+  if (typeof body.name === "string" && body.name.trim()) {
+    update.name = body.name.trim();
+  }
+
+  if (typeof body.status === "string" && allowedStatus.includes(body.status)) {
+    update.status = body.status;
+  }
+
+  if (typeof body.plan === "string" && allowedPlans.includes(body.plan)) {
+    update.plan = body.plan;
+  }
+
+  if (typeof body.selected_product === "string") {
+    update.selected_product = body.selected_product || null;
+  }
+
+  const tenant = await db
+    .updateTable("tenants")
+    .set(update)
+    .where("id", "=", id)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (!tenant) {
+    return c.json({ success: false, error: "tenant_not_found" }, 404);
+  }
+
+  await writeAuditLog({
+    tenantId: tenant.id,
+    userId: user.id,
+    action: "platform.tenant_updated",
+    resourceType: "tenant",
+    resourceId: tenant.id,
+    metadata: {
+      update
+    }
+  });
+
+  return c.json({
+    success: true,
+    tenant
+  });
+});
+
+platformAdminRoutes.post("/tenants/:id/reset-onboarding", async (c) => {
+  const id = c.req.param("id");
+  const user = c.get("user");
+
+  const tenant = await db
+    .updateTable("tenants")
+    .set({
+      selected_product: null,
+      onboarding_completed_at: null,
+      updated_at: new Date()
+    })
+    .where("id", "=", id)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (!tenant) {
+    return c.json({ success: false, error: "tenant_not_found" }, 404);
+  }
+
+  await writeAuditLog({
+    tenantId: tenant.id,
+    userId: user.id,
+    action: "platform.tenant_onboarding_reset",
+    resourceType: "tenant",
+    resourceId: tenant.id,
+    metadata: {}
+  });
+
+  return c.json({
+    success: true,
+    tenant
+  });
+});
+
+platformAdminRoutes.post("/tenants/:id/soft-delete", async (c) => {
+  const id = c.req.param("id");
+  const user = c.get("user");
+
+  const tenant = await db
+    .updateTable("tenants")
+    .set({
+      status: "deleted",
+      updated_at: new Date()
+    })
+    .where("id", "=", id)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (!tenant) {
+    return c.json({ success: false, error: "tenant_not_found" }, 404);
+  }
+
+  await writeAuditLog({
+    tenantId: tenant.id,
+    userId: user.id,
+    action: "platform.tenant_soft_deleted",
+    resourceType: "tenant",
+    resourceId: tenant.id,
+    metadata: {
+      tenant_slug: tenant.slug
+    }
+  });
+
+  return c.json({
+    success: true,
+    tenant
+  });
+});
 
 platformAdminRoutes.post("/tenants/:id/status", async (c) => {
   const id = c.req.param("id");

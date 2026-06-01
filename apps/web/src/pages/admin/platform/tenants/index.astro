@@ -98,7 +98,11 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
                 </div>
 
                 <div class="flex flex-wrap gap-2">
-                  <a href="https://${safe(tenant.slug)}.hi5central.com/dashboard" class="rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-950">
+                  <a href="/admin/platform/tenants/${safe(tenant.id)}" class="rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-950">
+                    View
+                  </a>
+
+                  <a href="https://${safe(tenant.slug)}.hi5central.com/dashboard" class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-black text-white">
                     Open
                   </a>
 

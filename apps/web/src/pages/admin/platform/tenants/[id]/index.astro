@@ -1,0 +1,231 @@
+---
+import PlatformAdminShell from "../../../../../components/platform-admin/PlatformAdminShell.astro";
+
+const { id } = Astro.params;
+---
+
+<html lang="en">
+  <body>
+    <PlatformAdminShell title="Tenant Detail">
+      <div class="mx-auto w-full max-w-[1150px] space-y-4">
+        <section class="hi5-panel p-5">
+          <a href="/admin/platform/tenants" class="text-xs font-bold text-blue-300">← Back to tenants</a>
+          <p class="mt-4 text-xs font-bold uppercase tracking-wide text-blue-300">Tenant Lifecycle</p>
+          <h1 id="tenant-name" class="mt-2 text-2xl font-black text-white">Loading tenant...</h1>
+          <p id="tenant-meta" class="mt-2 text-sm text-slate-400">Preparing tenant details.</p>
+        </section>
+
+        <section class="grid gap-4 lg:grid-cols-[1fr_0.8fr]">
+          <section class="hi5-panel p-5">
+            <h2 class="text-sm font-semibold text-white">Tenant Settings</h2>
+
+            <div class="mt-4 grid gap-3">
+              <label class="block text-xs font-bold text-slate-300">
+                Name
+                <input id="tenant-name-input" class="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none" />
+              </label>
+
+              <label class="block text-xs font-bold text-slate-300">
+                Status
+                <select id="tenant-status" class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none">
+                  <option value="trial">trial</option>
+                  <option value="active">active</option>
+                  <option value="suspended">suspended</option>
+                  <option value="cancelled">cancelled</option>
+                  <option value="deleted">deleted</option>
+                </select>
+              </label>
+
+              <label class="block text-xs font-bold text-slate-300">
+                Plan
+                <select id="tenant-plan" class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none">
+                  <option value="trial">trial</option>
+                  <option value="starter">starter</option>
+                  <option value="pro">pro</option>
+                  <option value="enterprise">enterprise</option>
+                </select>
+              </label>
+
+              <label class="block text-xs font-bold text-slate-300">
+                Selected Product
+                <select id="tenant-product" class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none">
+                  <option value="">none</option>
+                  <option value="control">control</option>
+                  <option value="itsm">itsm</option>
+                  <option value="platform">platform</option>
+                </select>
+              </label>
+
+              <button id="save-tenant" class="rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950">
+                Save Changes
+              </button>
+            </div>
+          </section>
+
+          <section class="space-y-4">
+            <section class="hi5-panel p-5">
+              <h2 class="text-sm font-semibold text-white">Lifecycle Actions</h2>
+
+              <div class="mt-4 grid gap-2">
+                <button id="reset-onboarding" class="hi5-card px-4 py-3 text-left text-sm font-black text-white">
+                  Reset onboarding
+                </button>
+
+                <button id="soft-delete" class="rounded-2xl border border-red-400/20 bg-red-400/10 px-4 py-3 text-left text-sm font-black text-red-300">
+                  Soft delete tenant
+                </button>
+              </div>
+            </section>
+
+            <section class="hi5-panel p-5">
+              <h2 class="text-sm font-semibold text-white">Metrics</h2>
+
+              <div class="mt-4 grid grid-cols-2 gap-3">
+                <div class="hi5-soft-card p-3">
+                  <p class="text-xs text-slate-400">Devices</p>
+                  <p id="device-count" class="mt-1 text-2xl font-black text-white">—</p>
+                </div>
+
+                <div class="hi5-soft-card p-3">
+                  <p class="text-xs text-slate-400">Users</p>
+                  <p id="user-count" class="mt-1 text-2xl font-black text-white">—</p>
+                </div>
+              </div>
+            </section>
+          </section>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <h2 class="text-sm font-semibold text-white">Tenant Users</h2>
+          <div id="memberships" class="mt-4 space-y-2">
+            <div class="hi5-soft-card p-3 text-sm text-slate-400">Loading users...</div>
+          </div>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <h2 class="text-sm font-semibold text-white">Recent Tenant Activity</h2>
+          <div id="audit-logs" class="mt-4 space-y-2">
+            <div class="hi5-soft-card p-3 text-sm text-slate-400">Loading activity...</div>
+          </div>
+        </section>
+      </div>
+
+      <script define:vars={{ tenantId: id }}>
+        let currentTenant = null;
+
+        function safe(value) {
+          return String(value ?? "—")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
+        }
+
+        function date(value) {
+          if (!value) return "—";
+          return new Date(value).toLocaleString();
+        }
+
+        async function loadTenant() {
+          const response = await fetch(`/api/platform-admin/tenants/${tenantId}`);
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            document.getElementById("tenant-name").textContent = "Could not load tenant";
+            return;
+          }
+
+          currentTenant = data.tenant;
+
+          document.getElementById("tenant-name").textContent = data.tenant.name;
+          document.getElementById("tenant-meta").textContent =
+            `${data.tenant.slug}.hi5central.com · ${data.tenant.plan} · ${data.tenant.status}`;
+
+          document.getElementById("tenant-name-input").value = data.tenant.name || "";
+          document.getElementById("tenant-status").value = data.tenant.status || "trial";
+          document.getElementById("tenant-plan").value = data.tenant.plan || "trial";
+          document.getElementById("tenant-product").value = data.tenant.selected_product || "";
+
+          document.getElementById("device-count").textContent = data.metrics?.devices ?? 0;
+          document.getElementById("user-count").textContent = data.memberships?.length ?? 0;
+
+          document.getElementById("memberships").innerHTML = (data.memberships ?? []).map((member) => `
+            <article class="hi5-soft-card p-3">
+              <p class="text-sm font-bold text-white">${safe(member.email)}</p>
+              <p class="mt-1 text-xs text-slate-400">
+                ${safe(member.first_name)} ${safe(member.last_name)}
+                · Role: ${safe(member.role)}
+                · Status: ${safe(member.status)}
+              </p>
+            </article>
+          `).join("") || `<div class="hi5-soft-card p-3 text-sm text-slate-400">No users found.</div>`;
+
+          document.getElementById("audit-logs").innerHTML = (data.audit_logs ?? []).map((log) => `
+            <article class="hi5-soft-card p-3">
+              <p class="text-sm font-bold text-white">${safe(log.action)}</p>
+              <p class="mt-1 text-xs text-slate-400">${date(log.created_at)}</p>
+            </article>
+          `).join("") || `<div class="hi5-soft-card p-3 text-sm text-slate-400">No recent activity.</div>`;
+        }
+
+        async function patchTenant(payload) {
+          const response = await fetch(`/api/platform-admin/tenants/${tenantId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            alert(data?.error || "Tenant update failed");
+            return false;
+          }
+
+          await loadTenant();
+          return true;
+        }
+
+        document.getElementById("save-tenant")?.addEventListener("click", async () => {
+          await patchTenant({
+            name: document.getElementById("tenant-name-input").value,
+            status: document.getElementById("tenant-status").value,
+            plan: document.getElementById("tenant-plan").value,
+            selected_product: document.getElementById("tenant-product").value
+          });
+        });
+
+        document.getElementById("reset-onboarding")?.addEventListener("click", async () => {
+          if (!confirm("Reset onboarding for this tenant?")) return;
+
+          const response = await fetch(`/api/platform-admin/tenants/${tenantId}/reset-onboarding`, {
+            method: "POST"
+          });
+
+          if (!response.ok) {
+            alert("Reset onboarding failed");
+            return;
+          }
+
+          await loadTenant();
+        });
+
+        document.getElementById("soft-delete")?.addEventListener("click", async () => {
+          if (!confirm("Soft delete this tenant? This will mark it deleted but keep records.")) return;
+
+          const response = await fetch(`/api/platform-admin/tenants/${tenantId}/soft-delete`, {
+            method: "POST"
+          });
+
+          if (!response.ok) {
+            alert("Soft delete failed");
+            return;
+          }
+
+          await loadTenant();
+        });
+
+        loadTenant();
+      </script>
+    </PlatformAdminShell>
+  </body>
+</html>
