@@ -9,6 +9,67 @@ export const platformAdminRoutes = new Hono<AuthContext>();
 platformAdminRoutes.use("*", requireAuth);
 platformAdminRoutes.use("*", requirePlatformAdmin);
 
+
+
+platformAdminRoutes.get("/dashboard", async (c) => {
+  const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  const [
+    tenants,
+    activeTenants,
+    trialTenants,
+    suspendedTenants,
+    users,
+    activeUsers,
+    platformAdmins,
+    recentTenants,
+    recentUsers,
+    auditEvents
+  ] = await Promise.all([
+    db.selectFrom("tenants").select(({ fn }) => fn.count("id").as("count")).executeTakeFirst(),
+    db.selectFrom("tenants").select(({ fn }) => fn.count("id").as("count")).where("status", "=", "active").executeTakeFirst(),
+    db.selectFrom("tenants").select(({ fn }) => fn.count("id").as("count")).where("plan", "=", "trial").executeTakeFirst(),
+    db.selectFrom("tenants").select(({ fn }) => fn.count("id").as("count")).where("status", "=", "suspended").executeTakeFirst(),
+    db.selectFrom("users").select(({ fn }) => fn.count("id").as("count")).executeTakeFirst(),
+    db.selectFrom("users").select(({ fn }) => fn.count("id").as("count")).where("status", "=", "active").executeTakeFirst(),
+    db.selectFrom("users").select(({ fn }) => fn.count("id").as("count")).where("platform_role", "=", "platform_admin").executeTakeFirst(),
+    db.selectFrom("tenants").select(({ fn }) => fn.count("id").as("count")).where("created_at", ">", since7d).executeTakeFirst(),
+    db.selectFrom("users").select(({ fn }) => fn.count("id").as("count")).where("created_at", ">", since7d).executeTakeFirst(),
+    db.selectFrom("audit_logs").select(({ fn }) => fn.count("id").as("count")).where("created_at", ">", since24h).executeTakeFirst()
+  ]);
+
+  return c.json({
+    success: true,
+    metrics: {
+      tenants: Number(tenants?.count ?? 0),
+      active_tenants: Number(activeTenants?.count ?? 0),
+      trial_tenants: Number(trialTenants?.count ?? 0),
+      suspended_tenants: Number(suspendedTenants?.count ?? 0),
+      users: Number(users?.count ?? 0),
+      active_users: Number(activeUsers?.count ?? 0),
+      platform_admins: Number(platformAdmins?.count ?? 0),
+      new_tenants_7d: Number(recentTenants?.count ?? 0),
+      new_users_7d: Number(recentUsers?.count ?? 0),
+      audit_events_24h: Number(auditEvents?.count ?? 0)
+    }
+  });
+});
+
+platformAdminRoutes.get("/audit-logs", async (c) => {
+  const logs = await db
+    .selectFrom("audit_logs")
+    .selectAll()
+    .orderBy("created_at", "desc")
+    .limit(200)
+    .execute();
+
+  return c.json({
+    success: true,
+    logs
+  });
+});
+
 platformAdminRoutes.get("/tenants", async (c) => {
   const tenants = await db
     .selectFrom("tenants")

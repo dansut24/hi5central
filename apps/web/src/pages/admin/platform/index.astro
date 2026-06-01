@@ -6,50 +6,30 @@ import PlatformAdminShell from "../../../components/platform-admin/PlatformAdmin
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Platform Admin | Hi5Central</title>
+    <title>Platform Dashboard | Hi5Central</title>
   </head>
 
   <body>
-    <PlatformAdminShell title="Platform Admin">
-      <div class="mx-auto w-full max-w-[1100px] space-y-4">
+    <PlatformAdminShell title="Platform Dashboard">
+      <div class="mx-auto w-full max-w-[1200px] space-y-4">
         <section class="hi5-panel p-5">
           <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Hi5Central Staff</p>
-          <h1 class="mt-2 text-2xl font-black text-white">Platform Admin</h1>
+          <h1 class="mt-2 text-2xl font-black text-white">Platform Dashboard</h1>
           <p class="mt-2 text-sm leading-6 text-slate-400">
-            Manage the Hi5Central platform, customer tenants, users, trials, and system operations.
+            Control plane overview for tenants, users, trials, activity, and platform operations.
           </p>
         </section>
 
-        <section class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <article class="hi5-panel p-4">
-            <p class="text-xs text-slate-400">Tenants</p>
-            <p id="tenant-count" class="mt-2 text-2xl font-black text-white">—</p>
-          </article>
-
-          <article class="hi5-panel p-4">
-            <p class="text-xs text-slate-400">Users</p>
-            <p id="user-count" class="mt-2 text-2xl font-black text-white">—</p>
-          </article>
-
-          <article class="hi5-panel p-4">
-            <p class="text-xs text-slate-400">Trials</p>
-            <p id="trial-count" class="mt-2 text-2xl font-black text-blue-300">—</p>
-          </article>
-
-          <article class="hi5-panel p-4">
-            <p class="text-xs text-slate-400">Active</p>
-            <p id="active-count" class="mt-2 text-2xl font-black text-emerald-300">—</p>
-          </article>
+        <section id="dashboard-grid" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div class="hi5-soft-card p-4 text-sm text-slate-400">Loading dashboard...</div>
         </section>
 
-        <section class="grid gap-4 lg:grid-cols-2">
+        <section class="grid gap-4 lg:grid-cols-[1fr_0.9fr]">
           <section class="hi5-panel p-5">
-            <h2 class="text-sm font-semibold text-white">Management</h2>
-            <p class="mt-2 text-sm text-slate-400">
-              Common platform administration tasks.
-            </p>
+            <h2 class="text-sm font-semibold text-white">Platform Operations</h2>
+            <p class="mt-2 text-sm text-slate-400">Quick links for common platform administration tasks.</p>
 
-            <div class="mt-4 grid gap-2">
+            <div class="mt-4 grid gap-2 sm:grid-cols-2">
               <a href="/admin/platform/tenants" class="rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950">
                 Manage tenants
               </a>
@@ -58,38 +38,33 @@ import PlatformAdminShell from "../../../components/platform-admin/PlatformAdmin
                 Manage users
               </a>
 
-              <button class="hi5-card px-4 py-3 text-left text-sm font-black text-white">
-                Audit logs
-              </button>
+              <a href="/admin/platform/audit" class="hi5-card px-4 py-3 text-sm font-black text-white">
+                View audit log
+              </a>
 
-              <button class="hi5-card px-4 py-3 text-left text-sm font-black text-white">
+              <a href="/admin/platform/system" class="hi5-card px-4 py-3 text-sm font-black text-white">
                 System health
-              </button>
+              </a>
             </div>
           </section>
 
           <section class="hi5-panel p-5">
-            <h2 class="text-sm font-semibold text-white">Admin Notes</h2>
+            <h2 class="text-sm font-semibold text-white">Recent Summary</h2>
+
             <div class="mt-4 space-y-2">
               <div class="hi5-soft-card p-3">
-                <p class="text-sm font-bold text-white">Platform area</p>
-                <p class="mt-1 text-xs leading-5 text-slate-400">
-                  app.hi5central.com is reserved for Hi5Central staff and platform operations.
-                </p>
+                <p class="text-xs text-slate-400">New tenants this week</p>
+                <p id="new-tenants" class="mt-1 text-xl font-black text-white">—</p>
               </div>
 
               <div class="hi5-soft-card p-3">
-                <p class="text-sm font-bold text-white">Tenant area</p>
-                <p class="mt-1 text-xs leading-5 text-slate-400">
-                  customer.hi5central.com is for customer admins, technicians, and devices.
-                </p>
+                <p class="text-xs text-slate-400">New users this week</p>
+                <p id="new-users" class="mt-1 text-xl font-black text-white">—</p>
               </div>
 
               <div class="hi5-soft-card p-3">
-                <p class="text-sm font-bold text-white">Security</p>
-                <p class="mt-1 text-xs leading-5 text-slate-400">
-                  Platform admin APIs require platform_admin access.
-                </p>
+                <p class="text-xs text-slate-400">Audit events in 24h</p>
+                <p id="audit-events" class="mt-1 text-xl font-black text-white">—</p>
               </div>
             </div>
           </section>
@@ -97,39 +72,61 @@ import PlatformAdminShell from "../../../components/platform-admin/PlatformAdmin
       </div>
 
       <script>
-        async function loadPlatformStats() {
+        function card(label, value, tone) {
+          const toneClass = {
+            default: "text-white",
+            green: "text-emerald-300",
+            blue: "text-blue-300",
+            amber: "text-amber-300",
+            purple: "text-purple-300",
+            orange: "text-orange-300"
+          }[tone || "default"];
+
+          return `
+            <article class="hi5-panel p-4">
+              <p class="text-xs text-slate-400">${label}</p>
+              <p class="mt-2 text-3xl font-black ${toneClass}">${value}</p>
+            </article>
+          `;
+        }
+
+        async function loadDashboard() {
+          const grid = document.getElementById("dashboard-grid");
+
           try {
-            const [tenantRes, userRes] = await Promise.all([
-              fetch("/api/platform-admin/tenants"),
-              fetch("/api/platform-admin/users")
-            ]);
+            const response = await fetch("/api/platform-admin/dashboard");
+            const data = await response.json();
 
-            const tenantData = await tenantRes.json();
-            const userData = await userRes.json();
-
-            if (!tenantRes.ok || !userRes.ok || !tenantData.success || !userData.success) {
-              return;
+            if (!response.ok || !data.success) {
+              throw new Error("dashboard_failed");
             }
 
-            const tenants = tenantData.tenants ?? [];
-            const users = userData.users ?? [];
+            const m = data.metrics;
 
-            const trials = tenants.filter((tenant) => tenant.plan === "trial").length;
-            const active = tenants.filter((tenant) => tenant.status === "active").length;
+            grid.innerHTML = [
+              card("Total Tenants", m.tenants, "default"),
+              card("Active Tenants", m.active_tenants, "green"),
+              card("Trial Tenants", m.trial_tenants, "blue"),
+              card("Suspended", m.suspended_tenants, "amber"),
+              card("Users", m.users, "default"),
+              card("Active Users", m.active_users, "green"),
+              card("Platform Admins", m.platform_admins, "purple"),
+              card("Audit Events 24h", m.audit_events_24h, "orange")
+            ].join("");
 
-            document.getElementById("tenant-count").textContent = tenants.length;
-            document.getElementById("user-count").textContent = users.length;
-            document.getElementById("trial-count").textContent = trials;
-            document.getElementById("active-count").textContent = active;
+            document.getElementById("new-tenants").textContent = m.new_tenants_7d;
+            document.getElementById("new-users").textContent = m.new_users_7d;
+            document.getElementById("audit-events").textContent = m.audit_events_24h;
           } catch {
-            document.getElementById("tenant-count").textContent = "0";
-            document.getElementById("user-count").textContent = "0";
-            document.getElementById("trial-count").textContent = "0";
-            document.getElementById("active-count").textContent = "0";
+            grid.innerHTML = `
+              <div class="rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300">
+                Could not load platform dashboard.
+              </div>
+            `;
           }
         }
 
-        loadPlatformStats();
+        loadDashboard();
       </script>
     </PlatformAdminShell>
   </body>
