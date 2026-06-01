@@ -159,6 +159,18 @@ export interface DeviceActionsTable {
   completed_at: Date | null;
 }
 
+
+export interface PlatformImpersonationTokensTable {
+  id: Generated<string>;
+  token_hash: string;
+  platform_user_id: string;
+  impersonated_user_id: string;
+  tenant_id: string;
+  expires_at: Date;
+  used_at: Date | null;
+  created_at: Generated<Date>;
+}
+
 export interface Database {
   tenants: TenantsTable;
   users: UsersTable;
@@ -173,4 +185,5 @@ export interface Database {
   device_groups: DeviceGroupsTable;
   devices: DevicesTable;
   device_actions: DeviceActionsTable;
+  platform_impersonation_tokens: PlatformImpersonationTokensTable;
 }

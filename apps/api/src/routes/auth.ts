@@ -379,6 +379,119 @@ authRoutes.post("/onboarding/complete", requireAuth, async (c) => {
   });
 });
 
+
+authRoutes.post("/impersonation/consume", async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const token = String(body.token ?? "").trim();
+
+  const ipAddress = c.req.header("x-forwarded-for") ?? null;
+  const userAgent = c.req.header("user-agent") ?? null;
+
+  if (!token) {
+    return c.json(
+      {
+        success: false,
+        error: "missing_token"
+      },
+      400
+    );
+  }
+
+  const tokenHash = hashToken(token);
+
+  const record = await db
+    .selectFrom("platform_impersonation_tokens")
+    .innerJoin("tenants", "tenants.id", "platform_impersonation_tokens.tenant_id")
+    .innerJoin("users", "users.id", "platform_impersonation_tokens.impersonated_user_id")
+    .select([
+      "platform_impersonation_tokens.id",
+      "platform_impersonation_tokens.platform_user_id",
+      "platform_impersonation_tokens.impersonated_user_id",
+      "platform_impersonation_tokens.tenant_id",
+      "platform_impersonation_tokens.expires_at",
+      "platform_impersonation_tokens.used_at",
+      "tenants.slug as tenant_slug",
+      "users.status as user_status"
+    ])
+    .where("platform_impersonation_tokens.token_hash", "=", tokenHash)
+    .executeTakeFirst();
+
+  if (!record) {
+    return c.json(
+      {
+        success: false,
+        error: "invalid_token"
+      },
+      404
+    );
+  }
+
+  if (record.used_at) {
+    return c.json(
+      {
+        success: false,
+        error: "token_already_used"
+      },
+      400
+    );
+  }
+
+  if (new Date(record.expires_at).getTime() < Date.now()) {
+    return c.json(
+      {
+        success: false,
+        error: "token_expired"
+      },
+      400
+    );
+  }
+
+  if (record.user_status !== "active") {
+    return c.json(
+      {
+        success: false,
+        error: "impersonated_user_inactive"
+      },
+      400
+    );
+  }
+
+  await db
+    .updateTable("platform_impersonation_tokens")
+    .set({
+      used_at: new Date()
+    })
+    .where("id", "=", record.id)
+    .execute();
+
+  const session = await createSession({
+    userId: record.impersonated_user_id,
+    ipAddress,
+    userAgent
+  });
+
+  setSessionCookie(c, session.token);
+
+  await writeAuditLog({
+    tenantId: record.tenant_id,
+    userId: record.platform_user_id,
+    action: "platform.impersonation_started",
+    resourceType: "tenant",
+    resourceId: record.tenant_id,
+    ipAddress,
+    userAgent,
+    metadata: {
+      tenant_slug: record.tenant_slug,
+      impersonated_user_id: record.impersonated_user_id
+    }
+  });
+
+  return c.json({
+    success: true,
+    redirect_url: "/dashboard"
+  });
+});
+
 authRoutes.post("/login", async (c) => {
   const body = await c.req.json().catch(() => null);
 
@@ -428,6 +541,14 @@ authRoutes.post("/login", async (c) => {
     .execute();
 
 
+
+  const session = await createSession({
+    userId: user.id,
+    ipAddress,
+    userAgent
+  });
+
+  setSessionCookie(c, session.token);
 
   await writeAuditLog({
     userId: user.id,

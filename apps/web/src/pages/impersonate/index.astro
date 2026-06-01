@@ -1,0 +1,78 @@
+---
+import "../../styles/global.css";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Impersonating Tenant | Hi5Central</title>
+  </head>
+
+  <body class="min-h-screen bg-[#050914] text-white">
+    <main class="flex min-h-screen items-center justify-center px-4 py-8">
+      <section class="w-full max-w-md rounded-[2rem] border border-white/10 bg-slate-950/80 p-6 shadow-2xl backdrop-blur-xl">
+        <div class="flex items-center gap-3">
+          <div class="grid h-12 w-12 place-items-center rounded-2xl border border-purple-400/30 bg-purple-500/15 text-sm font-black text-purple-200">
+            H5
+          </div>
+
+          <div>
+            <p class="text-sm font-black text-white">Hi5Central</p>
+            <p class="text-xs text-slate-400">Tenant impersonation</p>
+          </div>
+        </div>
+
+        <h1 class="mt-8 text-2xl font-black tracking-tight text-white">
+          Preparing tenant session…
+        </h1>
+
+        <p id="message" class="mt-3 text-sm leading-6 text-slate-400">
+          Please wait while we securely create your tenant session.
+        </p>
+
+        <div id="error" class="mt-5 hidden rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300"></div>
+      </section>
+    </main>
+
+    <script>
+      async function consumeImpersonationToken() {
+        const params = new URL(window.location.href).searchParams;
+        const token = params.get("token");
+        const error = document.getElementById("error");
+        const message = document.getElementById("message");
+
+        if (!token) {
+          if (error) {
+            error.textContent = "Missing impersonation token.";
+            error.classList.remove("hidden");
+          }
+          return;
+        }
+
+        const response = await fetch("/api/auth/impersonation/consume", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ token })
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok || !data?.success) {
+          if (message) message.textContent = "Could not start impersonation.";
+          if (error) {
+            error.textContent = data?.error || "Impersonation failed.";
+            error.classList.remove("hidden");
+          }
+          return;
+        }
+
+        window.location.href = data.redirect_url || "/dashboard";
+      }
+
+      consumeImpersonationToken();
+    </script>
+  </body>
+</html>

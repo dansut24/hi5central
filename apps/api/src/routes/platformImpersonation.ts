@@ -1,8 +1,8 @@
+import { randomBytes } from "node:crypto";
 import { Hono } from "hono";
+import { hashToken } from "@hi5central/auth";
 
 import { db } from "../lib/db";
-import { createSession } from "../lib/sessions";
-import { setSessionCookie } from "../lib/cookies";
 import { writeAuditLog } from "../lib/audit";
 import { requireAuth, type AuthContext } from "../middleware/session";
 import { requirePlatformAdmin } from "../middleware/platformAdmin";
@@ -56,18 +56,23 @@ platformImpersonationRoutes.post("/tenant/:tenantId", async (c) => {
     );
   }
 
-  const session = await createSession({
-    userId: membership.user_id,
-    ipAddress: c.req.header("x-forwarded-for") ?? null,
-    userAgent: c.req.header("user-agent") ?? null
-  });
+  const token = randomBytes(32).toString("base64url");
 
-  setSessionCookie(c, session.token);
+  await db
+    .insertInto("platform_impersonation_tokens")
+    .values({
+      token_hash: hashToken(token),
+      platform_user_id: platformUser.id,
+      impersonated_user_id: membership.user_id,
+      tenant_id: tenant.id,
+      expires_at: new Date(Date.now() + 5 * 60 * 1000)
+    })
+    .execute();
 
   await writeAuditLog({
     tenantId: tenant.id,
     userId: platformUser.id,
-    action: "platform.impersonation_started",
+    action: "platform.impersonation_token_created",
     resourceType: "tenant",
     resourceId: tenant.id,
     metadata: {
@@ -85,6 +90,6 @@ platformImpersonationRoutes.post("/tenant/:tenantId", async (c) => {
       email: membership.email,
       role: membership.role
     },
-    redirect_url: `https://${tenant.slug}.hi5central.com/dashboard`
+    redirect_url: `https://${tenant.slug}.hi5central.com/impersonate?token=${token}`
   });
 });

@@ -147,7 +147,8 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
                 return;
               }
 
-              window.location.href = `https://${slug}.hi5central.com/dashboard`;
+              const data = await res.json().catch(() => null);
+              window.location.href = data?.redirect_url || `https://${slug}.hi5central.com/impersonate`;
             });
           });
 
