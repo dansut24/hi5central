@@ -1,4 +1,5 @@
 FROM node:24-alpine
+
 WORKDIR /app
 
 RUN corepack enable
@@ -12,4 +13,4 @@ RUN pnpm --filter @hi5central/api build
 
 EXPOSE 3001
 
-CMD ["pnpm", "--filter", "@hi5central/api", "dev"]
+CMD ["pnpm", "--filter", "@hi5central/api", "start"]

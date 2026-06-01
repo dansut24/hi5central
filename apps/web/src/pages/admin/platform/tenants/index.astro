@@ -16,14 +16,22 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
           <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Platform Admin</p>
           <h1 class="mt-2 text-2xl font-black text-white">Tenants</h1>
           <p class="mt-2 text-sm text-slate-400">
-            View and delete test tenants from the platform.
+            View, open, impersonate, suspend, convert, and delete tenants.
           </p>
         </section>
 
         <section class="hi5-panel p-4">
-          <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="text-sm font-semibold text-white">Tenant List</h2>
-            <button id="refresh" class="hi5-card px-3 py-2 text-xs font-bold text-blue-200">Refresh</button>
+
+            <div class="flex gap-2">
+              <input
+                id="tenant-search"
+                class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500"
+                placeholder="Search tenants..."
+              />
+              <button id="refresh" class="hi5-card px-3 py-2 text-xs font-bold text-blue-200">Refresh</button>
+            </div>
           </div>
 
           <div id="tenants-list" class="mt-4 space-y-2">
@@ -33,6 +41,8 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
       </div>
 
       <script>
+        let allTenants = [];
+
         function safe(value) {
           return String(value ?? "—")
             .replaceAll("&", "&amp;")
@@ -45,19 +55,28 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
           return new Date(value).toLocaleString();
         }
 
-        async function loadTenants() {
+        function filteredTenants() {
+          const query = String(document.getElementById("tenant-search")?.value ?? "")
+            .toLowerCase()
+            .trim();
+
+          if (!query) return allTenants;
+
+          return allTenants.filter((tenant) => {
+            return (
+              String(tenant.name ?? "").toLowerCase().includes(query) ||
+              String(tenant.slug ?? "").toLowerCase().includes(query) ||
+              String(tenant.plan ?? "").toLowerCase().includes(query) ||
+              String(tenant.status ?? "").toLowerCase().includes(query)
+            );
+          });
+        }
+
+        function renderTenants() {
           const container = document.getElementById("tenants-list");
           if (!container) return;
 
-          const response = await fetch("/api/platform-admin/tenants");
-          const data = await response.json();
-
-          if (!response.ok || !data.success) {
-            container.innerHTML = `<div class="rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300">Could not load tenants.</div>`;
-            return;
-          }
-
-          const tenants = data.tenants ?? [];
+          const tenants = filteredTenants();
 
           if (!tenants.length) {
             container.innerHTML = `<div class="hi5-soft-card p-3 text-sm text-slate-400">No tenants found.</div>`;
@@ -66,23 +85,71 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
 
           container.innerHTML = tenants.map((tenant) => `
             <article class="hi5-soft-card p-3">
-              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                 <div class="min-w-0">
                   <p class="truncate text-sm font-bold text-white">${safe(tenant.name)}</p>
                   <p class="mt-1 text-xs text-slate-400">Slug: ${safe(tenant.slug)}</p>
-                  <p class="mt-1 text-xs text-slate-500">Plan: ${safe(tenant.plan)} · Status: ${safe(tenant.status)} · Created: ${date(tenant.created_at)}</p>
+                  <p class="mt-1 text-xs text-slate-500">
+                    Plan: ${safe(tenant.plan)}
+                    · Status: ${safe(tenant.status)}
+                    · Product: ${safe(tenant.selected_product)}
+                    · Created: ${date(tenant.created_at)}
+                  </p>
                 </div>
 
-                <div class="flex shrink-0 gap-2">
-                  <a href="https://${safe(tenant.slug)}.hi5central.com/dashboard" class="rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-950">Open</a>
-                  <button data-status-tenant="${safe(tenant.id)}" data-status="active" class="rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-xs font-black text-emerald-300">Activate</button>
-                  <button data-status-tenant="${safe(tenant.id)}" data-status="suspended" class="rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs font-black text-amber-300">Suspend</button>
-                  <button data-convert-tenant="${safe(tenant.id)}" class="rounded-xl border border-blue-400/20 bg-blue-400/10 px-3 py-2 text-xs font-black text-blue-300">Convert</button>
-                  <button data-delete-tenant="${safe(tenant.id)}" class="rounded-xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-xs font-black text-red-300">Delete</button>
+                <div class="flex flex-wrap gap-2">
+                  <a href="https://${safe(tenant.slug)}.hi5central.com/dashboard" class="rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-950">
+                    Open
+                  </a>
+
+                  <button data-impersonate-tenant="${safe(tenant.id)}" data-tenant-slug="${safe(tenant.slug)}" class="rounded-xl border border-purple-400/20 bg-purple-400/10 px-3 py-2 text-xs font-black text-purple-300">
+                    Impersonate
+                  </button>
+
+                  <button data-status-tenant="${safe(tenant.id)}" data-status="active" class="rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-xs font-black text-emerald-300">
+                    Activate
+                  </button>
+
+                  <button data-status-tenant="${safe(tenant.id)}" data-status="suspended" class="rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs font-black text-amber-300">
+                    Suspend
+                  </button>
+
+                  <button data-convert-tenant="${safe(tenant.id)}" class="rounded-xl border border-blue-400/20 bg-blue-400/10 px-3 py-2 text-xs font-black text-blue-300">
+                    Convert
+                  </button>
+
+                  <button data-delete-tenant="${safe(tenant.id)}" class="rounded-xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-xs font-black text-red-300">
+                    Delete
+                  </button>
                 </div>
               </div>
             </article>
           `).join("");
+
+          bindTenantActions();
+        }
+
+        function bindTenantActions() {
+          document.querySelectorAll("[data-impersonate-tenant]").forEach((button) => {
+            button.addEventListener("click", async () => {
+              const id = button.dataset.impersonateTenant;
+              const slug = button.dataset.tenantSlug;
+
+              if (!confirm(`Impersonate tenant ${slug}?`)) return;
+
+              const res = await fetch(`/api/platform-admin/impersonation/tenant/${id}`, {
+                method: "POST"
+              });
+
+              if (!res.ok) {
+                const text = await res.text();
+                alert(`Impersonation failed: ${text}`);
+                return;
+              }
+
+              window.location.href = `https://${slug}.hi5central.com/dashboard`;
+            });
+          });
 
           document.querySelectorAll("[data-status-tenant]").forEach((button) => {
             button.addEventListener("click", async () => {
@@ -96,7 +163,8 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
               });
 
               if (!res.ok) {
-                alert("Status update failed");
+                const text = await res.text();
+                alert(`Status update failed: ${text}`);
                 return;
               }
 
@@ -114,7 +182,8 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
               });
 
               if (!res.ok) {
-                alert("Convert failed");
+                const text = await res.text();
+                alert(`Convert failed: ${text}`);
                 return;
               }
 
@@ -132,7 +201,8 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
               });
 
               if (!res.ok) {
-                alert("Delete failed");
+                const text = await res.text();
+                alert(`Delete failed: ${text}`);
                 return;
               }
 
@@ -141,7 +211,26 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
           });
         }
 
+        async function loadTenants() {
+          const container = document.getElementById("tenants-list");
+          if (!container) return;
+
+          container.innerHTML = `<div class="hi5-soft-card p-3 text-sm text-slate-400">Loading tenants...</div>`;
+
+          const response = await fetch("/api/platform-admin/tenants");
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            container.innerHTML = `<div class="rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300">Could not load tenants.</div>`;
+            return;
+          }
+
+          allTenants = data.tenants ?? [];
+          renderTenants();
+        }
+
         document.getElementById("refresh")?.addEventListener("click", loadTenants);
+        document.getElementById("tenant-search")?.addEventListener("input", renderTenants);
 
         loadTenants();
       </script>

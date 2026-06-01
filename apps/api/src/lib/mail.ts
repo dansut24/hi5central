@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import * as nodemailer from "nodemailer";
 
 function getBoolean(value: string | undefined) {
   return String(value ?? "").toLowerCase() === "true";
