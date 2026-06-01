@@ -1,0 +1,40 @@
+---
+import AppShell from "../AppShell.astro";
+
+const { title = "Platform Admin" } = Astro.props;
+
+const navItems = [
+  { href: "/admin/platform", label: "Overview" },
+  { href: "/admin/platform/tenants", label: "Tenants" },
+  { href: "/admin/platform/users", label: "Users" },
+  { href: "/admin/platform/trials", label: "Trials" },
+  { href: "/admin/platform/audit", label: "Audit Log" },
+  { href: "/admin/platform/system", label: "System Health" }
+];
+---
+
+<AppShell title={title}>
+  <div class="mx-auto grid w-full max-w-[1280px] gap-4 lg:grid-cols-[240px_1fr]">
+    <aside class="hi5-panel h-fit p-3">
+      <div class="px-2 py-2">
+        <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Hi5Central</p>
+        <h2 class="mt-1 text-sm font-black text-white">Platform Admin</h2>
+      </div>
+
+      <nav class="mt-3 grid gap-1">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class="rounded-2xl px-3 py-2 text-sm font-bold text-slate-300 hover:bg-white/10 hover:text-white"
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </aside>
+
+    <main class="min-w-0">
+      <slot />
+    </main>
+  </div>
+</AppShell>

@@ -1,5 +1,5 @@
 ---
-import AppShell from "../../../../components/AppShell.astro";
+import PlatformAdminShell from "../../../../components/platform-admin/PlatformAdminShell.astro";
 ---
 
 <html lang="en">
@@ -10,7 +10,7 @@ import AppShell from "../../../../components/AppShell.astro";
   </head>
 
   <body>
-    <AppShell title="Platform Admin">
+    <PlatformAdminShell title="Platform Admin">
       <div class="mx-auto w-full max-w-[1100px] space-y-4">
         <section class="hi5-panel p-5">
           <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Platform Admin</p>
@@ -75,11 +75,52 @@ import AppShell from "../../../../components/AppShell.astro";
 
                 <div class="flex shrink-0 gap-2">
                   <a href="https://${safe(tenant.slug)}.hi5central.com/dashboard" class="rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-950">Open</a>
+                  <button data-status-tenant="${safe(tenant.id)}" data-status="active" class="rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-xs font-black text-emerald-300">Activate</button>
+                  <button data-status-tenant="${safe(tenant.id)}" data-status="suspended" class="rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs font-black text-amber-300">Suspend</button>
+                  <button data-convert-tenant="${safe(tenant.id)}" class="rounded-xl border border-blue-400/20 bg-blue-400/10 px-3 py-2 text-xs font-black text-blue-300">Convert</button>
                   <button data-delete-tenant="${safe(tenant.id)}" class="rounded-xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-xs font-black text-red-300">Delete</button>
                 </div>
               </div>
             </article>
           `).join("");
+
+          document.querySelectorAll("[data-status-tenant]").forEach((button) => {
+            button.addEventListener("click", async () => {
+              const id = button.dataset.statusTenant;
+              const status = button.dataset.status;
+
+              const res = await fetch(`/api/platform-admin/tenants/${id}/status`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status })
+              });
+
+              if (!res.ok) {
+                alert("Status update failed");
+                return;
+              }
+
+              await loadTenants();
+            });
+          });
+
+          document.querySelectorAll("[data-convert-tenant]").forEach((button) => {
+            button.addEventListener("click", async () => {
+              const id = button.dataset.convertTenant;
+              if (!confirm("Convert this trial to starter?")) return;
+
+              const res = await fetch(`/api/platform-admin/tenants/${id}/convert-trial`, {
+                method: "POST"
+              });
+
+              if (!res.ok) {
+                alert("Convert failed");
+                return;
+              }
+
+              await loadTenants();
+            });
+          });
 
           document.querySelectorAll("[data-delete-tenant]").forEach((button) => {
             button.addEventListener("click", async () => {
@@ -104,6 +145,6 @@ import AppShell from "../../../../components/AppShell.astro";
 
         loadTenants();
       </script>
-    </AppShell>
+    </PlatformAdminShell>
   </body>
 </html>

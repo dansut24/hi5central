@@ -1,5 +1,5 @@
 ---
-import AppShell from "../../../../components/AppShell.astro";
+import PlatformAdminShell from "../../../../components/platform-admin/PlatformAdminShell.astro";
 ---
 
 <html lang="en">
@@ -10,7 +10,7 @@ import AppShell from "../../../../components/AppShell.astro";
   </head>
 
   <body>
-    <AppShell title="Platform Admin">
+    <PlatformAdminShell title="Platform Admin">
       <div class="mx-auto w-full max-w-[1100px] space-y-4">
         <section class="hi5-panel p-5">
           <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Platform Admin</p>
@@ -101,6 +101,6 @@ import AppShell from "../../../../components/AppShell.astro";
 
         loadUsers();
       </script>
-    </AppShell>
+    </PlatformAdminShell>
   </body>
 </html>
