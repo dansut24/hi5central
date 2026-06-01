@@ -1,0 +1,106 @@
+---
+import AppShell from "../../../../components/AppShell.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Platform Users | Hi5Central</title>
+  </head>
+
+  <body>
+    <AppShell title="Platform Admin">
+      <div class="mx-auto w-full max-w-[1100px] space-y-4">
+        <section class="hi5-panel p-5">
+          <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Platform Admin</p>
+          <h1 class="mt-2 text-2xl font-black text-white">Users</h1>
+          <p class="mt-2 text-sm text-slate-400">
+            View and delete test users from the platform.
+          </p>
+        </section>
+
+        <section class="hi5-panel p-4">
+          <div class="flex items-center justify-between gap-3">
+            <h2 class="text-sm font-semibold text-white">User List</h2>
+            <button id="refresh" class="hi5-card px-3 py-2 text-xs font-bold text-blue-200">Refresh</button>
+          </div>
+
+          <div id="users-list" class="mt-4 space-y-2">
+            <div class="hi5-soft-card p-3 text-sm text-slate-400">Loading users...</div>
+          </div>
+        </section>
+      </div>
+
+      <script>
+        function safe(value) {
+          return String(value ?? "—")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
+        }
+
+        function date(value) {
+          if (!value) return "—";
+          return new Date(value).toLocaleString();
+        }
+
+        async function loadUsers() {
+          const container = document.getElementById("users-list");
+          if (!container) return;
+
+          const response = await fetch("/api/platform-admin/users");
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            container.innerHTML = `<div class="rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300">Could not load users.</div>`;
+            return;
+          }
+
+          const users = data.users ?? [];
+
+          if (!users.length) {
+            container.innerHTML = `<div class="hi5-soft-card p-3 text-sm text-slate-400">No users found.</div>`;
+            return;
+          }
+
+          container.innerHTML = users.map((user) => `
+            <article class="hi5-soft-card p-3">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-bold text-white">${safe(user.email)}</p>
+                  <p class="mt-1 text-xs text-slate-400">${safe(user.first_name)} ${safe(user.last_name)}</p>
+                  <p class="mt-1 text-xs text-slate-500">Status: ${safe(user.status)} · Role: ${safe(user.platform_role)} · Created: ${date(user.created_at)}</p>
+                </div>
+
+                <button data-delete-user="${safe(user.id)}" class="shrink-0 rounded-xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-xs font-black text-red-300">Delete</button>
+              </div>
+            </article>
+          `).join("");
+
+          document.querySelectorAll("[data-delete-user]").forEach((button) => {
+            button.addEventListener("click", async () => {
+              const id = button.dataset.deleteUser;
+              if (!confirm("Delete this user?")) return;
+
+              const res = await fetch(`/api/platform-admin/users/${id}`, {
+                method: "DELETE"
+              });
+
+              if (!res.ok) {
+                alert("Delete failed");
+                return;
+              }
+
+              await loadUsers();
+            });
+          });
+        }
+
+        document.getElementById("refresh")?.addEventListener("click", loadUsers);
+
+        loadUsers();
+      </script>
+    </AppShell>
+  </body>
+</html>
