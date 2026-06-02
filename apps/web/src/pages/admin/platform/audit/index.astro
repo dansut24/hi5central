@@ -5,11 +5,143 @@ import PlatformAdminShell from "../../../../components/platform-admin/PlatformAd
 <html lang="en">
   <body>
     <PlatformAdminShell title="Audit Log">
-      <section class="hi5-panel p-5">
-        <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Platform Admin</p>
-        <h1 class="mt-2 text-2xl font-black text-white">Audit Log</h1>
-        <p class="mt-2 text-sm text-slate-400">Platform audit events will appear here.</p>
-      </section>
+      <div class="mx-auto w-full max-w-[1100px] space-y-4">
+        <section class="hi5-panel p-5">
+          <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Platform Admin</p>
+          <h1 class="mt-2 text-2xl font-black text-white">Audit Log</h1>
+          <p class="mt-2 text-sm text-slate-400">
+            Review platform and tenant activity, including login, signup, onboarding, delete, and impersonation events.
+          </p>
+        </section>
+
+        <section class="hi5-panel p-4">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 class="text-sm font-semibold text-white">Recent Events</h2>
+
+            <div class="flex gap-2">
+              <input
+                id="audit-search"
+                class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-slate-500"
+                placeholder="Search audit log..."
+              />
+              <button id="refresh" class="hi5-card px-3 py-2 text-xs font-bold text-blue-200">Refresh</button>
+            </div>
+          </div>
+
+          <div id="audit-list" class="mt-4 space-y-2">
+            <div class="hi5-soft-card p-3 text-sm text-slate-400">Loading audit logs...</div>
+          </div>
+        </section>
+      </div>
+
+      <script>
+        let allLogs = [];
+
+        function safe(value) {
+          return String(value ?? "—")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
+        }
+
+        function date(value) {
+          if (!value) return "—";
+          return new Date(value).toLocaleString();
+        }
+
+        function metadataPreview(value) {
+          if (!value) return "{}";
+
+          try {
+            return JSON.stringify(value, null, 2);
+          } catch {
+            return String(value);
+          }
+        }
+
+        function filteredLogs() {
+          const query = String(document.getElementById("audit-search")?.value ?? "")
+            .toLowerCase()
+            .trim();
+
+          if (!query) return allLogs;
+
+          return allLogs.filter((log) => {
+            const haystack = [
+              log.action,
+              log.user_email,
+              log.tenant_name,
+              log.tenant_slug,
+              log.resource_type,
+              log.resource_id,
+              JSON.stringify(log.metadata ?? {})
+            ].join(" ").toLowerCase();
+
+            return haystack.includes(query);
+          });
+        }
+
+        function renderLogs() {
+          const container = document.getElementById("audit-list");
+          if (!container) return;
+
+          const logs = filteredLogs();
+
+          if (!logs.length) {
+            container.innerHTML = `<div class="hi5-soft-card p-3 text-sm text-slate-400">No audit events found.</div>`;
+            return;
+          }
+
+          container.innerHTML = logs.map((log) => `
+            <article class="hi5-soft-card p-3">
+              <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div class="min-w-0">
+                  <p class="text-sm font-black text-white">${safe(log.action)}</p>
+                  <p class="mt-1 text-xs text-slate-400">
+                    User: ${safe(log.user_email)}
+                    · Tenant: ${safe(log.tenant_name || log.tenant_slug)}
+                  </p>
+                  <p class="mt-1 text-xs text-slate-500">
+                    Resource: ${safe(log.resource_type)} / ${safe(log.resource_id)}
+                    · ${date(log.created_at)}
+                  </p>
+                  <details class="mt-3">
+                    <summary class="cursor-pointer text-xs font-bold text-blue-300">Metadata</summary>
+                    <pre class="mt-2 overflow-auto rounded-2xl border border-white/10 bg-black/20 p-3 text-xs text-slate-300">${safe(metadataPreview(log.metadata))}</pre>
+                  </details>
+                </div>
+
+                <div class="shrink-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-400">
+                  ${safe(log.ip_address)}
+                </div>
+              </div>
+            </article>
+          `).join("");
+        }
+
+        async function loadAuditLogs() {
+          const container = document.getElementById("audit-list");
+          if (!container) return;
+
+          container.innerHTML = `<div class="hi5-soft-card p-3 text-sm text-slate-400">Loading audit logs...</div>`;
+
+          const response = await fetch("/api/platform-admin/audit-logs");
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            container.innerHTML = `<div class="rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300">Could not load audit logs.</div>`;
+            return;
+          }
+
+          allLogs = data.logs ?? [];
+          renderLogs();
+        }
+
+        document.getElementById("refresh")?.addEventListener("click", loadAuditLogs);
+        document.getElementById("audit-search")?.addEventListener("input", renderLogs);
+
+        loadAuditLogs();
+      </script>
     </PlatformAdminShell>
   </body>
 </html>

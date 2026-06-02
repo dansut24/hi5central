@@ -82,7 +82,14 @@ import "../../styles/global.css";
           return;
         }
 
-        window.location.href = "/onboarding";
+        const host = window.location.hostname;
+        const subdomain = host.split(".")[0];
+
+        if (subdomain === "app") {
+          window.location.href = "/admin/platform";
+        } else {
+          window.location.href = "/onboarding";
+        }
       });
     </script>
   </body>
