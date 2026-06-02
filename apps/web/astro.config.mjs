@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
 import vercel from "@astrojs/vercel";
+import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 
 const isVercel = process.env.VERCEL === "1";
@@ -13,6 +14,7 @@ export default defineConfig({
     : node({
         mode: "standalone"
       }),
+  integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
     resolve: {
