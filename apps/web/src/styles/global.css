@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @source "../**/*.{astro,js,jsx,ts,tsx}";
+@source "../../**/*.{astro,js,jsx,ts,tsx}";
 
 *, *::before, *::after {
   box-sizing: border-box;
