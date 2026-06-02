@@ -1,0 +1,93 @@
+---
+import "../../styles/global.css";
+
+const { title = "Hi5Central" } = Astro.props;
+
+const nav = [
+  { href: "/dashboard", label: "Dashboard", group: "Platform" },
+  { href: "/devices", label: "Devices", group: "Control" },
+  { href: "/policies", label: "Policies", group: "Control" },
+  { href: "/patching", label: "Patching", group: "Control" },
+  { href: "/tickets", label: "Tickets", group: "ITSM" },
+  { href: "/knowledge", label: "Knowledge Base", group: "ITSM" },
+  { href: "/admin/integrations", label: "Integrations", group: "Admin" },
+  { href: "/admin/branding", label: "Branding", group: "Admin" }
+];
+
+const grouped = nav.reduce((acc, item) => {
+  acc[item.group] ||= [];
+  acc[item.group].push(item);
+  return acc;
+}, {});
+---
+
+<div class="min-h-screen bg-[#050914] text-white">
+  <div class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.22),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.16),transparent_35%)]"></div>
+
+  <div class="flex min-h-screen">
+    <aside class="hidden w-72 shrink-0 border-r border-white/10 bg-slate-950/75 p-4 backdrop-blur-xl lg:block">
+      <a href="/dashboard" class="flex items-center gap-3 rounded-3xl border border-white/10 bg-white/5 p-3">
+        <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white text-sm font-black text-slate-950">
+          H5
+        </div>
+        <div>
+          <p class="text-sm font-black text-white">Hi5Central</p>
+          <p id="tenant-label" class="text-xs text-slate-400">Tenant Portal</p>
+        </div>
+      </a>
+
+      <nav class="mt-5 space-y-5">
+        {Object.entries(grouped).map(([group, items]) => (
+          <div>
+            <p class="px-3 text-xs font-black uppercase tracking-wide text-slate-500">{group}</p>
+            <div class="mt-2 grid gap-1">
+              {items.map((item) => (
+                <a href={item.href} class="rounded-2xl px-3 py-2 text-sm font-bold text-slate-300 hover:bg-white/10 hover:text-white">
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </nav>
+    </aside>
+
+    <div class="min-w-0 flex-1">
+      <header class="sticky top-0 z-20 border-b border-white/10 bg-slate-950/70 px-4 py-3 backdrop-blur-xl">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Tenant Portal</p>
+            <h1 class="text-lg font-black text-white">{title}</h1>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <a href="/admin/integrations" class="hidden rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-slate-200 sm:block">
+              Integrations
+            </a>
+            <a href="/dashboard" class="rounded-2xl bg-white px-3 py-2 text-xs font-black text-slate-950">
+              Home
+            </a>
+          </div>
+        </div>
+
+        <nav class="mt-3 flex gap-2 overflow-x-auto pb-1 lg:hidden">
+          {nav.map((item) => (
+            <a href={item.href} class="shrink-0 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-slate-200">
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </header>
+
+      <main class="p-4 sm:p-6">
+        <slot />
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const tenant = window.location.hostname.split(".")[0];
+    const label = document.getElementById("tenant-label");
+    if (label) label.textContent = `${tenant}.hi5central.com`;
+  </script>
+</div>
