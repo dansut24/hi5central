@@ -11,6 +11,8 @@ import { inventoryRoutes } from "./routes/inventory";
 import { platformAdminRoutes } from "./routes/platformAdmin";
 import { platformImpersonationRoutes } from "./routes/platformImpersonation";
 import { integrationsRoutes } from "./routes/integrations";
+import { aiSettingsRoutes } from "./routes/aiSettings";
+import { aiRoutes } from "./routes/ai";
 
 const app = new Hono();
 
@@ -37,5 +39,7 @@ app.route("/inventory", inventoryRoutes);
 app.route("/platform-admin", platformAdminRoutes);
 app.route("/platform-admin/impersonation", platformImpersonationRoutes);
 app.route("/integrations", integrationsRoutes);
+app.route("/ai-settings", aiSettingsRoutes);
+app.route("/ai", aiRoutes);
 
 export default app;

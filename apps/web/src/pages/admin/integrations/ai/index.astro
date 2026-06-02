@@ -1,0 +1,190 @@
+---
+import AppShell from "../../../../components/AppShell.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>AI Settings | Hi5Central</title>
+  </head>
+
+  <body>
+    <AppShell title="AI Settings">
+      <div class="mx-auto w-full max-w-[850px] space-y-4">
+        <section class="hi5-panel p-5">
+          <a href="/admin/integrations" class="text-xs font-bold text-blue-300">← Back to integrations</a>
+          <p class="mt-4 text-xs font-bold uppercase tracking-wide text-blue-300">Tenant Admin</p>
+          <h1 class="mt-2 text-2xl font-black text-white">AI Provider Settings</h1>
+          <p class="mt-2 text-sm leading-6 text-slate-400">
+            Configure which AI provider this tenant uses. API keys are encrypted before storage.
+          </p>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <div class="grid gap-4">
+            <label class="block text-xs font-bold text-slate-300">
+              Provider
+              <select id="provider" class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none">
+                <option value="disabled">Disabled</option>
+                <option value="openai">OpenAI</option>
+                <option value="anthropic">Anthropic Claude</option>
+                <option value="azure-openai">Azure OpenAI</option>
+                <option value="ollama">Ollama / Local AI</option>
+              </select>
+            </label>
+
+            <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 text-sm font-bold text-white">
+              <input id="enabled" type="checkbox" class="h-4 w-4" />
+              Enable AI for this tenant
+            </label>
+
+            <label class="block text-xs font-bold text-slate-300">
+              Model
+              <input id="model" class="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none" placeholder="gpt-5" />
+            </label>
+
+            <label class="block text-xs font-bold text-slate-300">
+              API Key
+              <input id="api-key" type="password" class="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none" placeholder="Leave blank to keep existing key" />
+              <p id="api-key-status" class="mt-2 text-xs text-slate-400">Checking key status...</p>
+            </label>
+
+            <label class="block text-xs font-bold text-slate-300">
+              System Prompt
+              <textarea id="system-prompt" class="mt-2 min-h-32 w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none" placeholder="You are a helpful IT support assistant..."></textarea>
+            </label>
+
+            <div id="error" class="hidden rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300"></div>
+            <div id="success" class="hidden rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-3 text-sm text-emerald-300"></div>
+
+            <div class="grid gap-2 sm:grid-cols-2">
+              <button id="save" class="rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950">
+                Save AI Settings
+              </button>
+
+              <button id="test-ai" class="hi5-card px-4 py-3 text-sm font-black text-white">
+                Test Connection
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="hi5-panel p-5">
+          <h2 class="text-sm font-semibold text-white">Provider Notes</h2>
+          <div class="mt-4 space-y-2 text-sm leading-6 text-slate-400">
+            <p><strong class="text-white">OpenAI:</strong> Recommended first provider for managed Hi5Central.</p>
+            <p><strong class="text-white">Anthropic:</strong> Useful for ticket summaries, documents, and long context tasks.</p>
+            <p><strong class="text-white">Ollama:</strong> Best for self-hosted/private environments with local models.</p>
+            <p><strong class="text-white">Safety:</strong> AI should suggest actions, not run scripts or patch devices automatically.</p>
+          </div>
+        </section>
+      </div>
+
+      <script>
+        function show(id, message) {
+          const el = document.getElementById(id);
+          el.textContent = message;
+          el.classList.remove("hidden");
+        }
+
+        function hide(id) {
+          const el = document.getElementById(id);
+          el.classList.add("hidden");
+        }
+
+        function defaultModel(provider) {
+          return {
+            openai: "gpt-5",
+            anthropic: "claude-sonnet-4-5",
+            "azure-openai": "gpt-5",
+            ollama: "llama3",
+            disabled: ""
+          }[provider] || "";
+        }
+
+        async function loadSettings() {
+          const response = await fetch("/api/ai-settings");
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            show("error", "Could not load AI settings.");
+            return;
+          }
+
+          const settings = data.settings;
+
+          document.getElementById("provider").value = settings.provider || "disabled";
+          document.getElementById("enabled").checked = Boolean(settings.enabled);
+          document.getElementById("model").value = settings.model || defaultModel(settings.provider);
+          document.getElementById("system-prompt").value =
+            settings.system_prompt || "You are a helpful IT support assistant. Be accurate, concise, and never suggest destructive actions without explicit technician approval.";
+
+          document.getElementById("api-key-status").textContent = settings.api_key_configured
+            ? `API key configured: ${settings.api_key_masked}`
+            : "No API key configured.";
+        }
+
+        document.getElementById("provider")?.addEventListener("change", () => {
+          const provider = document.getElementById("provider").value;
+          const model = document.getElementById("model");
+
+          if (!model.value || model.value === "gpt-5" || model.value === "claude-sonnet-4-5" || model.value === "llama3") {
+            model.value = defaultModel(provider);
+          }
+        });
+
+        document.getElementById("save")?.addEventListener("click", async () => {
+          hide("error");
+          hide("success");
+
+          const response = await fetch("/api/ai-settings", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              provider: document.getElementById("provider").value,
+              enabled: document.getElementById("enabled").checked,
+              model: document.getElementById("model").value,
+              api_key: document.getElementById("api-key").value,
+              system_prompt: document.getElementById("system-prompt").value
+            })
+          });
+
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            show("error", data?.error || "Could not save AI settings.");
+            return;
+          }
+
+          document.getElementById("api-key").value = "";
+          show("success", "AI settings saved.");
+          await loadSettings();
+        });
+
+
+        document.getElementById("test-ai")?.addEventListener("click", async () => {
+          hide("error");
+          hide("success");
+
+          const response = await fetch("/api/ai/test", {
+            method: "POST"
+          });
+
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            show("error", data?.error || "AI connection test failed.");
+            return;
+          }
+
+          show("success", `AI connection successful: ${data.result?.text || "OK"}`);
+        });
+
+        loadSettings();
+      </script>
+    </AppShell>
+  </body>
+</html>
