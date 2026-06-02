@@ -1,0 +1,151 @@
+---
+import AppShell from "../../../components/AppShell.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Integrations | Hi5Central</title>
+  </head>
+
+  <body>
+    <AppShell title="Integrations">
+      <div class="mx-auto w-full max-w-[1150px] space-y-4">
+        <section class="hi5-panel p-5">
+          <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Tenant Admin</p>
+          <h1 class="mt-2 text-2xl font-black text-white">Integrations</h1>
+          <p class="mt-2 text-sm leading-6 text-slate-400">
+            Connect AI providers, remote access tools, PSA systems, identity providers, messaging platforms, email, and storage.
+          </p>
+        </section>
+
+        <section id="integrations-root" class="space-y-4">
+          <div class="hi5-soft-card p-3 text-sm text-slate-400">Loading integrations...</div>
+        </section>
+      </div>
+
+      <script>
+        const categoryLabels = {
+          ai: "AI Providers",
+          remote: "Remote Access",
+          psa: "PSA / Service Desk",
+          identity: "Identity",
+          messaging: "Messaging",
+          email: "Email",
+          storage: "Storage"
+        };
+
+        function safe(value) {
+          return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
+        }
+
+        function statusFor(provider, integrations) {
+          const existing = integrations.find((item) => item.provider === provider);
+          return Boolean(existing?.enabled);
+        }
+
+        function groupByCategory(catalogue) {
+          return catalogue.reduce((acc, item) => {
+            acc[item.category] ||= [];
+            acc[item.category].push(item);
+            return acc;
+          }, {});
+        }
+
+        async function toggleProvider(provider, enabled) {
+          const response = await fetch(`/api/integrations/${provider}/toggle`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ enabled })
+          });
+
+          if (!response.ok) {
+            const text = await response.text();
+            alert(`Could not update integration: ${text}`);
+            return;
+          }
+
+          await loadIntegrations();
+        }
+
+        function render(catalogue, integrations) {
+          const root = document.getElementById("integrations-root");
+          const groups = groupByCategory(catalogue);
+
+          root.innerHTML = Object.entries(groups).map(([category, items]) => `
+            <section class="hi5-panel p-5">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h2 class="text-sm font-semibold text-white">${safe(categoryLabels[category] || category)}</h2>
+                  <p class="mt-2 text-sm text-slate-400">Configure ${safe(categoryLabels[category] || category)} integrations for this tenant.</p>
+                </div>
+              </div>
+
+              <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                ${items.map((item) => {
+                  const enabled = statusFor(item.provider, integrations);
+
+                  return `
+                    <article class="hi5-soft-card p-4">
+                      <div class="flex items-start justify-between gap-3">
+                        <div>
+                          <p class="text-sm font-black text-white">${safe(item.display_name)}</p>
+                          <p class="mt-1 text-xs uppercase tracking-wide text-slate-500">${safe(item.provider)}</p>
+                        </div>
+
+                        <span class="rounded-full border ${enabled ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-300" : "border-slate-400/20 bg-slate-400/10 text-slate-300"} px-2 py-1 text-xs font-bold">
+                          ${enabled ? "Enabled" : "Disabled"}
+                        </span>
+                      </div>
+
+                      <p class="mt-3 text-xs leading-5 text-slate-400">
+                        Configuration screen coming in the next provider-specific pass.
+                      </p>
+
+                      <button
+                        data-provider="${safe(item.provider)}"
+                        data-enabled="${enabled ? "false" : "true"}"
+                        class="mt-4 w-full rounded-2xl ${enabled ? "border border-red-400/20 bg-red-400/10 text-red-300" : "bg-white text-slate-950"} px-4 py-3 text-sm font-black"
+                      >
+                        ${enabled ? "Disable" : "Enable"}
+                      </button>
+                    </article>
+                  `;
+                }).join("")}
+              </div>
+            </section>
+          `).join("");
+
+          document.querySelectorAll("[data-provider]").forEach((button) => {
+            button.addEventListener("click", async () => {
+              await toggleProvider(button.dataset.provider, button.dataset.enabled === "true");
+            });
+          });
+        }
+
+        async function loadIntegrations() {
+          const root = document.getElementById("integrations-root");
+          root.innerHTML = `<div class="hi5-soft-card p-3 text-sm text-slate-400">Loading integrations...</div>`;
+
+          const response = await fetch("/api/integrations");
+          const data = await response.json().catch(() => null);
+
+          if (!response.ok || !data?.success) {
+            root.innerHTML = `<div class="rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300">Could not load integrations.</div>`;
+            return;
+          }
+
+          render(data.catalogue ?? [], data.integrations ?? []);
+        }
+
+        loadIntegrations();
+      </script>
+    </AppShell>
+  </body>
+</html>

@@ -10,6 +10,7 @@ import { agentRoutes } from "./routes/agent";
 import { inventoryRoutes } from "./routes/inventory";
 import { platformAdminRoutes } from "./routes/platformAdmin";
 import { platformImpersonationRoutes } from "./routes/platformImpersonation";
+import { integrationsRoutes } from "./routes/integrations";
 
 const app = new Hono();
 
@@ -35,5 +36,6 @@ app.route("/agent", agentRoutes);
 app.route("/inventory", inventoryRoutes);
 app.route("/platform-admin", platformAdminRoutes);
 app.route("/platform-admin/impersonation", platformImpersonationRoutes);
+app.route("/integrations", integrationsRoutes);
 
 export default app;

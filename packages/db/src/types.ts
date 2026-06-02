@@ -171,6 +171,18 @@ export interface PlatformImpersonationTokensTable {
   created_at: Generated<Date>;
 }
 
+export interface TenantIntegrationsTable {
+  id: Generated<string>;
+  tenant_id: string;
+  provider: string;
+  category: string;
+  display_name: string;
+  enabled: boolean;
+  configuration_encrypted: string | null;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
 export interface Database {
   tenants: TenantsTable;
   users: UsersTable;
@@ -186,4 +198,5 @@ export interface Database {
   devices: DevicesTable;
   device_actions: DeviceActionsTable;
   platform_impersonation_tokens: PlatformImpersonationTokensTable;
+  tenant_integrations: TenantIntegrationsTable;
 }
