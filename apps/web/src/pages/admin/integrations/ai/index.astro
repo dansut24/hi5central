@@ -1,5 +1,6 @@
 ---
-import AppShell from "../../../../components/AppShell.astro";
+import "../../../../styles/global.css";
+import TenantShell from "../../../../components/tenant/TenantShell.astro";
 ---
 
 <html lang="en">
@@ -10,7 +11,7 @@ import AppShell from "../../../../components/AppShell.astro";
   </head>
 
   <body>
-    <AppShell title="AI Settings">
+    <TenantShell title="AI Settings">
       <div class="mx-auto w-full max-w-[850px] space-y-4">
         <section class="hi5-panel p-5">
           <a href="/admin/integrations" class="text-xs font-bold text-blue-300">← Back to integrations</a>
@@ -185,6 +186,6 @@ import AppShell from "../../../../components/AppShell.astro";
 
         loadSettings();
       </script>
-    </AppShell>
+    </TenantShell>
   </body>
 </html>

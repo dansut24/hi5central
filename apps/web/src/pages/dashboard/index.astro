@@ -1,5 +1,6 @@
 ---
-import AppShell from "../../components/AppShell.astro";
+import "../../styles/global.css";
+import TenantShell from "../../components/tenant/TenantShell.astro";
 ---
 
 <html lang="en">
@@ -10,7 +11,7 @@ import AppShell from "../../components/AppShell.astro";
   </head>
 
   <body>
-    <AppShell title="Dashboard">
+    <TenantShell title="Dashboard">
       <div class="mx-auto w-full max-w-[920px] space-y-4 lg:max-w-none">
         <section class="hi5-panel p-5">
           <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Tenant dashboard</p>
@@ -153,6 +154,6 @@ import AppShell from "../../components/AppShell.astro";
 
         loadMetrics();
       </script>
-    </AppShell>
+    </TenantShell>
   </body>
 </html>
