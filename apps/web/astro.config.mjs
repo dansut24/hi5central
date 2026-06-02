@@ -1,25 +1,14 @@
 import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
-import react from "@astrojs/react";
-import tailwindcss from "@tailwindcss/vite";
+import vercel from "@astrojs/vercel/serverless";
+
+const isVercel = process.env.VERCEL === "1";
 
 export default defineConfig({
   output: "server",
-  adapter: node({
-    mode: "standalone",
-    host: true
-  }),
-  integrations: [react()],
-  vite: {
-    plugins: [tailwindcss()],
-    server: {
-      proxy: {
-        "/api": {
-          target: "http://localhost:3001",
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, "")
-        }
-      }
-    }
-  }
+  adapter: isVercel
+    ? vercel()
+    : node({
+        mode: "standalone"
+      })
 });
