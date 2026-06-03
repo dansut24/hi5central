@@ -481,7 +481,20 @@ export default function Hi5DeviceDetailApp() {
         throw new Error(data?.error || "Could not load device");
       }
 
-      const raw = data.device || data.item || data.data || data;
+      console.log("[Hi5DeviceDetail] API response", data);
+
+      const raw =
+        data.device ||
+        data.item ||
+        data.data ||
+        data.result ||
+        (Array.isArray(data.devices) ? data.devices[0] : null) ||
+        data;
+
+      if (!raw || typeof raw !== "object") {
+        throw new Error("Invalid device response");
+      }
+
       setDevice(normaliseDevice(raw));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load device");
