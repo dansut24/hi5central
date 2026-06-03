@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/dashboard.css";
+import dashboardCss from "../../styles/dashboard.css?inline";
 import {
   Activity,
   AlertTriangle,
@@ -199,7 +199,9 @@ function MobileNav() {
 
 export default function Hi5DashboardApp() {
   return (
-    <div className="hi5dash">
+    <>
+      <style>{dashboardCss}</style>
+      <div className="hi5dash">
       <div className="hi5dash-wrap">
         <Sidebar />
         <div className="hi5dash-main">
@@ -210,5 +212,6 @@ export default function Hi5DashboardApp() {
       <button className="hi5dash-ai"><Sparkles size={22} /></button>
       <MobileNav />
     </div>
+    </>
   );
 }
