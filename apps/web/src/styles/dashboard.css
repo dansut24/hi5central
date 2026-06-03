@@ -901,3 +901,129 @@
     max-width: 1520px;
   }
 }
+
+/* PASS-0095 theme system */
+
+:root,
+[data-hi5-theme="light"] {
+  --hi5-page-bg:
+    radial-gradient(circle at 8% 0%, rgba(56,189,248,.22), transparent 30%),
+    radial-gradient(circle at 96% 0%, rgba(124,58,237,.14), transparent 28%),
+    linear-gradient(180deg,#fbfdff 0%,#f5f9ff 45%,#eef5fb 100%);
+  --hi5-card-bg: rgba(255,255,255,.70);
+  --hi5-card-bg-strong: rgba(255,255,255,.84);
+  --hi5-line: rgba(30,41,59,.10);
+  --hi5-copy: #071024;
+  --hi5-copy-soft: #475569;
+  --hi5-copy-muted: #64748b;
+}
+
+[data-hi5-theme="dark"] {
+  --hi5-page-bg:
+    radial-gradient(circle at 8% 0%, rgba(56,189,248,.20), transparent 30%),
+    radial-gradient(circle at 96% 0%, rgba(124,58,237,.24), transparent 28%),
+    linear-gradient(180deg,#07101f 0%,#050914 45%,#020617 100%);
+  --hi5-card-bg: rgba(15,23,42,.66);
+  --hi5-card-bg-strong: rgba(15,23,42,.82);
+  --hi5-line: rgba(255,255,255,.12);
+  --hi5-copy: #ffffff;
+  --hi5-copy-soft: #cbd5e1;
+  --hi5-copy-muted: #94a3b8;
+}
+
+[data-hi5-theme="ocean"] {
+  --hi5-page-bg:
+    radial-gradient(circle at 8% 0%, rgba(14,165,233,.30), transparent 30%),
+    radial-gradient(circle at 96% 0%, rgba(6,182,212,.18), transparent 28%),
+    linear-gradient(180deg,#f0fcff 0%,#e6faff 45%,#e0f2fe 100%);
+  --hi5-primary: #0284c7;
+  --hi5-accent: #06b6d4;
+}
+
+[data-hi5-theme="purple"] {
+  --hi5-page-bg:
+    radial-gradient(circle at 8% 0%, rgba(168,85,247,.24), transparent 30%),
+    radial-gradient(circle at 96% 0%, rgba(236,72,153,.16), transparent 28%),
+    linear-gradient(180deg,#fcfaff 0%,#f7f0ff 45%,#f3e8ff 100%);
+  --hi5-primary: #7c3aed;
+  --hi5-accent: #ec4899;
+}
+
+[data-hi5-theme="forest"] {
+  --hi5-page-bg:
+    radial-gradient(circle at 8% 0%, rgba(34,197,94,.22), transparent 30%),
+    radial-gradient(circle at 96% 0%, rgba(20,184,166,.15), transparent 28%),
+    linear-gradient(180deg,#fbfffb 0%,#f0fdf4 45%,#dcfce7 100%);
+  --hi5-primary: #16a34a;
+  --hi5-accent: #14b8a6;
+}
+
+[data-hi5-theme="sunset"] {
+  --hi5-page-bg:
+    radial-gradient(circle at 8% 0%, rgba(249,115,22,.22), transparent 30%),
+    radial-gradient(circle at 96% 0%, rgba(244,63,94,.16), transparent 28%),
+    linear-gradient(180deg,#fffaf5 0%,#fff7ed 45%,#ffedd5 100%);
+  --hi5-primary: #f97316;
+  --hi5-accent: #f43f5e;
+}
+
+.hi5dash,
+.hi5login {
+  background: var(--hi5-page-bg);
+}
+
+.hi5dash-card,
+.hi5dash-panel,
+.hi5dash-search,
+.hi5dash-chip,
+.hi5dash-icon,
+.hi5dash-date,
+.hi5dash-tab,
+.hi5login-card {
+  background: var(--hi5-card-bg);
+  border-color: var(--hi5-line);
+}
+
+.hi5dash-title h1,
+.hi5dash-panel h2,
+.hi5dash-metric strong,
+.hi5dash-ticket strong,
+.hi5login h1,
+.hi5login label {
+  color: var(--hi5-copy);
+}
+
+.hi5dash-title p,
+.hi5dash-ticket small,
+.hi5login p {
+  color: var(--hi5-copy-muted);
+}
+
+.hi5theme-menu {
+  position: absolute;
+  right: 0;
+  top: 52px;
+  width: 210px;
+  border-radius: 20px;
+  border: 1px solid var(--hi5-line);
+  background: var(--hi5-card-bg-strong);
+  box-shadow: 0 24px 70px rgba(15,23,42,.16);
+  backdrop-filter: blur(24px);
+  padding: 8px;
+  z-index: 80;
+}
+
+.hi5theme-menu button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 14px;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 800;
+  color: var(--hi5-copy);
+}
+
+.hi5theme-menu button:hover {
+  background: rgba(37,99,235,.10);
+}

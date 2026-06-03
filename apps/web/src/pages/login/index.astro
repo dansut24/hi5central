@@ -1,96 +1,16 @@
 ---
 import "../../styles/global.css";
+import Hi5LoginApp from "@/components/react/Hi5LoginApp.jsx";
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Login | Hi5Central</title>
+    <title>Sign in | Hi5Central</title>
   </head>
 
-  <body class="min-h-screen bg-[#050914] text-white">
-    <main class="min-h-screen px-4 py-8">
-      <section class="mx-auto flex min-h-[90vh] w-full max-w-md items-center">
-        <div class="w-full rounded-[2rem] border border-white/10 bg-slate-950/80 p-5 shadow-2xl backdrop-blur-xl">
-          <div class="flex items-center gap-3">
-            <div class="grid h-12 w-12 place-items-center rounded-2xl border border-blue-400/30 bg-blue-500/15 text-sm font-black text-blue-200">
-              H5
-            </div>
-
-            <div>
-              <p class="text-sm font-black text-white">Hi5Central</p>
-              <p class="text-xs text-slate-400">Secure tenant login</p>
-            </div>
-          </div>
-
-          <div class="mt-8">
-            <p class="text-xs font-bold uppercase tracking-wide text-blue-300">Workspace</p>
-            <h1 class="mt-2 text-3xl font-black tracking-tight text-white">
-              Login to <span id="tenant-name">workspace</span>
-            </h1>
-            <p class="mt-2 text-sm leading-6 text-slate-400">
-              Sign in to continue setup and access your tenant dashboard.
-            </p>
-          </div>
-
-          <div id="verified-message" class="mt-5 hidden rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-3 text-sm text-emerald-300">
-            Email confirmed successfully. You can now log in.
-          </div>
-
-          <div class="mt-5 space-y-3">
-            <input id="email" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-blue-400/60" placeholder="Email" inputmode="email" />
-            <input id="password" type="password" class="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-blue-400/60" placeholder="Password" />
-
-            <button id="login" class="w-full rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950">
-              Sign in
-            </button>
-
-            <p id="error" class="hidden rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300"></p>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <script>
-      const hostTenant = window.location.hostname.split(".")[0] || "workspace";
-      const tenantName = document.getElementById("tenant-name");
-      if (tenantName) tenantName.textContent = hostTenant;
-
-      if (new URL(window.location.href).searchParams.get("verified")) {
-        document.getElementById("verified-message")?.classList.remove("hidden");
-      }
-
-      document.getElementById("login")?.addEventListener("click", async () => {
-        const error = document.getElementById("error");
-        error?.classList.add("hidden");
-
-        const email = document.getElementById("email")?.value;
-        const password = document.getElementById("password")?.value;
-
-        const response = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        if (!response.ok) {
-          if (error) {
-            error.textContent = "Login failed. Check your email and password.";
-            error.classList.remove("hidden");
-          }
-          return;
-        }
-
-        const host = window.location.hostname;
-        const subdomain = host.split(".")[0];
-
-        if (subdomain === "app") {
-          window.location.href = "/admin/platform";
-        } else {
-          window.location.href = "/onboarding";
-        }
-      });
-    </script>
+  <body>
+    <Hi5LoginApp client:load />
   </body>
 </html>

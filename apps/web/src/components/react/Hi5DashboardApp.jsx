@@ -1,4 +1,5 @@
 import React from "react";
+import Hi5ThemeButton from "./Hi5ThemeButton.jsx";
 import dashboardCss from "../../styles/dashboard.css?inline";
 import {
   Activity,
@@ -61,7 +62,7 @@ function Topbar() {
 
         <button className="hi5dash-chip"><span style={{color:"#10b981"}}>●</span> Acme Corporation</button>
         <button className="hi5dash-icon"><Bell size={17} /></button>
-        <button className="hi5dash-icon">☼</button>
+        <Hi5ThemeButton />
         <button className="hi5dash-user">JS</button>
       </header>
 
