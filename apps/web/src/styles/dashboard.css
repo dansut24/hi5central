@@ -1301,3 +1301,154 @@
     text-align: left;
   }
 }
+
+/* PASS-0097.2 clean device detail mobile layout */
+
+@media (max-width: 767px) {
+  .hi5device-back-row {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .hi5device-back-row .hi5devices-action,
+  .hi5device-back-row .hi5dash-small-btn {
+    height: 40px;
+    border-radius: 16px;
+    padding: 0 13px;
+    font-size: 13px;
+  }
+
+  .hi5device-hero {
+    display: block;
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .hi5device-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hi5device-hero-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+  }
+
+  .hi5device-hero-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .hi5device-title-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .hi5device-title-line h1 {
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .hi5device-hero p {
+    margin-top: 7px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .hi5device-hero-actions {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .hi5device-primary-action,
+  .hi5device-hero-actions .hi5dash-small-btn {
+    height: 42px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .hi5device-primary-action svg,
+  .hi5device-hero-actions .hi5dash-small-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .hi5device-actions-grid {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .hi5device-action-card {
+    min-height: 116px;
+    border-radius: 18px;
+    padding: 13px;
+    background: rgba(255,255,255,.62);
+    text-align: left;
+  }
+
+  .hi5device-action-card div {
+    width: 34px;
+    height: 34px;
+    border-radius: 14px;
+  }
+
+  .hi5device-action-card div svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .hi5device-action-card span {
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .hi5device-action-card p {
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+
+  .hi5device-info-list {
+    margin-top: 8px;
+  }
+
+  .hi5device-info-row {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px 0;
+  }
+
+  .hi5device-info-row span,
+  .hi5device-info-row strong {
+    font-size: 11px;
+  }
+
+  .hi5device-hardware div {
+    grid-template-columns: 30px 72px 1fr;
+    gap: 8px;
+  }
+
+  .hi5dash-ai {
+    transform: scale(.92);
+  }
+}
+
+@media (max-width: 390px) {
+  .hi5device-actions-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hi5device-action-card {
+    min-height: 108px;
+  }
+}
