@@ -28,6 +28,7 @@ import Hi5ThemeButton from "./Hi5ThemeButton.jsx";
 import "../../styles/dashboard.css";
 
 function getDeviceId() {
+  if (typeof window === "undefined") return "";
   const parts = window.location.pathname.split("/").filter(Boolean);
   return parts[1] || "";
 }
