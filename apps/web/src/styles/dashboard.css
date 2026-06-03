@@ -1174,3 +1174,130 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* PASS-0097.1 device detail mobile polish */
+
+@media (max-width: 767px) {
+  .hi5device-hero {
+    gap: 14px;
+  }
+
+  .hi5device-hero-left {
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    gap: 12px;
+  }
+
+  .hi5device-title-line h1 {
+    font-size: 22px;
+    line-height: 1.15;
+  }
+
+  .hi5device-hero p {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .hi5device-hero-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .hi5device-primary-action,
+  .hi5device-hero-actions .hi5dash-small-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hi5device-actions-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .hi5device-action-card {
+    min-height: 112px;
+    padding: 13px;
+    display: block;
+  }
+
+  .hi5device-action-card div {
+    width: 36px;
+    height: 36px;
+  }
+
+  .hi5device-action-card span {
+    margin-top: 10px;
+    font-size: 13px;
+  }
+
+  .hi5device-action-card p {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .hi5device-info-row {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+  }
+
+  .hi5device-info-row span {
+    font-size: 12px;
+  }
+
+  .hi5device-info-row strong {
+    text-align: right;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .hi5device-hardware {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .hi5device-hardware div {
+    display: grid;
+    grid-template-columns: 34px 80px 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 13px;
+  }
+
+  .hi5device-hardware span,
+  .hi5device-hardware strong {
+    margin: 0;
+  }
+
+  .hi5device-hardware strong {
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .hi5dash-ticket {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+  }
+
+  .hi5dash-ticket strong,
+  .hi5dash-ticket small {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 390px) {
+  .hi5device-actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hi5device-info-row {
+    grid-template-columns: 1fr;
+  }
+
+  .hi5device-info-row strong {
+    text-align: left;
+  }
+}
