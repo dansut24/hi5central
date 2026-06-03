@@ -825,3 +825,79 @@
     min-height: 106px;
   }
 }
+
+/* PASS-0094 desktop dashboard polish */
+
+@media (min-width: 1024px) {
+  .hi5dash {
+    min-height: 100vh;
+  }
+
+  .hi5dash-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .hi5dash-topbar {
+    height: 72px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .hi5dash-tabs {
+    height: 50px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .hi5dash-content {
+    padding: 26px 28px 34px;
+  }
+
+  .hi5dash-metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .hi5dash-grid {
+    grid-template-columns: 1.35fr 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .hi5dash-card {
+    min-width: 0;
+  }
+
+  .hi5dash-panel {
+    min-height: 230px;
+  }
+
+  .hi5dash-chart {
+    height: 176px;
+  }
+
+  .hi5dash-ticket {
+    grid-template-columns: 38px minmax(0, 1fr) auto auto;
+  }
+
+  .hi5dash-title h1 {
+    font-size: 32px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hi5dash-content {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .hi5dash-grid {
+    grid-template-columns: 1.38fr 1fr 1fr;
+  }
+}
+
+@media (min-width: 1536px) {
+  .hi5dash-content {
+    max-width: 1520px;
+  }
+}
