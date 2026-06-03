@@ -1,6 +1,6 @@
 ---
 import "../../styles/global.css";
-import AppShell from "../app/AppShell.jsx";
+import Hi5AppShell from "../app/Hi5AppShell.jsx";
 
 const {
   title = "Dashboard",
@@ -8,6 +8,6 @@ const {
 } = Astro.props;
 ---
 
-<AppShell client:load title={title} description={description}>
+<Hi5AppShell client:load title={title} description={description}>
   <slot />
-</AppShell>
+</Hi5AppShell>
