@@ -1801,3 +1801,176 @@ body {
     display: none !important;
   }
 }
+
+/* PASS-0099 integrations and AI settings */
+
+.hi5integration-section {
+  margin-top: 16px;
+}
+
+.hi5integration-section .hi5dash-panel-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hi5integration-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hi5integration-card {
+  min-height: 168px;
+  border-radius: 22px;
+  border: 1px solid var(--hi5-line);
+  background: var(--hi5-card-bg);
+  box-shadow: 0 14px 40px rgba(15,23,42,.06);
+  padding: 16px;
+}
+
+.hi5integration-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hi5integration-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: linear-gradient(135deg, var(--hi5-primary), var(--hi5-accent));
+}
+
+.hi5integration-card h3 {
+  margin: 16px 0 4px;
+  color: var(--hi5-copy);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.hi5integration-card p {
+  margin: 0;
+  color: var(--hi5-copy-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.hi5integration-actions {
+  margin-top: 16px;
+}
+
+.hi5form-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hi5form-grid label,
+.hi5form-full {
+  display: grid;
+  gap: 7px;
+}
+
+.hi5form-grid span,
+.hi5form-full span {
+  color: var(--hi5-copy);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.hi5form-grid input,
+.hi5form-grid select,
+.hi5form-full textarea {
+  min-height: 44px;
+  border: 1px solid var(--hi5-line);
+  border-radius: 16px;
+  background: rgba(255,255,255,.58);
+  padding: 0 13px;
+  color: var(--hi5-copy);
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+}
+
+.hi5form-full {
+  margin-top: 14px;
+}
+
+.hi5form-full textarea {
+  min-height: 150px;
+  padding-top: 12px;
+  resize: vertical;
+}
+
+.hi5form-grid small {
+  color: var(--hi5-copy-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.hi5form-toggle {
+  align-content: center;
+  border: 1px solid var(--hi5-line);
+  border-radius: 16px;
+  background: rgba(255,255,255,.52);
+  padding: 12px;
+}
+
+.hi5form-toggle input {
+  width: 18px;
+  height: 18px;
+}
+
+.hi5form-error,
+.hi5form-success {
+  margin-top: 14px;
+  border-radius: 16px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.hi5form-error {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.hi5form-success {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.hi5form-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1023px) {
+  .hi5integration-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hi5form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .hi5integration-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hi5form-actions {
+    display: grid;
+  }
+}
