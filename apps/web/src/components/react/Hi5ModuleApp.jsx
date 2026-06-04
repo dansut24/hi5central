@@ -7,6 +7,7 @@ import {
   Brush,
   CheckCircle2,
   Home,
+  Menu,
   Monitor,
   Package,
   Plus,
@@ -19,6 +20,7 @@ import {
   Zap
 } from "lucide-react";
 import Hi5ThemeButton from "./Hi5ThemeButton.jsx";
+import Hi5MobileDrawer from "./Hi5MobileDrawer.jsx";
 import "../../styles/dashboard.css";
 
 const iconMap = {
@@ -33,10 +35,12 @@ const iconMap = {
   settings: Settings
 };
 
-function Topbar() {
+function Topbar({ onMenu }) {
   return (
     <>
       <header className="hi5dash-topbar">
+        <button className="hi5mobile-menu-button" type="button" onClick={onMenu}><Menu size={20} /></button>
+
         <div className="hi5dash-brand">
           <strong>Hi5Central</strong>
           <span>Managed IT Platform</span>
@@ -156,6 +160,7 @@ export default function Hi5ModuleApp({
   primaryAction = "Create"
 }) {
   const [apiState, setApiState] = useState({ loading: false, error: "", data: null });
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   async function load() {
     if (!apiUrl) return;
@@ -183,7 +188,7 @@ export default function Hi5ModuleApp({
         <Sidebar active={moduleKey} />
 
         <div className="hi5dash-main">
-          <Topbar />
+          <Topbar onMenu={() => setDrawerOpen(true)} />
 
           <main className="hi5dash-content">
             <div className="hi5dash-title-row">
@@ -231,6 +236,7 @@ export default function Hi5ModuleApp({
       </div>
 
       <button className="hi5dash-ai"><Sparkles size={22} /></button>
+      <Hi5MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </div>
   );
 }

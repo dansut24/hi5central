@@ -7,6 +7,7 @@ import {
   Cpu,
   HardDrive,
   Home,
+  Menu,
   Laptop,
   Monitor,
   MoreHorizontal,
@@ -21,6 +22,7 @@ import {
   WifiOff
 } from "lucide-react";
 import Hi5ThemeButton from "./Hi5ThemeButton.jsx";
+import Hi5MobileDrawer from "./Hi5MobileDrawer.jsx";
 import "../../styles/dashboard.css";
 
 function Sidebar() {
@@ -51,10 +53,12 @@ function Sidebar() {
   );
 }
 
-function Topbar() {
+function Topbar({ onMenu }) {
   return (
     <>
       <header className="hi5dash-topbar">
+        <button className="hi5mobile-menu-button" type="button" onClick={onMenu}><Menu size={20} /></button>
+
         <div className="hi5dash-brand">
           <strong>Hi5Central</strong>
           <span>Managed IT Platform</span>
@@ -223,6 +227,7 @@ function DevicesCards({ devices }) {
 }
 
 export default function Hi5DevicesApp() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [devices, setDevices] = useState([]);
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
@@ -274,7 +279,7 @@ export default function Hi5DevicesApp() {
         <Sidebar />
 
         <div className="hi5dash-main">
-          <Topbar />
+          <Topbar onMenu={() => setDrawerOpen(true)} />
 
           <main className="hi5dash-content">
             <div className="hi5dash-title-row">
@@ -365,6 +370,7 @@ export default function Hi5DevicesApp() {
         </div>
       </div>
 
+      <Hi5MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <button className="hi5dash-ai"><Sparkles size={22} /></button>
     </div>
   );

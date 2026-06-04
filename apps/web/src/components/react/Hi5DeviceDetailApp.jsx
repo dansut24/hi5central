@@ -10,6 +10,7 @@ import {
   FileText,
   HardDrive,
   Home,
+  Menu,
   Monitor,
   Package,
   Power,
@@ -25,6 +26,7 @@ import {
   WifiOff
 } from "lucide-react";
 import Hi5ThemeButton from "./Hi5ThemeButton.jsx";
+import Hi5MobileDrawer from "./Hi5MobileDrawer.jsx";
 import "../../styles/dashboard.css";
 
 function getDeviceId() {
@@ -96,10 +98,12 @@ function Sidebar() {
   );
 }
 
-function Topbar() {
+function Topbar({ onMenu }) {
   return (
     <>
       <header className="hi5dash-topbar">
+        <button className="hi5mobile-menu-button" type="button" onClick={onMenu}><Menu size={20} /></button>
+
         <div className="hi5dash-brand">
           <strong>Hi5Central</strong>
           <span>Managed IT Platform</span>
@@ -465,6 +469,7 @@ function DeviceContent({ device, onRefresh }) {
 }
 
 export default function Hi5DeviceDetailApp() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [device, setDevice] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -514,7 +519,7 @@ export default function Hi5DeviceDetailApp() {
         <Sidebar />
 
         <div className="hi5dash-main">
-          <Topbar />
+          <Topbar onMenu={() => setDrawerOpen(true)} />
 
           {loading ? (
             <LoadingState />
@@ -528,6 +533,7 @@ export default function Hi5DeviceDetailApp() {
         </div>
       </div>
 
+      <Hi5MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <button className="hi5dash-ai">
         <Sparkles size={22} />
       </button>

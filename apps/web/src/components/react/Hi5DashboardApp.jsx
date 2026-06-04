@@ -1,5 +1,6 @@
 import React from "react";
 import Hi5ThemeButton from "./Hi5ThemeButton.jsx";
+import Hi5MobileDrawer from "./Hi5MobileDrawer.jsx";
 import dashboardCss from "../../styles/dashboard.css?inline";
 import {
   Activity,
@@ -44,11 +45,13 @@ function Sidebar() {
   );
 }
 
-function Topbar() {
+function Topbar({ onMenu }) {
   return (
     <>
       <header className="hi5dash-topbar">
         <button className="hi5dash-icon mobile-only"><Menu size={20} /></button>
+        <button className="hi5mobile-menu-button" type="button" onClick={onMenu}><Menu size={20} /></button>
+
         <div className="hi5dash-brand">
           <strong>Hi5Central</strong>
           <span>Managed IT Platform</span>
@@ -199,6 +202,8 @@ function MobileNav() {
 }
 
 export default function Hi5DashboardApp() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <>
       <style>{dashboardCss}</style>
@@ -206,10 +211,11 @@ export default function Hi5DashboardApp() {
       <div className="hi5dash-wrap">
         <Sidebar />
         <div className="hi5dash-main">
-          <Topbar />
+          <Topbar onMenu={() => setDrawerOpen(true)} />
           <Dashboard />
         </div>
       </div>
+      <Hi5MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <button className="hi5dash-ai"><Sparkles size={22} /></button>
       <MobileNav />
     </div>
