@@ -1452,3 +1452,91 @@
     min-height: 108px;
   }
 }
+
+/* PASS-0097.3 tighten device detail vertical spacing */
+
+@media (max-width: 767px) {
+  .hi5device-grid {
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .hi5dash-panel {
+    padding: 14px;
+  }
+
+  .hi5dash-panel h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .hi5device-info-row {
+    padding: 7px 0;
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .hi5device-info-row span,
+  .hi5device-info-row strong {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .hi5device-hardware {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .hi5device-hardware div {
+    min-height: 46px;
+    padding: 8px 10px;
+    grid-template-columns: 28px 76px minmax(0, 1fr);
+  }
+
+  .hi5device-hardware span,
+  .hi5device-hardware strong {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .hi5dash-list {
+    margin-top: 6px;
+  }
+
+  .hi5dash-ticket {
+    padding: 9px 0;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+  }
+
+  .hi5dash-ticket-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 13px;
+  }
+
+  .hi5dash-ticket strong {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .hi5dash-ticket small {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .hi5device-actions-grid {
+    gap: 8px;
+  }
+
+  .hi5device-action-card {
+    min-height: 94px;
+    padding: 11px;
+  }
+
+  .hi5device-action-card span {
+    font-size: 12px;
+  }
+
+  .hi5device-action-card p {
+    font-size: 11px;
+  }
+}
