@@ -1540,3 +1540,69 @@
     font-size: 11px;
   }
 }
+
+/* PASS-0097.4 final device detail mobile fixes */
+
+html,
+body {
+  background: var(--hi5-page-bg) !important;
+}
+
+.hi5dash {
+  min-height: 100dvh !important;
+  background: var(--hi5-page-bg) !important;
+}
+
+@media (max-width: 767px) {
+  .hi5dash-content {
+    padding-bottom: 32px !important;
+  }
+
+  .hi5device-grid:last-of-type {
+    margin-bottom: 0 !important;
+  }
+
+  .hi5device-actions-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .hi5device-action-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    min-height: 104px !important;
+    padding: 12px !important;
+    text-align: left !important;
+  }
+
+  .hi5device-action-card div {
+    margin: 0 !important;
+  }
+
+  .hi5device-action-card span {
+    margin-top: 10px !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+  }
+
+  .hi5device-action-card p {
+    margin-top: 4px !important;
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+  }
+
+  .hi5device-hardware div {
+    min-height: 42px !important;
+  }
+
+  .hi5dash-panel {
+    margin-bottom: 0 !important;
+  }
+
+  .hi5dash-ai {
+    bottom: 28px !important;
+  }
+}
