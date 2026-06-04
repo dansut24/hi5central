@@ -1606,3 +1606,82 @@ body {
     bottom: 28px !important;
   }
 }
+
+
+/* PASS-0098 shared module pages */
+
+.hi5module-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.hi5module-card {
+  min-height: 150px;
+  border-radius: 22px;
+  border: 1px solid var(--hi5-line);
+  background: var(--hi5-card-bg);
+  box-shadow: 0 14px 40px rgba(15,23,42,.06);
+  backdrop-filter: blur(24px);
+  padding: 18px;
+  color: var(--hi5-copy);
+  text-decoration: none;
+}
+
+.hi5module-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  color: white;
+  background: linear-gradient(135deg, var(--hi5-primary), var(--hi5-accent));
+}
+
+.hi5module-card strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.hi5module-card p {
+  margin: 8px 0 0;
+  color: var(--hi5-copy-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.hi5api-preview {
+  margin-top: 14px;
+  max-height: 360px;
+  overflow: auto;
+  border-radius: 18px;
+  border: 1px solid var(--hi5-line);
+  background: rgba(15,23,42,.04);
+  padding: 14px;
+  color: var(--hi5-copy);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 1023px) {
+  .hi5module-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .hi5module-card {
+    min-height: 132px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 430px) {
+  .hi5module-grid {
+    grid-template-columns: 1fr;
+  }
+}

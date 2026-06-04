@@ -1,10 +1,16 @@
 ---
-import TenantShell from "@/components/layout/TenantShell.astro";
+import "@/styles/global.css";
+import Hi5TicketsApp from "@/components/react/Hi5TicketsApp.jsx";
 ---
-<TenantShell title="Tickets">
-  <section class="hi5-panel p-5">
-    <p class="text-xs font-bold uppercase tracking-wide text-purple-300">ITSM</p>
-    <h1 class="mt-2 text-2xl font-black text-white">Tickets</h1>
-    <p class="mt-2 text-sm text-slate-400">Tickets are a separate ITSM module. RMM alerts can create or link to tickets later.</p>
-  </section>
-</TenantShell>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Tickets | Hi5Central</title>
+  </head>
+
+  <body>
+    <Hi5TicketsApp client:load />
+  </body>
+</html>
